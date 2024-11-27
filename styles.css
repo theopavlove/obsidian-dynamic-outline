@@ -1,8 +1,190 @@
-/*
+/* @settings
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
+name: Dynamic Outline
+id: obsidian-dynamic-outline
+settings:
+    - 
+        id: dynamic-outline-opacity
+        title: 'Opacity'
+        description: 'Dynamic Outline opacity when the outline is not hovered over.'
+        type: variable-number-slider
+        default: 1.0
+        min: 0
+        max: 1
+        step: 0.05
 */
+
+.theme-dark,
+.theme-light {
+    --dynamic-outline-background: var(--background-primary);
+    --dynamic-outline-text-color: var(--text-normal);
+    --dynamic-outline-font-size: var(--font-text-size);
+    --dynamic-outline-color: var(--text-normal);
+    --dynamic-outline-border-color: var(--background-modifier-border);
+    --dynamic-outline-background-hover-color: var(--background-modifier-hover);
+    --dynamic-outline-padding-left: 24px;
+    --dynamic-outline-input-height: var(--input-height);
+    --dynamic-outline-input-background-color: var(--background-primary);
+    --dynamic-outline-opacity: 1;
+    /* --dynamic-outline-input-background-color: var(--background-modifier-form-field); */
+}
+
+.theme-light {
+    --dynamic-outline-shadow-color: rgba(99, 99, 99, .2);
+}
+
+.theme-dark {
+    --dynamic-outline-shadow-color: rgba(0, 0, 0, .2);
+}
+
+#dynamic-outline,
+#dynamic-outline ul,
+#dynamic-outline li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#dynamic-outline {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+
+    top: 40px;
+    right: 20px;
+    /* right: 10%; */
+
+    min-height: max-content;
+    max-height: calc(100% - 50px);
+    width: 256px;
+    padding: 10px 15px 5px;
+
+    overflow-y: auto;
+    font-size: var(--dynamic-outline-font-size);
+
+    background-color: var(--dynamic-outline-background);
+    border: 1px solid var(--dynamic-outline-border-color);
+    border-radius: 12px;
+    box-shadow: var(--dynamic-outline-shadow-color) 0px 2px 8px 0px;
+
+    opacity: var(--dynamic-outline-opacity);
+}
+
+#dynamic-outline:hover {
+    opacity: 1.0;
+}
+
+#dynamic-outline li {
+    display: flex;
+    align-items: flex-start;
+
+    padding: 7px 0;
+    transition: background 25ms linear;
+    cursor: pointer;
+}
+
+#dynamic-outline li.highlight::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 8px;
+    width: 4px;
+    height: 24px;
+    background-color: var(--text-normal);
+    border-radius: 6px;
+}
+
+#dynamic-outline li:hover {
+    background-color: var(--dynamic-outline-background-hover-color);
+    border-radius: 6px;
+}
+
+#dynamic-outline li a {
+    padding: 0px 8px;
+    color: var(--dynamic-outline-text-color);
+    text-decoration: none;
+}
+
+#dynamic-outline li .heading-level-1 {
+    font-weight: bold;
+}
+
+#dynamic-outline li .heading-level-2 {
+    padding-left: var(--dynamic-outline-padding-left);
+}
+
+#dynamic-outline li .heading-level-3 {
+    padding-left: calc(var(--dynamic-outline-padding-left) * 2);
+}
+
+#dynamic-outline li .heading-level-4 {
+    padding-left: calc(var(--dynamic-outline-padding-left) * 3);
+}
+
+#dynamic-outline li .heading-level-5 {
+    padding-left: calc(var(--dynamic-outline-padding-left) * 4);
+}
+
+#dynamic-outline li .heading-level-6 {
+    padding-left: calc(var(--dynamic-outline-padding-left) * 5);
+}
+
+.dynamic-outline-search-container {
+    /* margin-top: 10px; */
+    margin-bottom: 5px;
+
+    display: flex;
+    align-items: center;
+}
+
+/* Tweak pixels */
+.dynamic-outline-search-container::before {
+    display: block;
+    content: '';
+    height: var(--search-icon-size);
+    width: var(--search-icon-size);
+    position: absolute;
+    inset-inline-start: 22px;
+    background-color: var(--search-icon-color);
+    -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'></circle><line x1='21' y1='21' x2='16.65' y2='16.65'></line></svg>");
+    -webkit-mask-repeat: no-repeat;
+}
+
+/* Tweak variables */
+.dynamic-outline-button.button-active {
+    box-shadow: none;
+    opacity: var(--icon-opacity-hover);
+    color: var(--icon-color-hover);
+    background-color: var(--background-modifier-hover);
+
+}
+
+
+/* Tweak pixels */
+.dynamic-outline-search-container input {
+    display: block;
+    width: 100%;
+    padding-inline-start: 32px;
+    /* padding-right: 20px; */
+}
+
+.dynamic-outline-search-container input.has-content {
+    padding-inline-end: 32px;
+}
+
+.dynamic-outline-search-clear-button {
+    display: none;
+    margin: 0;
+    top: calc((var(--input-height) - var(--search-icon-size)) + 6px);
+    right: 10px;
+}
+
+.dynamic-outline-search-clear-button.visible {
+    display: block;
+}
+
+/* Custom css for disabled settings */
+.setting-item.is-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
