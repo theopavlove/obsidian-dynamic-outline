@@ -1,10 +1,10 @@
 import { Setting } from "obsidian";
-import DynamicOutlineSetting from "../settingsOption";
 import { htmlDescription } from "../settings";
+import DynamicOutlineSetting from "../settingsOption";
 
 export default class OutlineOpacitySetting extends DynamicOutlineSetting {
 	public display(): void {
-        new Setting(this.containerEl)
+		new Setting(this.containerEl)
 			.setName("Outline opacity")
 			.setDesc(
 				htmlDescription(
