@@ -26,7 +26,6 @@ settings:
     --dynamic-outline-input-height: var(--input-height);
     --dynamic-outline-input-background-color: var(--background-primary);
     --dynamic-outline-opacity: 1;
-    /* --dynamic-outline-input-background-color: var(--background-modifier-form-field); */
 }
 
 .theme-light {
@@ -165,7 +164,6 @@ settings:
     display: block;
     width: 100%;
     padding-inline-start: 32px;
-    /* padding-right: 20px; */
 }
 
 .dynamic-outline-search-container input.has-content {
