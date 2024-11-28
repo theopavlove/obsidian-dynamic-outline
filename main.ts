@@ -137,7 +137,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		this.addCommand({
 			id: "toggle-dynamic-outline",
-			name: "Toggle Dynamic Outline for Current File",
+			name: "Toggle for Current File",
 			callback: () => {
 				const markdownView: MarkdownView | null =
 					this.getActiveMarkdownView();
