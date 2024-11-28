@@ -89,7 +89,8 @@ class WindowManager {
 			windowContainer.querySelector("ul");
 		if (!ulElement) return;
 
-		ulElement.innerHTML = "";
+		ulElement.empty();
+
 		headings?.forEach((heading) => {
 			const liElement = this._createWindowListElement(heading);
 			ulElement.append(liElement);

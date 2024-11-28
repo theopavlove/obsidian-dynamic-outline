@@ -1,5 +1,5 @@
 import DynamicOutlinePlugin from "main";
-import { App, PluginSettingTab } from "obsidian";
+import { App, PluginSettingTab, sanitizeHTMLToDom } from "obsidian";
 import AutofocusSearchOnOpenSetting from "./options/autofocusSearchOnOpenSetting";
 
 import HighlightOnScrollSetting from "./options/highlightOnScrollSetting";
@@ -28,11 +28,8 @@ interface DynamicOutlinePluginSettings {
 	outlineOpacity: number;
 }
 
-export function htmlDescription(innerHTML: string): DocumentFragment {
-	const desc = new DocumentFragment();
-	desc.createSpan({}, (span) => {
-		span.innerHTML = innerHTML;
-	});
+export function htmlDescription(text: string): DocumentFragment {
+	const desc: DocumentFragment = sanitizeHTMLToDom(text);
 	return desc;
 }
 
