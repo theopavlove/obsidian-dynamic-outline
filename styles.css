@@ -186,3 +186,7 @@ settings:
     pointer-events: none;
     opacity: 0.5;
 }
+
+.outline-item-hidden {
+    display: none !important;
+}

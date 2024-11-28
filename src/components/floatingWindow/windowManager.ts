@@ -59,9 +59,9 @@ class WindowManager {
 				const outlineItems = windowContainer.querySelectorAll("li");
 				outlineItems?.forEach((item: HTMLLIElement) => {
 					if (item.textContent?.toLowerCase().includes(value)) {
-						item.style.display = "";
+						item.classList.remove("outline-item-hidden");
 					} else {
-						item.style.display = "none";
+						item.classList.add("outline-item-hidden");
 					}
 				});
 			});
