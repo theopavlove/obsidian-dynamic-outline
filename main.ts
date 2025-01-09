@@ -137,27 +137,31 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		this.addCommand({
 			id: "toggle-dynamic-outline",
-			name: "Toggle for Current File",
-			callback: () => {
+			name: "Toggle for current file",
+			checkCallback: (checking: boolean) => {
 				const markdownView: MarkdownView | null =
 					this.getActiveMarkdownView();
-				const windowContainer: HTMLElement | null | undefined =
-					this.windowManager.getWindowFromView(markdownView);
 
-				if (!markdownView) return;
-
-				if (windowContainer) {
-					this.windowManager.hideWindowFromView(markdownView);
-				} else {
-					this.windowManager.createWindowInView(
-						markdownView,
-						this.headingsManager.getHeadingsForView(
-							markdownView,
-							this
-						),
-						this
-					);
+				if (markdownView) {
+					if (!checking) {
+						const windowContainer: HTMLElement | null | undefined =
+							this.windowManager.getWindowFromView(markdownView);
+						if (windowContainer) {
+							this.windowManager.hideWindowFromView(markdownView);
+						} else {
+							this.windowManager.createWindowInView(
+								markdownView,
+								this.headingsManager.getHeadingsForView(
+									markdownView,
+									this
+								),
+								this
+							);
+						}
+					}
+					return true;
 				}
+				return false;
 			},
 		});
 	}
