@@ -6,7 +6,7 @@ export default class AutofocusSearchOnOpenSetting extends DynamicOutlineSetting 
 		new Setting(this.containerEl)
 			.setName("Autofocus search field on open")
 			.setDesc(
-				"When the Dynamic Outline is opened, focus the search field immediately."
+				"When the outline is opened, focus the search field immediately."
 			)
 			.addToggle((toggle) => {
 				toggle

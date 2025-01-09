@@ -8,7 +8,7 @@ export default class OutlineOpacitySetting extends DynamicOutlineSetting {
 			.setName("Outline opacity")
 			.setDesc(
 				htmlDescription(
-					`To customize the opacity of the Dynamic Outline, please use the <a href="https://obsidian.md/plugins?id=obsidian-style-settings">Style Settings</a> plugin.`
+					`To customize the opacity of the outline, please use the <a href="https://obsidian.md/plugins?id=obsidian-style-settings">Style Settings</a> plugin.`
 				)
 			);
 	}

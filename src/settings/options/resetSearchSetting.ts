@@ -6,7 +6,7 @@ export default class ResetSearchSetting extends DynamicOutlineSetting {
 		new Setting(this.containerEl)
 			.setName("Reset search field on heading click")
 			.setDesc(
-				"Reset the search field to empty when clicking on a Dynamic Outline heading."
+				"Reset the search field to empty when clicking on a outline heading."
 			)
 			.addToggle((toggle) => {
 				toggle

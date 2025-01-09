@@ -8,7 +8,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			.setName("Toggle automatically")
 			.setDesc(
 				htmlDescription(
-					`Show and hide the Dynamic Outline automatically based on the number of headings in the file.<br><span style="color: var(--text-accent)">Requires a restart to take effect.</span>`
+					`Show and hide the outline automatically based on the number of headings in the file.<br><span style="color: var(--text-accent)">Requires a restart to take effect.</span>`
 				)
 			)
 			.addToggle((toggle) => {
@@ -26,7 +26,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			.setName("Minimum headings")
 			.setDesc(
 				htmlDescription(
-					`The minimum number of headings in the file to trigger the Dynamic Outline.`
+					`The minimum number of headings in the file to trigger the outline.`
 				)
 			)
 			.addSlider((slider) => {
