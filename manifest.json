@@ -1,9 +1,9 @@
 {
 	"id": "dynamic-outline",
 	"name": "Dynamic Outline",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"minAppVersion": "0.15.0",
-	"description": "Adds a customizable GitHub-like floating table of contents that does not require the core \"Outline\" plugin.",
+	"description": "Adds a customizable GitHub-like floating table of contents.",
 	"author": "theopavlove",
 	"authorUrl": "https://github.com/theopavlove",
 	"isDesktopOnly": false
