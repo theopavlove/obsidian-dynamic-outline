@@ -1,6 +1,6 @@
 # Dynamic Outline
 
-This plugin for [Obsidian](https://obsidian.md/) creates a simple yet convenient floating table of contents for your notes that saves you space in the sidebar.
+This [Obsidian](https://obsidian.md/) plugin displays a floating table of contents for your notes, freeing up space in the sidebar.
 
 ![](./assets/dynamic-outline-cover.png)
 
@@ -10,19 +10,19 @@ This plugin for [Obsidian](https://obsidian.md/) creates a simple yet convenient
 
 Click the icon in the note toolbar to show the Dynamic Outline. Use the search field for quick navigation.
 
-![](./assets/demo-1.gif)
+![](./assets/demo-basic-usage.gif)
+
+### Search and Navigation
+
+Use the search field to quickly navigate to a heading.
+
+![](./assets/demo-search-and-navigation.gif)
 
 ### Automatic Toggle
 
 Show and hide the Dynamic Outline automatically based on the number of headings in the file.
 
-![](./assets/demo-2.gif)
-
-### Style Settings support
-
-You can customize the style of the Dynamic Outline, e.g. the opacity, by using the [Style Settings](https://obsidian.md/plugins?id=obsidian-style-settings) plugin.
-
-![](./assets/demo-3.gif)
+![](./assets/demo-automatic-toggle.gif)
 
 ## Contibution
 
