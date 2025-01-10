@@ -72,6 +72,10 @@ class WindowManager {
 			inputField?.focus();
 		}
 
+		if (plugin.settings.highlightCurrentHeading) {
+			plugin.highlightCurrentHeading();
+		}
+
 		const button: HTMLButtonElement | null =
 			plugin.buttonManager.getButtonFromLeaf(view.leaf);
 		button?.classList.add("button-active");
