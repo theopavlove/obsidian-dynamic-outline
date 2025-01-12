@@ -1,7 +1,7 @@
 import DynamicOutlinePlugin from "main";
 import { MarkdownView, setIcon, WorkspaceLeaf } from "obsidian";
 
-export { ButtonManager, BUTTON_CLASS };
+export { BUTTON_CLASS, ButtonManager };
 
 const LUCID_ICON_NAME = "list";
 const BUTTON_CLASS = "dynamic-outline-button";
@@ -18,7 +18,10 @@ class ButtonManager {
 		return button;
 	}
 
-	private _handleButtonClick(event: MouseEvent, plugin: DynamicOutlinePlugin) {
+	private _handleButtonClick(
+		event: MouseEvent,
+		plugin: DynamicOutlinePlugin
+	) {
 		const button = event.target as HTMLButtonElement;
 		const markdownView: MarkdownView | null =
 			plugin.getActiveMarkdownView();
@@ -55,6 +58,7 @@ class ButtonManager {
 			markdownActionButtons.firstChild
 		);
 
+		// Probably move to main.ts (?)
 		plugin.registerDomEvent(
 			newButton,
 			"click",
