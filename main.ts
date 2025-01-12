@@ -87,6 +87,13 @@ export default class DynamicOutlinePlugin extends Plugin {
 				);
 				closestHeadingElement.classList.add("highlight");
 			}
+		} else {
+			// Add to the first heading
+			const firstHeadingElement: HTMLElement | null =
+				windowContainer.querySelector("li");
+			if (firstHeadingElement) {
+				firstHeadingElement.classList.add("highlight");
+			}
 		}
 	};
 
@@ -98,6 +105,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 		// https://github.com/mgmeyers/obsidian-style-settings
 		this.app.workspace.trigger("parse-style-settings");
 
+		// Main trigger for the outline display
 		this.buttonManager.addButtonToLeaves(this);
 		this.registerEvent(
 			this.app.workspace.on("layout-change", () => {
