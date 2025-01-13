@@ -4,9 +4,48 @@ name: Dynamic Outline
 id: obsidian-dynamic-outline
 settings:
     - 
+        id: dynamic-outline-font-size
+        title: 'Font size'
+        description: 'Font size.'
+        type: variable-select
+        default: var(--font-text-size)
+        options:
+            -
+                label: 'Default'
+                value: var(--font-text-size)
+            -
+                label: 'Small'
+                value: var(--font-small)
+            -
+                label: 'Smaller'
+                value: var(--font-smaller)
+            -
+                label: 'Smallest'
+                value: var(--font-smallest)
+    -
+        id: dynamic-outline-window-width
+        title: 'Window width'
+        description: 'Window width (in pixels).'
+        type: variable-number-slider
+        default: 256
+        min: 128
+        max: 512
+        step: 32
+        format: px
+    -
+        id: dynamic-outline-tab-size
+        title: 'Tab size'
+        description: 'Left padding multiplier size (in pixels).'
+        type: variable-number-slider
+        default: 24
+        min: 0
+        max: 48
+        step: 1
+        format: px
+    -
         id: dynamic-outline-opacity
-        title: 'Opacity'
-        description: 'Outline opacity when the outline is not hovered over.'
+        title: 'Window opacity'
+        description: 'Window opacity when the outline is not hovered over.'
         type: variable-number-slider
         default: 1.0
         min: 0
@@ -22,10 +61,12 @@ settings:
     --dynamic-outline-color: var(--text-normal);
     --dynamic-outline-border-color: var(--background-modifier-border);
     --dynamic-outline-background-hover-color: var(--background-modifier-hover);
-    --dynamic-outline-padding-left: 24px;
+    /* --dynamic-outline-padding-left: 24px; */
+    --dynamic-outline-tab-size: 24px;
     --dynamic-outline-input-height: var(--input-height);
     --dynamic-outline-input-background-color: var(--background-primary);
     --dynamic-outline-opacity: 1;
+    --dynamic-outline-window-width: 256px;
 }
 
 .theme-light {
@@ -56,7 +97,8 @@ settings:
 
     min-height: max-content;
     max-height: calc(100% - 50px);
-    width: 256px;
+    /* width: 256px; */
+    width: var(--dynamic-outline-window-width);
     padding: 10px 15px 5px;
 
     overflow-y: auto;
@@ -83,14 +125,22 @@ settings:
     cursor: pointer;
 }
 
+#dynamic-outline li.highlight {
+    position: relative;
+}
+
 #dynamic-outline li.highlight::after {
     content: "";
     position: absolute;
-    inset-inline-start: 8px;
+    inset-inline-start: -8px;
     width: 4px;
-    height: 24px;
     background-color: var(--text-normal);
-    border-radius: 6px;
+    border-radius: 8px;
+
+    /* Center the highlight indicator vertically. */
+    top: 50%;
+    transform: translateY(-50%);
+    height: 90%;
 }
 
 #dynamic-outline li:hover {
@@ -109,28 +159,29 @@ settings:
 }
 
 #dynamic-outline li .heading-level-2 {
-    padding-left: var(--dynamic-outline-padding-left);
+    padding-left: var(--dynamic-outline-tab-size);
 }
 
 #dynamic-outline li .heading-level-3 {
-    padding-left: calc(var(--dynamic-outline-padding-left) * 2);
+    padding-left: calc(var(--dynamic-outline-tab-size) * 2);
 }
 
 #dynamic-outline li .heading-level-4 {
-    padding-left: calc(var(--dynamic-outline-padding-left) * 3);
+    padding-left: calc(var(--dynamic-outline-tab-size) * 3);
 }
 
 #dynamic-outline li .heading-level-5 {
-    padding-left: calc(var(--dynamic-outline-padding-left) * 4);
+    padding-left: calc(var(--dynamic-outline-tab-size) * 4);
 }
 
 #dynamic-outline li .heading-level-6 {
-    padding-left: calc(var(--dynamic-outline-padding-left) * 5);
+    padding-left: calc(var(--dynamic-outline-tab-size) * 5);
 }
 
 .dynamic-outline-search-container {
     /* margin-top: 10px; */
     margin-bottom: 5px;
+    font-size: var(--dynamic-outline-font-size);
 
     display: flex;
     align-items: center;
