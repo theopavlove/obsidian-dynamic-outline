@@ -5,10 +5,10 @@ import DynamicOutlineSetting from "../settingsOption";
 export default class HighlightOnScrollSetting extends DynamicOutlineSetting {
 	public display(): void {
 		new Setting(this.containerEl)
-			.setName("Highlight active heading on scroll")
+			.setName("Highlight active heading")
 			.setDesc(
 				htmlDescription(
-					`When scrolling throught the file, highlight the current outline heading.<br><span style="color: var(--text-accent)">Requires a restart to take effect.</span>`
+					`Highlight the current outline heading when scrolling the file.<br><span style="color: var(--text-accent)">Requires a restart to take effect.</span>`
 				)
 			)
 			.addToggle((toggle) => {

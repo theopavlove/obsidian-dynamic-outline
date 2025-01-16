@@ -10,23 +10,21 @@ import ToggleAutomaticallySetting from "./options/toggleAutomaticallySetting";
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
 
-const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
-	autofocusSearchOnOpen: true,
-	resetSearchFieldOnHeadingClick: true,
-	highlightCurrentHeading: true,
-	toggleAutomatically: false,
-	minimumHeadings: 1,
-	outlineOpacity: 1.0,
-};
-
 interface DynamicOutlinePluginSettings {
 	autofocusSearchOnOpen: boolean;
-	resetSearchFieldOnHeadingClick: boolean;
 	highlightCurrentHeading: boolean;
-	toggleAutomatically: boolean;
 	minimumHeadings: number;
-	outlineOpacity: number;
+	resetSearchFieldOnHeadingClick: boolean;
+	toggleAutomatically: boolean;
 }
+
+const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
+	autofocusSearchOnOpen: true,
+	highlightCurrentHeading: true,
+	minimumHeadings: 1,
+	resetSearchFieldOnHeadingClick: true,
+	toggleAutomatically: false,
+};
 
 export function htmlDescription(text: string): DocumentFragment {
 	const desc: DocumentFragment = sanitizeHTMLToDom(text);

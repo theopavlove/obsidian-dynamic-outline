@@ -5,10 +5,10 @@ import DynamicOutlineSetting from "../settingsOption";
 export default class OutlineOpacitySetting extends DynamicOutlineSetting {
 	public display(): void {
 		new Setting(this.containerEl)
-			.setName("Outline opacity")
+			.setName("Style customizations")
 			.setDesc(
 				htmlDescription(
-					`To customize the opacity of the outline, please use the <a href="https://obsidian.md/plugins?id=obsidian-style-settings">Style Settings</a> plugin.`
+					`Please use the <a href="https://obsidian.md/plugins?id=obsidian-style-settings">Style Settings</a> plugin to apply custom font size, opacity, alignment, etc.`
 				)
 			);
 	}

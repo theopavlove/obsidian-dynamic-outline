@@ -45,7 +45,7 @@ settings:
     -
         id: dynamic-outline-opacity
         title: 'Window opacity'
-        description: 'Outline window opacity when the outline is not hovered over.'
+        description: 'Outline window opacity when the outline is not hovered over'
         type: variable-number-slider
         default: 1.0
         min: 0
