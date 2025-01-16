@@ -23,16 +23,6 @@ settings:
                 label: 'Smallest'
                 value: var(--font-smallest)
     -
-        id: dynamic-outline-window-width
-        title: 'Window width'
-        description: 'Outline window width (in pixels)'
-        type: variable-number-slider
-        default: 256
-        min: 128
-        max: 512
-        step: 32
-        format: px
-    -
         id: dynamic-outline-tab-size
         title: 'Tab size'
         description: 'Left padding multiplier size (in pixels)'
@@ -43,14 +33,38 @@ settings:
         step: 1
         format: px
     -
+        id: dynamic-outline-window-width
+        title: 'Window width'
+        description: 'Outline window width (in pixels)'
+        type: variable-number-slider
+        default: 256
+        min: 128
+        max: 512
+        step: 32
+        format: px
+    -
         id: dynamic-outline-opacity
         title: 'Window opacity'
-        description: 'Window opacity when the outline is not hovered over.'
+        description: 'Outline window opacity when the outline is not hovered over.'
         type: variable-number-slider
         default: 1.0
         min: 0
         max: 1
         step: 0.05
+    -
+        id: window-alignment
+        title: "Window alignment"
+        description: "Outline window alignment"
+        type: class-select
+        allowEmpty: false
+        default: do-align-right
+        options:
+            -
+                label: Right
+                value: do-align-right
+            -
+                label: Left
+                value: do-align-left
 */
 
 .theme-dark,
@@ -92,14 +106,9 @@ settings:
     z-index: 2;
 
     top: 40px;
-    right: none;
-    left: 20px;
-    /* right: 20px; */
-    /* right: 10%; */
 
     min-height: max-content;
     max-height: calc(100% - 50px);
-    /* width: 256px; */
     width: var(--dynamic-outline-window-width);
     padding: 10px 15px 5px;
 
@@ -112,6 +121,14 @@ settings:
     box-shadow: var(--dynamic-outline-shadow-color) 0px 2px 8px 0px;
 
     opacity: var(--dynamic-outline-opacity);
+}
+
+.do-align-left #dynamic-outline {
+    left: 20px;
+}
+
+.do-align-right #dynamic-outline {
+    right: 20px;
 }
 
 #dynamic-outline:hover {
