@@ -6,7 +6,7 @@ settings:
     - 
         id: dynamic-outline-font-size
         title: 'Font size'
-        description: 'Font size.'
+        description: 'Font size of the outline headings'
         type: variable-select
         default: var(--font-text-size)
         options:
@@ -25,7 +25,7 @@ settings:
     -
         id: dynamic-outline-window-width
         title: 'Window width'
-        description: 'Window width (in pixels).'
+        description: 'Outline window width (in pixels)'
         type: variable-number-slider
         default: 256
         min: 128
@@ -35,7 +35,7 @@ settings:
     -
         id: dynamic-outline-tab-size
         title: 'Tab size'
-        description: 'Left padding multiplier size (in pixels).'
+        description: 'Left padding multiplier size (in pixels)'
         type: variable-number-slider
         default: 24
         min: 0
@@ -92,7 +92,9 @@ settings:
     z-index: 2;
 
     top: 40px;
-    right: 20px;
+    right: none;
+    left: 20px;
+    /* right: 20px; */
     /* right: 10%; */
 
     min-height: max-content;
@@ -179,9 +181,7 @@ settings:
 }
 
 .dynamic-outline-search-container {
-    /* margin-top: 10px; */
     margin-bottom: 5px;
-    font-size: var(--dynamic-outline-font-size);
 
     display: flex;
     align-items: center;
