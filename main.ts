@@ -42,7 +42,9 @@ export default class DynamicOutlinePlugin extends Plugin {
 		);
 	};
 
-	highlightCurrentHeading = (): void => {
+	highlightCurrentHeading = (
+		scrollBlock: ScrollLogicalPosition = "nearest"
+	): void => {
 		const markdownView: MarkdownView | null = this.getActiveMarkdownView();
 		const windowContainer: HTMLElement | null | undefined =
 			this.windowManager.getWindowFromView(markdownView);
@@ -53,9 +55,6 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		const currentScrollPosition: number | undefined =
 			markdownView?.currentMode.getScroll();
-
-		// headings.forEach((heading) => {
-		// 	heading.
 
 		// Find a heading with position <= currentScrollPosition and add a highlight class to it
 		const closestHeading: HeadingCache | null = headings.reduce(
@@ -94,6 +93,17 @@ export default class DynamicOutlinePlugin extends Plugin {
 			if (firstHeadingElement) {
 				firstHeadingElement.classList.add("highlight");
 			}
+		}
+
+		// Check if there is a highlighted heading, and scroll to it
+		const element: HTMLElement | null =
+			windowContainer.querySelector("li.highlight");
+		if (element) {
+			// console.log(scrollBlock);
+			element.scrollIntoView({
+				behavior: "instant",
+				block: scrollBlock,
+			});
 		}
 	};
 
@@ -136,7 +146,15 @@ export default class DynamicOutlinePlugin extends Plugin {
 		if (this.settings.highlightCurrentHeading) {
 			activeWindow.document.addEventListener(
 				"scroll",
-				() => {
+				(event) => {
+					const target = event.target as HTMLElement;
+					if (
+						target?.classList.contains(
+							"dynamic-outline-content-container"
+						)
+					) {
+						return;
+					}
 					this.highlightCurrentHeading();
 				},
 				true

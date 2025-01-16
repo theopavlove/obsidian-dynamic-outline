@@ -7,7 +7,6 @@ export { WindowManager };
 
 class WindowManager {
 	private _createWindowHTML(plugin: DynamicOutlinePlugin): HTMLDivElement {
-		// Create main element
 		const mainElement: HTMLDivElement = createEl("div", {
 			attr: {
 				id: "dynamic-outline",
@@ -73,7 +72,7 @@ class WindowManager {
 		}
 
 		if (plugin.settings.highlightCurrentHeading) {
-			plugin.highlightCurrentHeading();
+			plugin.highlightCurrentHeading("start");
 		}
 
 		const button: HTMLButtonElement | null =
@@ -104,6 +103,10 @@ class WindowManager {
 				view.leaf.openFile(view.file, {
 					eState: { line: heading.position.start.line },
 				});
+				setTimeout(() => {
+					view?.currentMode.applyScroll(heading.position.start.line);
+				}, 0);
+
 				if (plugin.settings.resetSearchFieldOnHeadingClick) {
 					const inputField: HTMLInputElement | null =
 						windowContainer.querySelector("input");

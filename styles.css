@@ -103,6 +103,7 @@ settings:
     position: fixed;
     display: flex;
     flex-direction: column;
+    /* overflow-y: auto; */
     z-index: 2;
 
     top: 40px;
@@ -110,9 +111,9 @@ settings:
     min-height: max-content;
     max-height: calc(100% - 50px);
     width: var(--dynamic-outline-window-width);
-    padding: 10px 15px 5px;
+    /* padding: 10px 15px 5px; */
+    padding: 10px 0 5px;
 
-    overflow-y: auto;
     font-size: var(--dynamic-outline-font-size);
 
     background-color: var(--dynamic-outline-background);
@@ -129,6 +130,15 @@ settings:
 
 .do-align-right #dynamic-outline {
     right: 20px;
+}
+
+.dynamic-outline-content-container {
+    overflow-y: auto;
+    padding: 0 15px;
+}
+
+.dynamic-outline-search-container {
+    padding: 0 15px;
 }
 
 #dynamic-outline:hover {
@@ -151,6 +161,7 @@ settings:
 #dynamic-outline li.highlight::after {
     content: "";
     position: absolute;
+
     inset-inline-start: -8px;
     width: 4px;
     background-color: var(--text-normal);
@@ -159,7 +170,8 @@ settings:
     /* Center the highlight indicator vertically. */
     top: 50%;
     transform: translateY(-50%);
-    height: 90%;
+    /* height: 90%; */
+    height: 22px;
 }
 
 #dynamic-outline li:hover {
@@ -198,10 +210,10 @@ settings:
 }
 
 .dynamic-outline-search-container {
-    margin-bottom: 5px;
-
     display: flex;
     align-items: center;
+    
+    margin-bottom: 5px;
 }
 
 /* Tweak pixels */
