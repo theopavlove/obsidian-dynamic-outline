@@ -101,7 +101,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 		if (element) {
 			// console.log(scrollBlock);
 			element.scrollIntoView({
-				behavior: "instant",
+				behavior: "instant" as ScrollBehavior,
 				block: scrollBlock,
 			});
 		}
