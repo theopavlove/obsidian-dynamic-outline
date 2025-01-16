@@ -1,6 +1,6 @@
 {
 	"name": "dynamic-outline",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Adds a customizable GitHub-like floating table of contents",
 	"main": "main.js",
 	"scripts": {
