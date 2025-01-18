@@ -48,13 +48,13 @@ settings:
         description: 'Outline window opacity when the outline is not hovered over'
         type: variable-number-slider
         default: 1.0
-        min: 0
-        max: 1
+        min: 0.0
+        max: 1.0
         step: 0.05
     -
         id: window-alignment
-        title: "Window alignment"
-        description: "Outline window alignment"
+        title: "Window location"
+        description: "Outline window location"
         type: class-select
         allowEmpty: false
         default: do-align-right
