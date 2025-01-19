@@ -159,6 +159,12 @@ export default class DynamicOutlinePlugin extends Plugin {
 				},
 				true
 			);
+
+			this.registerEvent(
+				this.app.metadataCache.on("changed", () => {
+					this.highlightCurrentHeading();
+				})
+			);
 		}
 
 		this.addCommand({
