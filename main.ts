@@ -1,7 +1,7 @@
 import { HeadingCache, MarkdownView, Plugin, WorkspaceLeaf } from "obsidian";
-import { ButtonManager } from "src/components/buttonManager";
-import { WindowManager } from "src/components/floatingWindow/windowManager";
-import { HeadingsManager } from "src/components/headingsManager";
+import ButtonManager from "src/components/buttonManager";
+import WindowManager from "src/components/floatingWindow/windowManager";
+import HeadingsManager from "src/components/headingsManager";
 import {
 	DEFAULT_SETTINGS,
 	DynamicOutlinePluginSettings,
@@ -9,9 +9,9 @@ import {
 } from "src/settings/settings";
 
 export default class DynamicOutlinePlugin extends Plugin {
-	headingsManager: HeadingsManager = new HeadingsManager();
-	buttonManager: ButtonManager = new ButtonManager();
-	windowManager: WindowManager = new WindowManager();
+	headingsManager: HeadingsManager = new HeadingsManager(this);
+	buttonManager: ButtonManager = new ButtonManager(this);
+	windowManager: WindowManager = new WindowManager(this);
 	settings: DynamicOutlinePluginSettings;
 
 	getAllMarkdownLeaves = (): WorkspaceLeaf[] => {
@@ -32,13 +32,12 @@ export default class DynamicOutlinePlugin extends Plugin {
 		}
 
 		const headings: HeadingCache[] =
-			this.headingsManager.getHeadingsForView(markdownView, this);
+			this.headingsManager.getHeadingsForView(markdownView);
 
 		this.windowManager.updateWindowWithHeadings(
 			windowContainer,
 			headings,
-			markdownView,
-			this
+			markdownView
 		);
 	};
 
@@ -51,7 +50,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 		if (!windowContainer) return;
 
 		const headings: HeadingCache[] =
-			this.headingsManager.getHeadingsForView(markdownView, this);
+			this.headingsManager.getHeadingsForView(markdownView);
 
 		const currentScrollPosition: number | undefined =
 			markdownView?.currentMode.getScroll();
@@ -116,17 +115,17 @@ export default class DynamicOutlinePlugin extends Plugin {
 		this.app.workspace.trigger("parse-style-settings");
 
 		// Main trigger for the outline display
-		this.buttonManager.addButtonToLeaves(this);
+		this.buttonManager.addButtonToLeaves();
 		this.registerEvent(
 			this.app.workspace.on("layout-change", () => {
-				this.buttonManager.addButtonToLeaves(this);
+				this.buttonManager.addButtonToLeaves();
 			})
 		);
 
 		if (this.settings.toggleAutomatically) {
 			this.registerEvent(
 				this.app.workspace.on("file-open", () => {
-					this.windowManager.handleFileOpen(this);
+					this.windowManager.handleFileOpen();
 				})
 			);
 		}
@@ -179,16 +178,21 @@ export default class DynamicOutlinePlugin extends Plugin {
 						const windowContainer: HTMLElement | null | undefined =
 							this.windowManager.getWindowFromView(markdownView);
 						if (windowContainer) {
+							if (this.settings.toggleOnHover) {
+								windowContainer.removeAttribute("pinned");
+							}
 							this.windowManager.hideWindowFromView(markdownView);
 						} else {
-							this.windowManager.createWindowInView(
-								markdownView,
-								this.headingsManager.getHeadingsForView(
+							const newWindow: HTMLElement =
+								this.windowManager.createWindowForView(
 									markdownView,
-									this
-								),
-								this
-							);
+									this.headingsManager.getHeadingsForView(
+										markdownView
+									)
+								);
+							if (this.settings.toggleOnHover) {
+								newWindow.setAttribute("pinned", "");
+							}
 						}
 					}
 					return true;
@@ -199,7 +203,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 	}
 
 	onunload() {
-		this.buttonManager.removeButtonFromLeaves(this);
+		this.buttonManager.removeButtonFromLeaves();
 	}
 
 	async loadSettings() {

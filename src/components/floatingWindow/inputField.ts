@@ -1,8 +1,6 @@
 import DynamicOutlinePlugin from "main";
 
-export { SearchField as InputWithClear };
-
-class SearchField {
+export default class SearchField {
 	private searchContainer: HTMLDivElement;
 	private inputField: HTMLInputElement;
 	private clearButton: HTMLDivElement;

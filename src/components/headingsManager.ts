@@ -1,9 +1,13 @@
 import DynamicOutlinePlugin from "main";
 import { HeadingCache, htmlToMarkdown, MarkdownView, TFile } from "obsidian";
 
-export { HeadingsManager };
+export default class HeadingsManager {
+	private plugin: DynamicOutlinePlugin;
 
-class HeadingsManager {
+	constructor(plugin: DynamicOutlinePlugin) {
+		this.plugin = plugin;
+	}
+
 	private _cleanupHeadings(headings: HeadingCache[]): HeadingCache[] {
 		const cleanMarkdown = (inputHeading: string) => {
 			return htmlToMarkdown(inputHeading)
@@ -34,14 +38,12 @@ class HeadingsManager {
 		return cleanedHeadings;
 	}
 
-	getHeadingsForView(
-		view: MarkdownView | null,
-		plugin: DynamicOutlinePlugin
-	): HeadingCache[] {
+	getHeadingsForView(view: MarkdownView | null): HeadingCache[] {
 		const file: TFile | null | undefined = view?.file;
 		if (!file) return [];
 
-		const fileMetadata = plugin.app.metadataCache.getFileCache(file) || {};
+		const fileMetadata =
+			this.plugin.app.metadataCache.getFileCache(file) || {};
 		const fileHeadings: HeadingCache[] = fileMetadata.headings ?? [];
 		const cleanedHeadings = this._cleanupHeadings(fileHeadings);
 		return cleanedHeadings;

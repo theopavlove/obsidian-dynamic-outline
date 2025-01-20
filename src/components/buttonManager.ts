@@ -1,12 +1,17 @@
 import DynamicOutlinePlugin from "main";
 import { MarkdownView, setIcon, WorkspaceLeaf } from "obsidian";
 
-export { BUTTON_CLASS, ButtonManager };
-
 const LUCID_ICON_NAME = "list";
-const BUTTON_CLASS = "dynamic-outline-button";
+export const BUTTON_CLASS = "dynamic-outline-button";
 
-class ButtonManager {
+export default class ButtonManager {
+	private _plugin: DynamicOutlinePlugin;
+	private _hideTimeout: NodeJS.Timeout | null = null;
+
+	constructor(plugin: DynamicOutlinePlugin) {
+		this._plugin = plugin;
+	}
+
 	private _createButtonHTML(): HTMLButtonElement {
 		const button: HTMLButtonElement = createEl("button", {
 			cls: `clickable-icon view-action ${BUTTON_CLASS}`,
@@ -18,34 +23,101 @@ class ButtonManager {
 		return button;
 	}
 
-	private _handleButtonClick(
-		event: MouseEvent,
-		plugin: DynamicOutlinePlugin
-	) {
-		const button = event.target as HTMLButtonElement;
+	private _handleButtonClick() {
 		const markdownView: MarkdownView | null =
-			plugin.getActiveMarkdownView();
+			this._plugin.getActiveMarkdownView();
 
 		if (!markdownView) return;
 
 		const windowContainer: HTMLElement | null | undefined =
-			plugin.windowManager.getWindowFromView(markdownView);
+			this._plugin.windowManager.getWindowFromView(markdownView);
+
+		if (windowContainer) {
+			if (this._plugin.settings.toggleOnHover) {
+				const isPinned: boolean =
+					windowContainer.hasAttribute("pinned");
+				if (!isPinned) {
+					windowContainer.setAttribute("pinned", "");
+					return;
+				} else {
+					this.clearHideTimeout();
+				}
+				windowContainer.removeAttribute("pinned");
+			}
+			this._plugin.windowManager.hideWindowFromView(markdownView);
+		} else {
+			const newWindow: HTMLElement =
+				this._plugin.windowManager.createWindowForView(
+					markdownView,
+					this._plugin.headingsManager.getHeadingsForView(
+						markdownView
+					)
+				);
+			if (this._plugin.settings.toggleOnHover) {
+				this._plugin.registerDomEvent(newWindow, "mouseenter", () =>
+					this.clearHideTimeout()
+				);
+				newWindow.setAttribute("pinned", "");
+			}
+		}
+	}
+
+	private _handleMouseEnter(): void {
+		const markdownView: MarkdownView | null =
+			this._plugin.getActiveMarkdownView();
+		if (!markdownView) return;
+
+		const windowContainer: HTMLElement | null | undefined =
+			this._plugin.windowManager.getWindowFromView(markdownView);
 
 		if (!windowContainer) {
-			plugin.windowManager.createWindowInView(
+			const newWindow = this._plugin.windowManager.createWindowForView(
 				markdownView,
-				plugin.headingsManager.getHeadingsForView(markdownView, plugin),
-				plugin
+				this._plugin.headingsManager.getHeadingsForView(markdownView)
 			);
-			// button?.classList.add("button-active");
-		} else {
-			plugin.windowManager.hideWindow(windowContainer, button);
-			// button?.classList.remove("button-active");
+			if (this._plugin.settings.toggleOnHover) {
+				this._plugin.registerDomEvent(newWindow, "mouseenter", () =>
+					this.clearHideTimeout()
+				);
+				this._plugin.registerDomEvent(newWindow, "mouseleave", () =>
+					this._handleMouseLeave()
+				);
+			}
+		}
+
+		if (this._plugin.settings.toggleOnHover) {
+			this.clearHideTimeout();
+		}
+	}
+
+	private _handleMouseLeave(): void {
+		const markdownView: MarkdownView | null =
+			this._plugin.getActiveMarkdownView();
+		if (!markdownView) return;
+
+		const windowContainer: HTMLElement | null | undefined =
+			this._plugin.windowManager.getWindowFromView(markdownView);
+
+		if (windowContainer) {
+			const isPinned: boolean = windowContainer.hasAttribute("pinned");
+
+			if (!isPinned) {
+				this._hideTimeout = setTimeout(() => {
+					this._plugin.windowManager.hideWindowFromView(markdownView);
+				}, 100);
+			}
+		}
+	}
+
+	private clearHideTimeout(): void {
+		if (this._hideTimeout) {
+			clearTimeout(this._hideTimeout);
+			this._hideTimeout = null;
 		}
 	}
 
 	// Do I need the leaf? Maybe the view right away?
-	addButtonToLeaf(leaf: WorkspaceLeaf, plugin: DynamicOutlinePlugin) {
+	addButtonToLeaf(leaf: WorkspaceLeaf) {
 		if (this.getButtonFromLeaf(leaf)) return;
 
 		const markdownActionButtons: HTMLElement | null =
@@ -59,22 +131,28 @@ class ButtonManager {
 		);
 
 		// Probably move to main.ts (?)
-		plugin.registerDomEvent(
-			newButton,
-			"click",
-			// (event) => plugin.onButtonClick(event)
-			(event) => this._handleButtonClick(event, plugin)
+		this._plugin.registerDomEvent(newButton, "click", (event) =>
+			this._handleButtonClick()
 		);
+
+		if (this._plugin.settings.toggleOnHover) {
+			this._plugin.registerDomEvent(newButton, "mouseenter", () =>
+				this._handleMouseEnter()
+			);
+			this._plugin.registerDomEvent(newButton, "mouseleave", () =>
+				this._handleMouseLeave()
+			);
+		}
 
 		return newButton;
 	}
 
-	addButtonToLeaves(plugin: DynamicOutlinePlugin) {
-		plugin.app.workspace.onLayoutReady(() => {
+	addButtonToLeaves() {
+		this._plugin.app.workspace.onLayoutReady(() => {
 			const markdownLeaves: WorkspaceLeaf[] =
-				plugin.getAllMarkdownLeaves();
+				this._plugin.getAllMarkdownLeaves();
 			markdownLeaves.forEach((leaf) => {
-				this.addButtonToLeaf(leaf, plugin);
+				this.addButtonToLeaf(leaf);
 			});
 		});
 	}
@@ -87,8 +165,8 @@ class ButtonManager {
 		this.getButtonFromLeaf(leaf)?.remove();
 	}
 
-	removeButtonFromLeaves(plugin: DynamicOutlinePlugin) {
-		const markdowns = plugin.getAllMarkdownLeaves();
+	removeButtonFromLeaves() {
+		const markdowns = this._plugin.getAllMarkdownLeaves();
 		markdowns.forEach((md) => {
 			this.removeButtonFromLeaf(md);
 		});
