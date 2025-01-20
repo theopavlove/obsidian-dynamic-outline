@@ -118,12 +118,12 @@ export default class WindowManager {
 		button?.classList.add("button-active");
 
 		// Make necessary paddings for the window
-		this.checkForAbstructions(windowContainer);
+		this.checkForObstructions(windowContainer);
 
 		return windowContainer;
 	}
 
-	private checkForAbstructions(windowContainer: HTMLElement): void {
+	private checkForObstructions(windowContainer: HTMLElement): void {
 		// Check for Editing Toolbar at the top of the screen
 		const editingToolbar = document.getElementById("cMenuToolbarModalBar");
 		if (editingToolbar?.classList.contains("top")) {
