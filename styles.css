@@ -75,12 +75,12 @@ settings:
     --dynamic-outline-color: var(--text-normal);
     --dynamic-outline-border-color: var(--background-modifier-border);
     --dynamic-outline-background-hover-color: var(--background-modifier-hover);
-    /* --dynamic-outline-padding-left: 24px; */
-    --dynamic-outline-tab-size: 24px;
     --dynamic-outline-input-height: var(--input-height);
     --dynamic-outline-input-background-color: var(--background-primary);
+    --dynamic-outline-tab-size: 24px;
     --dynamic-outline-opacity: 1;
     --dynamic-outline-window-width: 256px;
+    --dynamic-outline-top: 40px;
 }
 
 .theme-light {
@@ -106,7 +106,7 @@ settings:
     /* overflow-y: auto; */
     z-index: 2;
 
-    top: 40px;
+    top: var(--dynamic-outline-top);
 
     min-height: max-content;
     max-height: calc(100% - 50px);
@@ -130,6 +130,11 @@ settings:
 
 .do-align-right #dynamic-outline {
     right: 20px;
+}
+
+/* Corner case for the Editing Toolbar plugin */
+.view-content:not(:has(.markdown-source-view[style*="display: none;"])) #dynamic-outline.obstruction-top {
+    top: calc(var(--dynamic-outline-top) + 38px + 10px);
 }
 
 .dynamic-outline-content-container {
@@ -212,7 +217,7 @@ settings:
 .dynamic-outline-search-container {
     display: flex;
     align-items: center;
-    
+
     margin-bottom: 5px;
 }
 

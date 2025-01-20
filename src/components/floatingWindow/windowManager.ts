@@ -79,7 +79,18 @@ class WindowManager {
 			plugin.buttonManager.getButtonFromLeaf(view.leaf);
 		button?.classList.add("button-active");
 
+		// Make necessary paddings for the window
+		this.checkForAbstructions(windowContainer);
+
 		return windowContainer;
+	}
+
+	private checkForAbstructions(windowContainer: HTMLElement): void {
+		// Check for Editing Toolbar at the top of the screen
+		const editingToolbar = document.getElementById("cMenuToolbarModalBar");
+		if (editingToolbar?.classList.contains("top")) {
+			windowContainer.classList.add("obstruction-top");
+		}
 	}
 
 	updateWindowWithHeadings(
