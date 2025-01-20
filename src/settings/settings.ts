@@ -6,6 +6,7 @@ import HighlightOnScrollSetting from "./options/highlightOnScrollSetting";
 import OutlineOpacitySetting from "./options/outlineOpacitySetting";
 import ResetSearchSetting from "./options/resetSearchSetting";
 import ToggleAutomaticallySetting from "./options/toggleAutomaticallySetting";
+import ToggleOnHoverSetting from "./options/toggleOnHoverSetting";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
@@ -16,6 +17,7 @@ interface DynamicOutlinePluginSettings {
 	minimumHeadings: number;
 	resetSearchFieldOnHeadingClick: boolean;
 	toggleAutomatically: boolean;
+	toggleOnHover: boolean;
 }
 
 const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
@@ -24,6 +26,7 @@ const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	minimumHeadings: 1,
 	resetSearchFieldOnHeadingClick: true,
 	toggleAutomatically: false,
+	toggleOnHover: false,
 };
 
 export function htmlDescription(text: string): DocumentFragment {
@@ -44,6 +47,7 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
+		new ToggleOnHoverSetting(this.plugin, containerEl).display();
 		new HighlightOnScrollSetting(this.plugin, containerEl).display();
 		new ResetSearchSetting(this.plugin, containerEl).display();
 		new AutofocusSearchOnOpenSetting(this.plugin, containerEl).display();
