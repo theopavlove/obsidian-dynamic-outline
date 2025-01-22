@@ -103,15 +103,15 @@ settings:
     position: fixed;
     display: flex;
     flex-direction: column;
-    /* overflow-y: auto; */
+    
     z-index: 2;
 
     top: var(--dynamic-outline-top);
+    right: 20px;
 
     min-height: max-content;
     max-height: calc(100% - 50px);
     width: var(--dynamic-outline-window-width);
-    /* padding: 10px 15px 5px; */
     padding: 10px 0 5px;
 
     font-size: var(--dynamic-outline-font-size);
@@ -125,10 +125,12 @@ settings:
 }
 
 .do-align-left #dynamic-outline {
+    right: unset;
     left: 20px;
 }
 
 .do-align-right #dynamic-outline {
+    left: unset;
     right: 20px;
 }
 
