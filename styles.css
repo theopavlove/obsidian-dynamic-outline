@@ -103,7 +103,6 @@ settings:
     position: fixed;
     display: flex;
     flex-direction: column;
-    
     z-index: 2;
 
     top: var(--dynamic-outline-top);
@@ -135,7 +134,7 @@ settings:
 }
 
 /* Corner case for the Editing Toolbar plugin */
-.view-content:not(:has(.markdown-source-view[style*="display: none;"])) #dynamic-outline.obstruction-top {
+.view-content>.markdown-source-view[style=""] ~ #dynamic-outline.obstruction-top {
     top: calc(var(--dynamic-outline-top) + 38px + 10px);
 }
 
