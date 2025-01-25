@@ -8,7 +8,7 @@ export default class ToggleOnHoverSetting extends DynamicOutlineSetting {
 			.setName("Toggle on hover")
 			.setDesc(
 				htmlDescription(
-					`Show and hide on mouse hover. Pin the outline on mouse click.`
+					`Show and hide on mouse hover. Pin the outline on mouse click.<br><span style="color: var(--text-accent)">Requires a plugin restart to take full effect.</span>`
 				)
 			)
 			.addToggle((toggle) => {

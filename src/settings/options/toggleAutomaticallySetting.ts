@@ -8,7 +8,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			.setName("Toggle automatically")
 			.setDesc(
 				htmlDescription(
-					`Show and hide the outline automatically based on the number of headings in the file.<br><span style="color: var(--text-accent)">Requires a restart to take effect.</span>`
+					`Show and hide the outline automatically based on the number of headings in the file.<br><span style="color: var(--text-accent)">Requires an Obsidian restart to take full effect.</span>`
 				)
 			)
 			.addToggle((toggle) => {
