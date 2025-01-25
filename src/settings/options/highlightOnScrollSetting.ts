@@ -8,7 +8,7 @@ export default class HighlightOnScrollSetting extends DynamicOutlineSetting {
 			.setName("Highlight active heading")
 			.setDesc(
 				htmlDescription(
-					`Highlight the current outline heading when scrolling the file.<br><span style="color: var(--text-accent)">Requires a restart to take effect.</span>`
+					`Highlight the current outline heading when scrolling the file.<br><span style="color: var(--text-accent)">Requires a plugin restart to take full effect.</span>`
 				)
 			)
 			.addToggle((toggle) => {

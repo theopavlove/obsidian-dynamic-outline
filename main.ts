@@ -1,109 +1,29 @@
-import { HeadingCache, MarkdownView, Plugin, WorkspaceLeaf } from "obsidian";
-import ButtonManager from "src/components/buttonManager";
-import WindowManager from "src/components/floatingWindow/windowManager";
-import HeadingsManager from "src/components/headingsManager";
+import { MarkdownView, Plugin } from "obsidian";
+import OutlineButton from "src/components/outlineButton";
+import OutlineStateManager from "src/components/outlineStateManager";
+import OutlineWindow from "src/components/outlineWindow";
 import {
 	DEFAULT_SETTINGS,
 	DynamicOutlinePluginSettings,
 	DynamicOutlineSettingTab,
 } from "src/settings/settings";
 
-export default class DynamicOutlinePlugin extends Plugin {
-	headingsManager: HeadingsManager = new HeadingsManager(this);
-	buttonManager: ButtonManager = new ButtonManager(this);
-	windowManager: WindowManager = new WindowManager(this);
-	settings: DynamicOutlinePluginSettings;
+export const WINDOW_ID = "dynamic-outline";
+export const BUTTON_CLASS = "dynamic-outline-button";
+export const LUCID_ICON_NAME = "list";
 
-	getAllMarkdownLeaves = (): WorkspaceLeaf[] => {
-		return this.app.workspace.getLeavesOfType("markdown");
-	};
+export default class DynamicOutlinePlugin extends Plugin {
+	private stateManager: OutlineStateManager;
+	settings: DynamicOutlinePluginSettings;
 
 	getActiveMarkdownView = (): MarkdownView | null => {
 		return this.app.workspace.getActiveViewOfType(MarkdownView);
 	};
 
-	handleMetadataChanged = (): void => {
-		const markdownView: MarkdownView | null = this.getActiveMarkdownView();
-		const windowContainer: HTMLElement | null | undefined =
-			this.windowManager.getWindowFromView(markdownView);
-
-		if (!windowContainer) {
-			return;
-		}
-
-		const headings: HeadingCache[] =
-			this.headingsManager.getHeadingsForView(markdownView);
-
-		this.windowManager.updateWindowWithHeadings(
-			windowContainer,
-			headings,
-			markdownView
-		);
-	};
-
-	highlightCurrentHeading = (
-		scrollBlock: ScrollLogicalPosition = "nearest"
-	): void => {
-		const markdownView: MarkdownView | null = this.getActiveMarkdownView();
-		const windowContainer: HTMLElement | null | undefined =
-			this.windowManager.getWindowFromView(markdownView);
-		if (!windowContainer) return;
-
-		const headings: HeadingCache[] =
-			this.headingsManager.getHeadingsForView(markdownView);
-
-		const currentScrollPosition: number | undefined =
-			markdownView?.currentMode.getScroll();
-
-		// Find a heading with position <= currentScrollPosition and add a highlight class to it
-		const closestHeading: HeadingCache | null = headings.reduce(
-			(prev, current) => {
-				if (
-					currentScrollPosition !== undefined &&
-					current.position.start.line <= currentScrollPosition + 1 &&
-					(!prev ||
-						prev.position.start.line < current.position.start.line)
-				) {
-					return current;
-				}
-				return prev;
-			},
-			null as HeadingCache | null
-		);
-
-		if (closestHeading) {
-			const closestHeadingElement: HTMLElement | null =
-				windowContainer.querySelector(
-					`li[data-heading-line="${closestHeading.position.start.line}"]`
-				);
-
-			if (closestHeadingElement) {
-				const allHeadingElements =
-					windowContainer.querySelectorAll("li");
-				allHeadingElements.forEach((element) =>
-					element.classList.remove("highlight")
-				);
-				closestHeadingElement.classList.add("highlight");
-			}
-		} else {
-			// Add to the first heading
-			const firstHeadingElement: HTMLElement | null =
-				windowContainer.querySelector("li");
-			if (firstHeadingElement) {
-				firstHeadingElement.classList.add("highlight");
-			}
-		}
-
-		// Check if there is a highlighted heading, and scroll to it
-		const element: HTMLElement | null =
-			windowContainer.querySelector("li.highlight");
-		if (element) {
-			// console.log(scrollBlock);
-			element.scrollIntoView({
-				behavior: "instant" as ScrollBehavior,
-				block: scrollBlock,
-			});
-		}
+	getActiveMarkdownViews = (): MarkdownView[] => {
+		return this.app.workspace
+			.getLeavesOfType("markdown")
+			.map((leaf) => leaf.view as MarkdownView);
 	};
 
 	async onload(): Promise<void> {
@@ -114,54 +34,64 @@ export default class DynamicOutlinePlugin extends Plugin {
 		// https://github.com/mgmeyers/obsidian-style-settings
 		this.app.workspace.trigger("parse-style-settings");
 
-		// Main trigger for the outline display
-		this.buttonManager.addButtonToLeaves();
+		this.stateManager = OutlineStateManager.initialize(this);
+
+		this.stateManager.createButtonsInActiveViews();
 		this.registerEvent(
 			this.app.workspace.on("layout-change", () => {
-				this.buttonManager.addButtonToLeaves();
+				this.stateManager.createButtonsInActiveViews();
+			})
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", () => {
+				this.stateManager.handleMetadataChanged();
+			})
+		);
+
+		this.registerEvent(
+			this.app.metadataCache.on("changed", () => {
+				this.stateManager.handleMetadataChanged();
 			})
 		);
 
 		if (this.settings.toggleAutomatically) {
 			this.registerEvent(
 				this.app.workspace.on("file-open", () => {
-					this.windowManager.handleFileOpen();
+					this.stateManager.handleFileOpen();
 				})
 			);
 		}
 
-		this.registerEvent(
-			this.app.workspace.on("active-leaf-change", () => {
-				this.handleMetadataChanged();
-			})
-		);
-		this.registerEvent(
-			this.app.metadataCache.on("changed", () => {
-				this.handleMetadataChanged();
-			})
-		);
-
-		// TODO: better code
 		if (this.settings.highlightCurrentHeading) {
 			activeWindow.document.addEventListener(
 				"scroll",
 				(event) => {
 					const target = event.target as HTMLElement;
 					if (
-						target?.classList.contains(
+						!target?.classList.contains(
 							"dynamic-outline-content-container"
 						)
 					) {
-						return;
+						const mdView = this.getActiveMarkdownView();
+						if (mdView) {
+							const window: OutlineWindow =
+								this.stateManager.getWindow(mdView);
+							window.highlightCurrentHeading();
+						}
 					}
-					this.highlightCurrentHeading();
 				},
 				true
 			);
 
 			this.registerEvent(
 				this.app.metadataCache.on("changed", () => {
-					this.highlightCurrentHeading();
+					const mdView = this.getActiveMarkdownView();
+					if (mdView) {
+						this.stateManager
+							.getWindow(mdView)
+							.highlightCurrentHeading();
+					}
 				})
 			);
 		}
@@ -170,30 +100,12 @@ export default class DynamicOutlinePlugin extends Plugin {
 			id: "toggle-dynamic-outline",
 			name: "Toggle for current file",
 			checkCallback: (checking: boolean) => {
-				const markdownView: MarkdownView | null =
-					this.getActiveMarkdownView();
-
-				if (markdownView) {
+				const mdView = this.getActiveMarkdownView();
+				if (mdView) {
 					if (!checking) {
-						const windowContainer: HTMLElement | null | undefined =
-							this.windowManager.getWindowFromView(markdownView);
-						if (windowContainer) {
-							if (this.settings.toggleOnHover) {
-								windowContainer.removeAttribute("pinned");
-							}
-							this.windowManager.hideWindowFromView(markdownView);
-						} else {
-							const newWindow: HTMLElement =
-								this.windowManager.createWindowForView(
-									markdownView,
-									this.headingsManager.getHeadingsForView(
-										markdownView
-									)
-								);
-							if (this.settings.toggleOnHover) {
-								newWindow.setAttribute("pinned", "");
-							}
-						}
+						const button: OutlineButton =
+							this.stateManager.getButton(mdView);
+						button.handleClick();
 					}
 					return true;
 				}
@@ -203,7 +115,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 	}
 
 	onunload() {
-		this.buttonManager.removeButtonFromLeaves();
+		this.stateManager.removeAll();
 	}
 
 	async loadSettings() {

@@ -1,14 +1,33 @@
 import DynamicOutlinePlugin from "main";
-import { HeadingCache, htmlToMarkdown, MarkdownView, TFile } from "obsidian";
+import { HeadingCache, MarkdownView, TFile, htmlToMarkdown } from "obsidian";
 
-export default class HeadingsManager {
-	private plugin: DynamicOutlinePlugin;
+export default class DynamicHeadings {
+	private _plugin: DynamicOutlinePlugin;
+	private _view: MarkdownView;
 
-	constructor(plugin: DynamicOutlinePlugin) {
-		this.plugin = plugin;
+	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
+		this._plugin = plugin;
+		this._view = view;
 	}
 
-	private _cleanupHeadings(headings: HeadingCache[]): HeadingCache[] {
+	public get headings(): HeadingCache[] {
+		return this._getHeadingsForView(this._view);
+	}
+
+	private _getHeadingsForView(view: MarkdownView): HeadingCache[] {
+		const file: TFile | null | undefined = view?.file;
+		if (!file) return [];
+
+		const fileMetadata =
+			this._plugin.app.metadataCache.getFileCache(file) || {};
+		const fileHeadings: HeadingCache[] = fileMetadata.headings ?? [];
+
+		const cleanedHeadings = this._cleanupHeadings(fileHeadings);
+
+		return cleanedHeadings;
+	}
+
+	private _cleanupHeadings(headings: HeadingCache[]) {
 		const cleanMarkdown = (inputHeading: string) => {
 			return htmlToMarkdown(inputHeading)
 				.replaceAll("*", "")
@@ -28,6 +47,7 @@ export default class HeadingsManager {
 					.replace(/\[\[([^\]]+)\]\]/g, "$1")
 			);
 		};
+
 		const cleanedHeadings: HeadingCache[] = headings;
 		cleanedHeadings.forEach((headingData) => {
 			let cleanedHeading: string = headingData.heading;
@@ -35,17 +55,7 @@ export default class HeadingsManager {
 			cleanedHeading = extractLinkText(cleanedHeading);
 			headingData.heading = cleanedHeading;
 		});
-		return cleanedHeadings;
-	}
 
-	getHeadingsForView(view: MarkdownView | null): HeadingCache[] {
-		const file: TFile | null | undefined = view?.file;
-		if (!file) return [];
-
-		const fileMetadata =
-			this.plugin.app.metadataCache.getFileCache(file) || {};
-		const fileHeadings: HeadingCache[] = fileMetadata.headings ?? [];
-		const cleanedHeadings = this._cleanupHeadings(fileHeadings);
 		return cleanedHeadings;
 	}
 }
