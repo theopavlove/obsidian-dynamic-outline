@@ -79,6 +79,23 @@ settings:
             -
                 label: Monochrome
                 value: var(--text-normal)
+    -
+        id: dynamic-outline-active-heading-font-weight
+        title: 'Active heading font weight'
+        description: 'Font weight of active heading'
+        type: variable-select
+        allowEmpty: false
+        default: var(--font-normal)
+        options:
+            -
+                label: Normal
+                value: var(--font-normal)
+            -
+                label: Semibold
+                value: var(--font-semibold)
+            -
+                label: Bold
+                value: var(--font-bold)
 */
 
 .theme-dark,
@@ -96,6 +113,7 @@ settings:
     --dynamic-outline-window-width: 256px;
     --dynamic-outline-top: 40px;
     --dynamic-outline-active-heading-pill-color: var(--text-accent);
+    --dynamic-outline-active-heading-font-weight: var(--font-normal);
 }
 
 .theme-light {
@@ -239,6 +257,10 @@ settings:
 
 #dynamic-outline li.highlight {
     position: relative;
+}
+
+#dynamic-outline li.highlight a:not(.heading-level-1) {
+    font-weight: var(--dynamic-outline-active-heading-font-weight);
 }
 
 #dynamic-outline li.highlight::after {
