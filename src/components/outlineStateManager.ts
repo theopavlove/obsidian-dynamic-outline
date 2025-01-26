@@ -61,7 +61,7 @@ export default class OutlineStateManager {
 
 		if (window.visible && !shouldShow) {
 			if (this._plugin.settings.toggleOnHover) window.pinned = false;
-            window.hide();
+			window.hide();
 		} else if (!window.visible && shouldShow) {
 			setTimeout(() => window.show(), 50);
 			if (this._plugin.settings.toggleOnHover) window.pinned = true;
@@ -75,6 +75,16 @@ export default class OutlineStateManager {
 
 	createButtonsInActiveViews(): void {
 		this._plugin.getActiveMarkdownViews().forEach((view) => {
+			// When the Obsidian is initially loaded, some active leaves do not have
+			// any HTML content yet. But when we initialize the button, we pass
+            // the current view as it is (and it is not updated in the future).
+            // So, we should check that our view is fully loaded (so that we could
+            // later get the View Action Buttons) in order to avoid
+            // false button initialization.
+
+            // @ts-ignore:2339
+			if (view.leaf.width === 0) return;
+
 			const button = this.getButton(view);
 			if (!button.visible) button.show();
 		});

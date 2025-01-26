@@ -36,9 +36,9 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		this.stateManager = OutlineStateManager.initialize(this);
 
-		this.stateManager.createButtonsInActiveViews();
+        this.stateManager.createButtonsInActiveViews();
 		this.registerEvent(
-			this.app.workspace.on("layout-change", () => {
+			this.app.workspace.on("active-leaf-change", () => {
 				this.stateManager.createButtonsInActiveViews();
 			})
 		);

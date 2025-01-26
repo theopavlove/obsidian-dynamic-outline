@@ -13,7 +13,6 @@ export default class OutlineButton {
 	private _plugin: DynamicOutlinePlugin;
 	private _view: MarkdownView;
 
-
 	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
 		this._plugin = plugin;
 		this._view = view;
@@ -83,7 +82,7 @@ export default class OutlineButton {
 	}
 
 	private getViewActionButtons(): HTMLElement | null {
-		return this._view.containerEl.querySelector("div.view-actions");
+		return this._view.containerEl.querySelector(".view-actions");
 	}
 
 	handleClick(): void {
@@ -102,7 +101,7 @@ export default class OutlineButton {
 			window.hide();
 		} else {
 			window.show({
-				scrollBlock: "start"
+				scrollBlock: "start",
 			});
 			window.pinned = true;
 		}
@@ -110,8 +109,14 @@ export default class OutlineButton {
 
 	show(): void {
 		const viewActions: HTMLElement | null = this.getViewActionButtons();
-		viewActions?.insertBefore(this._containerEl, viewActions?.firstChild);
-		this.visible = true;
+
+		if (viewActions) {
+			viewActions.insertBefore(
+				this._containerEl,
+				viewActions?.firstChild
+			);
+			this.visible = true;
+		}
 	}
 
 	hide(): void {
