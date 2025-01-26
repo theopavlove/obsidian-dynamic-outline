@@ -65,6 +65,20 @@ settings:
             -
                 label: Left
                 value: do-align-left
+    -
+        id: dynamic-outline-active-heading-pill-color
+        title: 'Active heading indication color'
+        description: 'Color of active heading pill'
+        type: variable-select
+        allowEmpty: false
+        default: var(--text-accent)
+        options:
+            -
+                label: Accent
+                value: var(--text-accent)
+            -
+                label: Monochrome
+                value: var(--text-normal)
 */
 
 .theme-dark,
@@ -81,6 +95,7 @@ settings:
     --dynamic-outline-opacity: 1;
     --dynamic-outline-window-width: 256px;
     --dynamic-outline-top: 40px;
+    --dynamic-outline-active-heading-pill-color: var(--text-accent);
 }
 
 .theme-light {
@@ -98,6 +113,15 @@ settings:
     padding: 0;
     list-style: none;
 }
+
+.setting-item.is-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* 
+ * Dynamic Outline Window
+ */
 
 #dynamic-outline {
     position: fixed;
@@ -134,9 +158,62 @@ settings:
 }
 
 /* Corner case for the Editing Toolbar plugin */
-.view-content>.markdown-source-view[style=""] ~ #dynamic-outline.obstruction-top {
+.view-content>.markdown-source-view[style=""]~#dynamic-outline.obstruction-top {
     top: calc(var(--dynamic-outline-top) + 38px + 10px);
 }
+
+#dynamic-outline:hover {
+    opacity: 1.0;
+}
+
+/* 
+ * Dynamic Outline Search Container
+ */
+
+.dynamic-outline-search-container {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 5px;
+}
+
+.dynamic-outline-search-container::before {
+    display: block;
+    content: '';
+    height: var(--search-icon-size);
+    width: var(--search-icon-size);
+    position: absolute;
+    inset-inline-start: 22px;
+    background-color: var(--search-icon-color);
+    -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'></circle><line x1='21' y1='21' x2='16.65' y2='16.65'></line></svg>");
+    -webkit-mask-repeat: no-repeat;
+}
+
+/* Tweak pixels */
+.dynamic-outline-search-container input {
+    display: block;
+    width: 100%;
+    padding-inline-start: 32px;
+}
+
+.dynamic-outline-search-container input.has-content {
+    padding-inline-end: 32px;
+}
+
+.dynamic-outline-search-clear-button {
+    display: none;
+    margin: 0;
+    top: calc((var(--input-height) - var(--search-icon-size)) + 6px);
+    right: 10px;
+}
+
+.dynamic-outline-search-clear-button.visible {
+    display: block;
+}
+
+/* 
+ * Dynamic Outline Content Container
+ */
 
 .dynamic-outline-content-container {
     overflow-y: auto;
@@ -147,9 +224,9 @@ settings:
     padding: 0 15px;
 }
 
-#dynamic-outline:hover {
-    opacity: 1.0;
-}
+/* 
+ * Dynamic Outline List Items
+ */
 
 #dynamic-outline li {
     display: flex;
@@ -170,13 +247,12 @@ settings:
 
     inset-inline-start: -8px;
     width: 4px;
-    background-color: var(--text-normal);
+    background-color: var(--dynamic-outline-active-heading-pill-color);
     border-radius: 8px;
 
     /* Center the highlight indicator vertically. */
     top: 50%;
     transform: translateY(-50%);
-    /* height: 90%; */
     height: 22px;
 }
 
@@ -215,64 +291,18 @@ settings:
     padding-left: calc(var(--dynamic-outline-tab-size) * 5);
 }
 
-.dynamic-outline-search-container {
-    display: flex;
-    align-items: center;
-
-    margin-bottom: 5px;
+#dynamic-outline .outline-item-hidden {
+    display: none !important;
 }
 
-/* Tweak pixels */
-.dynamic-outline-search-container::before {
-    display: block;
-    content: '';
-    height: var(--search-icon-size);
-    width: var(--search-icon-size);
-    position: absolute;
-    inset-inline-start: 22px;
-    background-color: var(--search-icon-color);
-    -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'></circle><line x1='21' y1='21' x2='16.65' y2='16.65'></line></svg>");
-    -webkit-mask-repeat: no-repeat;
-}
+/* 
+ * Dynamic Outline Button
+ */
 
-/* Tweak variables */
 .dynamic-outline-button.button-active {
     box-shadow: none;
     opacity: var(--icon-opacity-hover);
     color: var(--icon-color-hover);
     background-color: var(--background-modifier-hover);
 
-}
-
-
-/* Tweak pixels */
-.dynamic-outline-search-container input {
-    display: block;
-    width: 100%;
-    padding-inline-start: 32px;
-}
-
-.dynamic-outline-search-container input.has-content {
-    padding-inline-end: 32px;
-}
-
-.dynamic-outline-search-clear-button {
-    display: none;
-    margin: 0;
-    top: calc((var(--input-height) - var(--search-icon-size)) + 6px);
-    right: 10px;
-}
-
-.dynamic-outline-search-clear-button.visible {
-    display: block;
-}
-
-/* Custom css for disabled settings */
-.setting-item.is-disabled {
-    pointer-events: none;
-    opacity: 0.5;
-}
-
-.outline-item-hidden {
-    display: none !important;
 }
