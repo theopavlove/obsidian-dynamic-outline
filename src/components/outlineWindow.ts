@@ -134,41 +134,30 @@ export default class OutlineWindow {
 		const currentScrollPosition: number =
 			this._view.currentMode.getScroll();
 		const headings: HeadingCache[] = this.getHeadings();
-
-		// Find a heading with position <= currentScrollPosition and add a highlight class to it
-		const closestHeading: HeadingCache | null = headings.reduce(
-			(prev, current) => {
+		
+		const closestIndex: number = headings.reduce(
+			(
+				prevIndex: number,
+				current: HeadingCache,
+				currentIndex: number
+			) => {
 				if (
 					currentScrollPosition !== undefined &&
 					current.position.start.line <= currentScrollPosition + 1 &&
-					(!prev ||
-						prev.position.start.line < current.position.start.line)
+					current.position.start.line >
+						headings[prevIndex].position.start.line
 				) {
-					return current;
+					return currentIndex;
 				}
-				return prev;
+				return prevIndex;
 			},
-			null as HeadingCache | null
+			0
 		);
-		if (closestHeading) {
-			const closestHeadingElement: HTMLElement | null =
-				this._containerEl.querySelector(
-					`li[data-heading-line="${closestHeading.position.start.line}"]`
-				);
-			if (closestHeadingElement) {
-				const allHeadingElements =
-					this._containerEl.querySelectorAll("li");
-				allHeadingElements.forEach((element) =>
-					element.classList.remove("highlight")
-				);
-				closestHeadingElement.classList.add("highlight");
-			}
-		} else {
-			// Add to the first heading
-			const firstHeadingElement: HTMLElement | null =
-				this._containerEl.querySelector("li");
-			firstHeadingElement?.classList.add("highlight");
-		}
+
+		const allHeadingElements = this._containerEl.querySelectorAll("li");
+		allHeadingElements.forEach((element, index) =>
+			element.classList.toggle("highlight", index === closestIndex)
+		);
 
 		// Check if there is a highlighted heading, and scroll to it
 		const element: HTMLElement | null =
