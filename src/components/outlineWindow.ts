@@ -207,7 +207,7 @@ export default class OutlineWindow {
 		}
 	}
 
-	show(options?: {scrollBlock?: ScrollLogicalPosition}): void {
+	show(options?: { scrollBlock?: ScrollLogicalPosition }): void {
 		if (this.visible) {
 			return;
 		}
@@ -234,12 +234,7 @@ export default class OutlineWindow {
 	}
 
 	hide(): void {
-		if (
-			!this.visible ||
-			(this._plugin.settings.toggleOnHover && this.pinned)
-		) {
-			return;
-		}
+		if (!this.visible) return;
 
 		this.visible = false;
 		this._containerEl.remove();
