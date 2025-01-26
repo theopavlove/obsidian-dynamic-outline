@@ -63,7 +63,9 @@ export default class OutlineButton {
 		const window = this._stateManager.getWindow(this._view);
 
 		if (!window.visible) {
-			window.show();
+			window.show({
+				scrollBlock: "start",
+			});
 		}
 
 		if (this._plugin.settings.toggleOnHover) {
