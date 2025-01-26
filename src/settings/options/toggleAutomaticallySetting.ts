@@ -1,22 +1,43 @@
-import { Setting } from "obsidian";
+import { ButtonComponent, Setting } from "obsidian";
 import { htmlDescription } from "../settings";
 import DynamicOutlineSetting from "../settingsOption";
 
 export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 	public display(): void {
+		let restartButton: ButtonComponent;
+		const initialToggleValue: boolean =
+			this.plugin.settings.toggleAutomatically;
+
 		new Setting(this.containerEl)
 			.setName("Toggle automatically")
 			.setDesc(
 				htmlDescription(
-					`Show and hide the outline automatically based on the number of headings in the file.<br><span style="color: var(--text-accent)">Requires an Obsidian restart to take full effect.</span>`
+					`Show and hide the outline automatically based on the number of headings in the file.<br><span style="color: var(--text-accent)">Requires a plugin restart to take full effect.</span>`
 				)
 			)
+			.addButton((button) => {
+				restartButton = button;
+				button.setButtonText("Restart");
+				button.setDisabled(true);
+
+				button.onClick(() => {
+					this.plugin.reloadPlugin();
+				});
+			})
 			.addToggle((toggle) => {
 				toggle
 					.setValue(this.plugin.settings.toggleAutomatically)
 					.onChange(async (value) => {
 						this.plugin.settings.toggleAutomatically = value;
 						await this.plugin.saveSettings();
+
+						if (value !== initialToggleValue) {
+							restartButton.setDisabled(false);
+							restartButton.setCta();
+						} else {
+							restartButton.setDisabled(true);
+							restartButton.removeCta();
+						}
 
 						minimumHeadingsSetting.setDisabled(!value);
 					});

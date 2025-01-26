@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin } from "obsidian";
+import { MarkdownView, Notice, Plugin } from "obsidian";
 import OutlineButton from "src/components/outlineButton";
 import OutlineStateManager from "src/components/outlineStateManager";
 import OutlineWindow from "src/components/outlineWindow";
@@ -36,7 +36,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		this.stateManager = OutlineStateManager.initialize(this);
 
-        this.stateManager.createButtonsInActiveViews();
+		this.stateManager.createButtonsInActiveViews();
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
 				this.stateManager.createButtonsInActiveViews();
@@ -57,6 +57,9 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		if (this.settings.toggleAutomatically) {
 			this.registerEvent(
+                // BUG: probably should pick another event.
+                // E.g., if there are two tabs and the setting is toggled
+                // then the inactive tab will not have an effect.
 				this.app.workspace.on("file-open", () => {
 					this.stateManager.handleFileOpen();
 				})
@@ -128,5 +131,17 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async reloadPlugin() {
+		//@ts-ignore:2239
+		const plugins = this.app.plugins;
+
+		// Don't reload disabled plugins
+		if (!plugins.enabledPlugins.has(WINDOW_ID)) return;
+
+		await plugins.disablePlugin(WINDOW_ID);
+		await plugins.enablePlugin(WINDOW_ID);
+		new Notice(`Dynamic Outline has been reloaded`);
 	}
 }
