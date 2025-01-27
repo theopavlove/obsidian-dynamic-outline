@@ -86,6 +86,11 @@ export default class OutlineButton {
 	private getViewActionButtons(): HTMLElement | null {
 		return this._view.containerEl.querySelector(".view-actions");
 	}
+	private getViewHeaderLeft(): HTMLElement | null {
+		return this._view.containerEl.querySelector(
+			".view-header-left .view-header-nav-buttons"
+		);
+	}
 
 	handleClick(): void {
 		const window = this._stateManager.getWindow(this._view);
@@ -110,14 +115,25 @@ export default class OutlineButton {
 	}
 
 	show(): void {
-		const viewActions: HTMLElement | null = this.getViewActionButtons();
+		if (this._plugin.settings.windowLocation === "right") {
+			const viewActions: HTMLElement | null = this.getViewActionButtons();
 
-		if (viewActions) {
-			viewActions.insertBefore(
-				this._containerEl,
-				viewActions?.firstChild
-			);
-			this.visible = true;
+			if (viewActions) {
+				viewActions.insertBefore(
+					this._containerEl,
+					viewActions?.firstChild
+				);
+				this.visible = true;
+			}
+		} else if (this._plugin.settings.windowLocation === "left") {
+			const viewHeaderLeft: HTMLElement | null = this.getViewHeaderLeft();
+
+			if (viewHeaderLeft) {
+				viewHeaderLeft.appendChild(this._containerEl);
+				this.visible = true;
+			}
+		} else {
+			console.error("Invalid window location");
 		}
 	}
 

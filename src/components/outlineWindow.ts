@@ -130,6 +130,13 @@ export default class OutlineWindow {
 		}
 	}
 
+	private checkForLocation(): void {
+		this._containerEl.classList.toggle(
+			"location-left",
+			this._plugin.settings.windowLocation === "left"
+		);
+	}
+
 	highlightCurrentHeading(scrollBlock: ScrollLogicalPosition = "nearest") {
 		const binarySearchClosestHeading = (
 			headings: HeadingCache[],
@@ -215,6 +222,7 @@ export default class OutlineWindow {
 		}
 
 		this.checkForObstructions();
+		this.checkForLocation();
 		this.update();
 		this._view.contentEl.append(this._containerEl);
 		this.visible = true;
