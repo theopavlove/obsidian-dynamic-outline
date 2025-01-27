@@ -11,13 +11,16 @@ export default class ToggleOnHoverSetting extends DynamicOutlineSetting {
 			.setName("Toggle on hover")
 			.setDesc(
 				htmlDescription(
-					`Show and hide on mouse hover. Pin the outline on mouse click.<br><span style="color: var(--text-accent)">Requires a plugin restart to take full effect.</span>`
+					`Show and hide on mouse hover. Pin the outline on mouse click.</span>`
 				)
 			)
 			.addButton((button) => {
 				restartButton = button;
-				button.setButtonText("Restart");
+				button.setButtonText("Reload");
+				button.setTooltip("Requires a plugin reload to take effect.");
 				button.setDisabled(true);
+				button.setClass("dynamic-outline-reload");
+				button.setCta();
 
 				button.onClick(() => {
 					this.plugin.reloadPlugin();
@@ -30,13 +33,7 @@ export default class ToggleOnHoverSetting extends DynamicOutlineSetting {
 						this.plugin.settings.toggleOnHover = value;
 						await this.plugin.saveSettings();
 
-						if (value !== initialToggleValue) {
-							restartButton.setDisabled(false);
-							restartButton.setCta();
-						} else {
-							restartButton.setDisabled(true);
-							restartButton.removeCta();
-						}
+						restartButton.setDisabled(value === initialToggleValue);
 					});
 			});
 	}

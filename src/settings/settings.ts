@@ -53,8 +53,8 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 		new ToggleOnHoverSetting(this.plugin, containerEl).display();
 		new HighlightOnScrollSetting(this.plugin, containerEl).display();
 		new WindowLocationSetting(this.plugin, containerEl).display();
-		new ResetSearchSetting(this.plugin, containerEl).display();
 		new AutofocusSearchOnOpenSetting(this.plugin, containerEl).display();
+		new ResetSearchSetting(this.plugin, containerEl).display();
 		new OutlineOpacitySetting(this.plugin, containerEl).display();
 	}
 }

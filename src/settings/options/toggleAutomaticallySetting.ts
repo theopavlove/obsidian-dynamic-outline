@@ -12,13 +12,16 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			.setName("Toggle automatically")
 			.setDesc(
 				htmlDescription(
-					`Show and hide the outline automatically based on the number of headings in the file.<br><span style="color: var(--text-accent)">Requires a plugin restart to take full effect.</span>`
+					`Show and hide the outline automatically based on the number of headings in the file.</span>`
 				)
 			)
 			.addButton((button) => {
 				restartButton = button;
-				button.setButtonText("Restart");
+				button.setButtonText("Reload");
+				button.setTooltip("Requires a plugin reload to take effect.");
 				button.setDisabled(true);
+				button.setClass("dynamic-outline-reload");
+				button.setCta();
 
 				button.onClick(() => {
 					this.plugin.reloadPlugin();
@@ -31,14 +34,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 						this.plugin.settings.toggleAutomatically = value;
 						await this.plugin.saveSettings();
 
-						if (value !== initialToggleValue) {
-							restartButton.setDisabled(false);
-							restartButton.setCta();
-						} else {
-							restartButton.setDisabled(true);
-							restartButton.removeCta();
-						}
-
+						restartButton.setDisabled(value === initialToggleValue);
 						minimumHeadingsSetting.setDisabled(!value);
 					});
 			});

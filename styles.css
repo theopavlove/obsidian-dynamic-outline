@@ -192,6 +192,10 @@ settings:
     opacity: 1.0;
 }
 
+button.dynamic-outline-reload[disabled] {
+    display: none;
+}
+
 /* 
  * Dynamic Outline Search Container
  */

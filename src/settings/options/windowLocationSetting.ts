@@ -11,13 +11,16 @@ export default class WindowLocationSetting extends DynamicOutlineSetting {
 			.setName("Window location")
 			.setDesc(
 				htmlDescription(
-					`Set the location for the window (right by default).<br><span style="color: var(--text-accent)">Requires a plugin restart to take full effect.</span>`
+					`Set the location for the window (right by default).</span>`
 				)
 			)
 			.addButton((button) => {
 				restartButton = button;
-				button.setButtonText("Restart");
+				button.setButtonText("Reload");
+				button.setTooltip("Requires a plugin reload to take effect.");
 				button.setDisabled(true);
+				button.setClass("dynamic-outline-reload");
+				button.setCta();
 
 				button.onClick(() => {
 					this.plugin.reloadPlugin();
@@ -32,13 +35,7 @@ export default class WindowLocationSetting extends DynamicOutlineSetting {
 						this.plugin.settings.windowLocation = value;
 						await this.plugin.saveSettings();
 
-						if (value !== initialToggleValue) {
-							restartButton.setDisabled(false);
-							restartButton.setCta();
-						} else {
-							restartButton.setDisabled(true);
-							restartButton.removeCta();
-						}
+						restartButton.setDisabled(value === initialToggleValue);
 					})
 			);
 	}

@@ -12,13 +12,16 @@ export default class HighlightOnScrollSetting extends DynamicOutlineSetting {
 			.setName("Highlight active heading")
 			.setDesc(
 				htmlDescription(
-					`Highlight the current outline heading when scrolling the file.<br><span style="color: var(--text-accent)">Requires a plugin restart to take full effect.</span>`
+					`Highlight the current outline heading when scrolling the file.</span>`
 				)
 			)
 			.addButton((button) => {
 				restartButton = button;
-				button.setButtonText("Restart");
+				button.setButtonText("Reload");
+				button.setTooltip("Requires a plugin reload to take effect.");
 				button.setDisabled(true);
+				button.setClass("dynamic-outline-reload");
+				button.setCta();
 
 				button.onClick(() => {
 					this.plugin.reloadPlugin();
@@ -31,13 +34,7 @@ export default class HighlightOnScrollSetting extends DynamicOutlineSetting {
 						this.plugin.settings.highlightCurrentHeading = value;
 						await this.plugin.saveSettings();
 
-						if (value !== initialToggleValue) {
-							restartButton.setDisabled(false);
-							restartButton.setCta();
-						} else {
-							restartButton.setDisabled(true);
-							restartButton.removeCta();
-						}
+						restartButton.setDisabled(value === initialToggleValue);
 					});
 			});
 	}
