@@ -13,6 +13,7 @@ export default class OutlineWindow {
 	private _pinned = false;
 	private _containerEl: HTMLDivElement;
 	private _dynamicHeadings: OutlineHeadings;
+	private _lastHeadings: HeadingCache[] = [];
 
 	private _stateManager: OutlineStateManager;
 	private _plugin: DynamicOutlinePlugin;
@@ -193,12 +194,20 @@ export default class OutlineWindow {
 	}
 
 	update(): void {
-		// It should always be present as the .containerEl is always created (or is it?).
+		const compareHeadingArrays = (
+			a: HeadingCache[],
+			b: HeadingCache[]
+		): boolean => {
+			return (
+				a.length === b.length &&
+				a.every((item, index) => item.heading === b[index].heading)
+			);
+		};
+
+		// It should always be present as the .containerEl is always created (is it?).
 		const ulElement: HTMLUListElement | null =
 			this._containerEl.querySelector("ul");
 		if (!ulElement) return;
-
-		ulElement.empty();
 
 		const dynamicLi: DynamicLiElement = new DynamicLiElement(
 			this._plugin,
@@ -206,6 +215,17 @@ export default class OutlineWindow {
 		);
 
 		const headings: HeadingCache[] = this.getHeadings();
+		if (compareHeadingArrays(headings, this._lastHeadings)) {
+			const currentLi = ulElement.querySelectorAll('li');
+			currentLi.forEach((liElement, index) => {
+				dynamicLi.updateLiElementLine(liElement, headings[index]);
+			});
+			return;
+		}
+
+		this._lastHeadings = headings;
+		ulElement.empty();
+
 		headings?.forEach((heading) => {
 			const liElement: HTMLLIElement = dynamicLi.createLiElement(heading);
 			ulElement.append(liElement);

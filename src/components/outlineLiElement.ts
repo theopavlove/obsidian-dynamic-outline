@@ -8,10 +8,7 @@ export default class DynamicLiElement {
 	private _view: MarkdownView;
 	private _stateManager: OutlineStateManager;
 
-	constructor(
-		plugin: DynamicOutlinePlugin,
-		view: MarkdownView
-	) {
+	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
 		this._plugin = plugin;
 		this._view = view;
 		this._stateManager = OutlineStateManager.getInstance();
@@ -34,10 +31,22 @@ export default class DynamicLiElement {
 		return liElement;
 	}
 
+	public updateLiElementLine(
+		liElement: HTMLLIElement,
+		heading: HeadingCache
+	): void {
+		liElement.setAttribute(
+			"data-heading-line",
+			heading.position.start.line.toString()
+		);
+		this._setupEventListener(liElement, heading);
+	}
+
 	private _setupEventListener(
 		liElement: HTMLLIElement,
 		heading: HeadingCache
 	) {
+		
 		liElement.onclick = () => {
 			if (!this._view.file) return;
 
@@ -51,8 +60,9 @@ export default class DynamicLiElement {
 
 			if (this._plugin.settings.resetSearchFieldOnHeadingClick) {
 				const window = this._stateManager.getWindow(this._view);
-				const searchContainerHTML: HTMLDivElement | null =
-					window.getContainerElement().querySelector(
+				const searchContainerHTML: HTMLDivElement | null = window
+					.getContainerElement()
+					.querySelector(
 						".dynamic-outline-search-container"
 					) as HTMLDivElement | null;
 				if (!searchContainerHTML) return;
