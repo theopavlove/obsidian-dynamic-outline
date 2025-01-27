@@ -1,4 +1,4 @@
-import { MarkdownView, Notice, Plugin } from "obsidian";
+import { debounce, MarkdownView, Notice, Plugin } from "obsidian";
 import OutlineButton from "src/components/outlineButton";
 import OutlineStateManager from "src/components/outlineStateManager";
 import OutlineWindow from "src/components/outlineWindow";
@@ -25,6 +25,18 @@ export default class DynamicOutlinePlugin extends Plugin {
 			.getLeavesOfType("markdown")
 			.map((leaf) => leaf.view as MarkdownView);
 	};
+
+	private debounceHandler = debounce((event: Event) => {
+		const target = event.target as HTMLElement;
+		if (!target?.classList.contains("dynamic-outline-content-container")) {
+			const mdView = this.getActiveMarkdownView();
+			if (mdView) {
+				const window: OutlineWindow =
+					this.stateManager.getWindow(mdView);
+				window.highlightCurrentHeading();
+			}
+		}
+	}, 0);
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
@@ -57,9 +69,9 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		if (this.settings.toggleAutomatically) {
 			this.registerEvent(
-                // BUG: probably should pick another event.
-                // E.g., if there are two tabs and the setting is toggled
-                // then the inactive tab will not have an effect.
+				// BUG: probably should pick another event.
+				// E.g., if there are two tabs and the setting is toggled
+				// then the inactive tab will not have an effect.
 				this.app.workspace.on("file-open", () => {
 					this.stateManager.handleFileOpen();
 				})
@@ -69,21 +81,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 		if (this.settings.highlightCurrentHeading) {
 			activeWindow.document.addEventListener(
 				"scroll",
-				(event) => {
-					const target = event.target as HTMLElement;
-					if (
-						!target?.classList.contains(
-							"dynamic-outline-content-container"
-						)
-					) {
-						const mdView = this.getActiveMarkdownView();
-						if (mdView) {
-							const window: OutlineWindow =
-								this.stateManager.getWindow(mdView);
-							window.highlightCurrentHeading();
-						}
-					}
-				},
+				this.debounceHandler,
 				true
 			);
 
@@ -119,6 +117,11 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 	onunload() {
 		this.stateManager.removeAll();
+		activeWindow.document.removeEventListener(
+			"scroll",
+			this.debounceHandler,
+			true
+		);
 	}
 
 	async loadSettings() {
