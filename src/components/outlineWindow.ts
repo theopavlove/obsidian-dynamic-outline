@@ -131,29 +131,42 @@ export default class OutlineWindow {
 	}
 
 	highlightCurrentHeading(scrollBlock: ScrollLogicalPosition = "nearest") {
+		const binarySearchClosestHeading = (
+			headings: HeadingCache[],
+			targetLine: number
+		): number => {
+			let closestIndex = 0;
+			let low = 0;
+			let high = headings.length - 1;
+			while (low <= high) {
+				const mid = Math.floor((low + high) / 2);
+				const midLine = headings[mid].position.start.line;
+				if (midLine <= targetLine) {
+					closestIndex = mid;
+					low = mid + 1;
+				} else {
+					high = mid - 1;
+				}
+			}
+			return closestIndex;
+		};
+
 		const currentScrollPosition: number =
 			this._view.currentMode.getScroll();
+
+		// TODO: Should cache it and not call every time. (?)
 		const headings: HeadingCache[] = this.getHeadings();
-		
-		const closestIndex: number = headings.reduce(
-			(
-				prevIndex: number,
-				current: HeadingCache,
-				currentIndex: number
-			) => {
-				if (
-					currentScrollPosition !== undefined &&
-					current.position.start.line <= currentScrollPosition + 1 &&
-					current.position.start.line >
-						headings[prevIndex].position.start.line
-				) {
-					return currentIndex;
-				}
-				return prevIndex;
-			},
-			0
+
+		if (headings.length == 0) {
+			return;
+		}
+
+		const closestIndex: number = binarySearchClosestHeading(
+			headings,
+			currentScrollPosition + 1
 		);
 
+		// TODO: Should cache this thing and not call it every time. (?)
 		const allHeadingElements = this._containerEl.querySelectorAll("li");
 		allHeadingElements.forEach((element, index) =>
 			element.classList.toggle("highlight", index === closestIndex)
@@ -222,6 +235,7 @@ export default class OutlineWindow {
 		}
 	}
 
+	// TOOD: should trigger clearInput() for the search field
 	hide(): void {
 		if (!this.visible) return;
 
