@@ -96,24 +96,51 @@ settings:
             -
                 label: Bold
                 value: var(--font-bold)
+    -
+        id: dynamic-outline-active-heading-background
+        title: 'Active heading background color'
+        description: 'Background color of the active heading'
+        type: variable-select
+        allowEmpty: false
+        default: var(--background-modifier-hover)
+        options:
+            -
+                label: Monochrome
+                value: var(--background-modifier-hover)
+            -
+                label: Accent
+                value: var(--dynamic-outline-background-accent)
+            -
+                label: None
+                value: none
 */
 
 .theme-dark,
 .theme-light {
+    /* New color variables */
+    --dynamic-outline-background-modifier-hover-lighter: rgba(var(--mono-rgb-100), 0.045);
+    --dynamic-outline-background-accent: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.075);
+
+    /* Outline Window */
+    --dynamic-outline-input-height: var(--input-height);
+    --dynamic-outline-input-background-color: var(--background-primary);
     --dynamic-outline-background: var(--background-primary);
     --dynamic-outline-text-color: var(--text-normal);
     --dynamic-outline-font-size: var(--font-text-size);
     --dynamic-outline-color: var(--text-normal);
     --dynamic-outline-border-color: var(--background-modifier-border);
-    --dynamic-outline-background-hover-color: var(--background-modifier-hover);
-    --dynamic-outline-input-height: var(--input-height);
-    --dynamic-outline-input-background-color: var(--background-primary);
     --dynamic-outline-tab-size: 24px;
-    --dynamic-outline-opacity: 1;
     --dynamic-outline-window-width: 256px;
     --dynamic-outline-top: 40px;
-    --dynamic-outline-active-heading-pill-color: var(--text-accent);
+    --dynamic-outline-opacity: 1;
+
+    /* List items */
+    --dynamic-outline-background-hover: var(--dynamic-outline-background-modifier-hover-lighter);
+
+    /* Active Heading */
+    --dynamic-outline-active-heading-pill-color: var(--interactive-accent);
     --dynamic-outline-active-heading-font-weight: var(--font-normal);
+    --dynamic-outline-active-heading-background: var(--background-modifier-hover);
 }
 
 .theme-light {
@@ -251,12 +278,21 @@ settings:
     align-items: flex-start;
 
     padding: 7px 0;
+    margin: 1px 0;
     transition: background 25ms linear;
     cursor: pointer;
+
+    border-radius: 6px;
+}
+
+#dynamic-outline li:hover,
+#dynamic-outline li.highlight:hover {
+    background-color: var(--dynamic-outline-background-hover);
 }
 
 #dynamic-outline li.highlight {
     position: relative;
+    background-color: var(--dynamic-outline-active-heading-background);
 }
 
 #dynamic-outline li.highlight a:not(.heading-level-1) {
@@ -276,11 +312,6 @@ settings:
     top: 50%;
     transform: translateY(-50%);
     height: 22px;
-}
-
-#dynamic-outline li:hover {
-    background-color: var(--dynamic-outline-background-hover-color);
-    border-radius: 6px;
 }
 
 #dynamic-outline li a {
