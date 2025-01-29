@@ -198,9 +198,14 @@ export default class OutlineWindow {
 			a: HeadingCache[],
 			b: HeadingCache[]
 		): boolean => {
+			console.log(a);
 			return (
 				a.length === b.length &&
-				a.every((item, index) => item.heading === b[index].heading)
+				a.every(
+					(item, index) =>
+						item.heading === b[index].heading &&
+						item.level === b[index].level
+				)
 			);
 		};
 
@@ -216,7 +221,7 @@ export default class OutlineWindow {
 
 		const headings: HeadingCache[] = this.getHeadings();
 		if (compareHeadingArrays(headings, this._lastHeadings)) {
-			const currentLi = ulElement.querySelectorAll('li');
+			const currentLi = ulElement.querySelectorAll("li");
 			currentLi.forEach((liElement, index) => {
 				dynamicLi.updateLiElementLine(liElement, headings[index]);
 			});
