@@ -17,7 +17,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			)
 			.addButton((button) => {
 				restartButton = button;
-				button.setButtonText("Reload");
+				button.setButtonText("Reload plugin");
 				button.setTooltip("Requires a plugin reload to take effect.");
 				button.setDisabled(true);
 				button.setClass("dynamic-outline-reload");

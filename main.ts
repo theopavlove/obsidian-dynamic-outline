@@ -139,12 +139,15 @@ export default class DynamicOutlinePlugin extends Plugin {
 	async reloadPlugin() {
 		//@ts-ignore:2239
 		const plugins = this.app.plugins;
+		//@ts-ignore:2239
+		const setting = this.app.setting;
 
 		// Don't reload disabled plugins
 		if (!plugins.enabledPlugins.has(WINDOW_ID)) return;
 
 		await plugins.disablePlugin(WINDOW_ID);
 		await plugins.enablePlugin(WINDOW_ID);
+		await setting.openTabById(WINDOW_ID);
 		new Notice(`Dynamic Outline has been reloaded`);
 	}
 }
