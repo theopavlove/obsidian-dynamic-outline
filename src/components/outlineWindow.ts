@@ -198,7 +198,6 @@ export default class OutlineWindow {
 			a: HeadingCache[],
 			b: HeadingCache[]
 		): boolean => {
-			console.log(a);
 			return (
 				a.length === b.length &&
 				a.every(
