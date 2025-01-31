@@ -276,7 +276,7 @@ export default class OutlineWindow {
 		}
 	}
 
-	// TOOD: should trigger clearInput() for the search field
+	// TODO: should trigger clearInput() for the search field
 	hide(): void {
 		if (!this.visible) return;
 
