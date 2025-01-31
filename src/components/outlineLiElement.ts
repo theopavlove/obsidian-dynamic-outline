@@ -46,7 +46,6 @@ export default class DynamicLiElement {
 		liElement: HTMLLIElement,
 		heading: HeadingCache
 	) {
-		
 		liElement.onclick = () => {
 			if (!this._view.file) return;
 
@@ -59,7 +58,7 @@ export default class DynamicLiElement {
 			}, 0);
 
 			if (this._plugin.settings.resetSearchFieldOnHeadingClick) {
-				const window = this._stateManager.getWindow(this._view);
+				const window = this._stateManager.getWindowInView(this._view);
 				const searchContainerHTML: HTMLDivElement | null = window
 					.getContainerElement()
 					.querySelector(

@@ -9,9 +9,8 @@ export default class OutlineButton {
 	private _view: MarkdownView;
 	private _containerEl: HTMLButtonElement;
 
-	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
+	constructor(plugin: DynamicOutlinePlugin) {
 		this._plugin = plugin;
-		this._view = view;
 		this._stateManager = OutlineStateManager.getInstance();
 		this._containerEl = this.createElement();
 
@@ -60,7 +59,7 @@ export default class OutlineButton {
 	}
 
 	private handleMouseEnter(): void {
-		const window = this._stateManager.getWindow(this._view);
+		const window = this._stateManager.getWindowInView(this._view);
 
 		if (!window.visible) {
 			window.show({
@@ -74,7 +73,7 @@ export default class OutlineButton {
 	}
 
 	private handleMouseLeave(): void {
-		const window = this._stateManager.getWindow(this._view);
+		const window = this._stateManager.getWindowInView(this._view);
 
 		if (window.visible && !window.pinned) {
 			OutlineWindow.hideTimeout = setTimeout(() => {
@@ -93,8 +92,12 @@ export default class OutlineButton {
 		);
 	}
 
+	updateView(view: MarkdownView) {
+		this._view = view;
+	}
+
 	handleClick(): void {
-		const window = this._stateManager.getWindow(this._view);
+		const window = this._stateManager.getWindowInView(this._view);
 
 		if (window.visible) {
 			if (this._plugin.settings.toggleOnHover) {

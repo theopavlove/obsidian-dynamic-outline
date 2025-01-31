@@ -140,6 +140,11 @@ export default class OutlineWindow {
 		);
 	}
 
+	updateView(view: MarkdownView) {
+		this._view = view;
+		this._dynamicHeadings.updateView(view);
+	}
+
 	highlightCurrentHeading(scrollBlock: ScrollLogicalPosition = "nearest") {
 		const binarySearchClosestHeading = (
 			headings: HeadingCache[],
@@ -196,7 +201,7 @@ export default class OutlineWindow {
 	}
 
 	update(): void {
-		const compareHeadingArrays = (
+		const arraysAreEqual = (
 			a: HeadingCache[],
 			b: HeadingCache[]
 		): boolean => {
@@ -221,7 +226,10 @@ export default class OutlineWindow {
 		);
 
 		const headings: HeadingCache[] = this.getHeadings();
-		if (compareHeadingArrays(headings, this._lastHeadings)) {
+		if (
+			headings.length > 0 &&
+			arraysAreEqual(headings, this._latestHeadings)
+		) {
 			const currentLi = ulElement.querySelectorAll("li");
 			currentLi.forEach((liElement, index) => {
 				dynamicLi.updateLiElementLine(liElement, headings[index]);
@@ -229,7 +237,7 @@ export default class OutlineWindow {
 			return;
 		}
 
-		this._lastHeadings = headings;
+		this._latestHeadings = headings;
 		ulElement.empty();
 
 		headings?.forEach((heading) => {
@@ -243,16 +251,16 @@ export default class OutlineWindow {
 	}
 
 	show(options?: { scrollBlock?: ScrollLogicalPosition }): void {
-		if (this.visible) {
-			return;
-		}
+		if (this.visible) return;
 
 		this.checkForObstructions();
 		this.checkForLocation();
 		this.update();
 		this._view.contentEl.append(this._containerEl);
 
-		const button: OutlineButton = this._stateManager.getButton(this._view);
+		const button: OutlineButton = this._stateManager.getButtonInView(
+			this._view
+		);
 		button.active = true;
 
 		if (this._plugin.settings.autofocusSearchOnOpen) {
@@ -274,7 +282,9 @@ export default class OutlineWindow {
 
 		this._containerEl.remove();
 
-		const button: OutlineButton = this._stateManager.getButton(this._view);
+		const button: OutlineButton = this._stateManager.getButtonInView(
+			this._view
+		);
 		button.active = false;
 
 		if (this._plugin.settings.toggleOnHover) {

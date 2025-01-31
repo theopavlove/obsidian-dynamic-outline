@@ -1,5 +1,5 @@
 import DynamicOutlinePlugin from "main";
-import { MarkdownView } from "obsidian";
+import { MarkdownView, Workspace } from "obsidian";
 import OutlineButton from "./outlineButton";
 import OutlineWindow from "./outlineWindow";
 
@@ -27,33 +27,56 @@ export default class OutlineStateManager {
 		return OutlineStateManager.instance;
 	}
 
+	// Considering the fact that the views that are passed to the button
+	// and window constructors are not passed by reference, should we bother
+	// to keep a mapping of all the buttons?
 	private getKey(view: MarkdownView): string {
 		// @ts-ignore:2239
 		// The `id` property actually exists in leaves.
 		return view.leaf.id;
 	}
 
-	getButton(view: MarkdownView): OutlineButton {
-		const key = this.getKey(view);
-		if (!this._buttons.has(key)) {
-			this._buttons.set(key, new OutlineButton(this._plugin, view));
-		}
-		return this._buttons.get(key)!;
+	getActiveMDView(): MarkdownView | null {
+		const workspace: Workspace = this._plugin.app.workspace;
+		return workspace.getActiveViewOfType(MarkdownView);
 	}
 
-	getWindow(view: MarkdownView): OutlineWindow {
+	getOpenMDViews(): MarkdownView[] {
+		const workspace: Workspace = this._plugin.app.workspace;
+		return workspace
+			.getLeavesOfType("markdown")
+			.map((leaf) => leaf.view as MarkdownView);
+	}
+
+	getButtonInView(view: MarkdownView): OutlineButton {
+		const key = this.getKey(view);
+		if (!this._buttons.has(key)) {
+			this._buttons.set(key, new OutlineButton(this._plugin));
+		}
+
+		const button: OutlineButton = this._buttons.get(key)!;
+		button.updateView(view);
+
+		return button;
+	}
+
+	getWindowInView(view: MarkdownView): OutlineWindow {
 		const key = this.getKey(view);
 		if (!this._windows.has(key)) {
 			this._windows.set(key, new OutlineWindow(this._plugin, view));
 		}
-		return this._windows.get(key)!;
+
+		const window: OutlineWindow = this._windows.get(key)!;
+		window.updateView(view);
+
+		return window;
 	}
 
 	handleFileOpen(): void {
-		const mdView = this._plugin.getActiveMarkdownView();
+		const mdView = this.getActiveMDView();
 		if (!mdView) return;
 
-		const window = this.getWindow(mdView);
+		const window = this.getWindowInView(mdView);
 		const headings = window.getHeadings();
 		const shouldShow =
 			headings &&
@@ -69,23 +92,26 @@ export default class OutlineStateManager {
 	}
 
 	handleMetadataChanged(): void {
-		const mdView = this._plugin.getActiveMarkdownView();
-		if (mdView) this.getWindow(mdView).update();
+		const mdView = this.getActiveMDView();
+		if (!mdView) return;
+
+		const window: OutlineWindow = this.getWindowInView(mdView);
+		window.update();
 	}
 
-	createButtonsInActiveViews(): void {
-		this._plugin.getActiveMarkdownViews().forEach((view) => {
+	createButtonsInOpenViews(): void {
+		this.getOpenMDViews().forEach((view) => {
 			// When the Obsidian is initially loaded, some active leaves do not have
 			// any HTML content yet. But when we initialize the button, we pass
-            // the current view as it is (and it is not updated in the future).
-            // So, we should check that our view is fully loaded (so that we could
-            // later get the View Action Buttons) in order to avoid
-            // false button initialization.
+			// the current view as it is (and it is not updated in the future).
+			// So, we should check that our view is fully loaded (so that we could
+			// later get the View Action Buttons) in order to avoid
+			// false button initialization.
 
-            // @ts-ignore:2339
+			// @ts-ignore:2339
 			if (view.leaf.width === 0) return;
 
-			const button = this.getButton(view);
+			const button = this.getButtonInView(view);
 			if (!button.visible) button.show();
 		});
 	}

@@ -10,8 +10,12 @@ export default class DynamicHeadings {
 		this._view = view;
 	}
 
-	public get headings(): HeadingCache[] {
+	get headings(): HeadingCache[] {
 		return this._getHeadingsForView(this._view);
+	}
+
+	updateView(view: MarkdownView): void {
+		this._view = view;
 	}
 
 	private _getHeadingsForView(view: MarkdownView): HeadingCache[] {

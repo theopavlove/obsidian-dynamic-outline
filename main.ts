@@ -1,4 +1,4 @@
-import { debounce, MarkdownView, Notice, Plugin } from "obsidian";
+import { debounce, MarkdownView, Notice, Plugin, Workspace } from "obsidian";
 import OutlineButton from "src/components/outlineButton";
 import OutlineStateManager from "src/components/outlineStateManager";
 import OutlineWindow from "src/components/outlineWindow";
@@ -16,23 +16,13 @@ export default class DynamicOutlinePlugin extends Plugin {
 	private stateManager: OutlineStateManager;
 	settings: DynamicOutlinePluginSettings;
 
-	getActiveMarkdownView = (): MarkdownView | null => {
-		return this.app.workspace.getActiveViewOfType(MarkdownView);
-	};
-
-	getActiveMarkdownViews = (): MarkdownView[] => {
-		return this.app.workspace
-			.getLeavesOfType("markdown")
-			.map((leaf) => leaf.view as MarkdownView);
-	};
-
 	private debounceHandler = debounce((event: Event) => {
 		const target = event.target as HTMLElement;
 		if (!target?.classList.contains("dynamic-outline-content-container")) {
-			const mdView = this.getActiveMarkdownView();
+			const mdView = this.stateManager.getActiveMDView();
 			if (mdView) {
 				const window: OutlineWindow =
-					this.stateManager.getWindow(mdView);
+					this.stateManager.getWindowInView(mdView);
 				window.highlightCurrentHeading();
 			}
 		}
@@ -48,10 +38,10 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		this.stateManager = OutlineStateManager.initialize(this);
 
-		this.stateManager.createButtonsInActiveViews();
+		this.stateManager.createButtonsInOpenViews();
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
-				this.stateManager.createButtonsInActiveViews();
+				this.stateManager.createButtonsInOpenViews();
 			})
 		);
 
@@ -87,10 +77,10 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 			this.registerEvent(
 				this.app.metadataCache.on("changed", () => {
-					const mdView = this.getActiveMarkdownView();
+					const mdView = this.stateManager.getActiveMDView();
 					if (mdView) {
 						this.stateManager
-							.getWindow(mdView)
+							.getWindowInView(mdView)
 							.highlightCurrentHeading();
 					}
 				})
@@ -101,11 +91,11 @@ export default class DynamicOutlinePlugin extends Plugin {
 			id: "toggle-dynamic-outline",
 			name: "Toggle for current file",
 			checkCallback: (checking: boolean) => {
-				const mdView = this.getActiveMarkdownView();
+				const mdView = this.stateManager.getActiveMDView();
 				if (mdView) {
 					if (!checking) {
 						const button: OutlineButton =
-							this.stateManager.getButton(mdView);
+							this.stateManager.getButtonInView(mdView);
 						button.handleClick();
 					}
 					return true;
