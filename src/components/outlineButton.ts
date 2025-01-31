@@ -4,33 +4,33 @@ import OutlineStateManager from "./outlineStateManager";
 import OutlineWindow from "./outlineWindow";
 
 export default class OutlineButton {
-	public visible: boolean;
-
-	private _active: boolean;
-	private _containerEl: HTMLButtonElement;
-
 	private _stateManager: OutlineStateManager;
 	private _plugin: DynamicOutlinePlugin;
 	private _view: MarkdownView;
+	private _containerEl: HTMLButtonElement;
 
 	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
 		this._plugin = plugin;
 		this._view = view;
 		this._stateManager = OutlineStateManager.getInstance();
-
-		this.visible = false;
-		this._active = false;
 		this._containerEl = this.createElement();
+
 		this.setupEventListeners();
 	}
 
+	get visible(): boolean {
+		const buttonInView = this._view.containerEl.querySelector(
+			`button.${BUTTON_CLASS}`
+		);
+		return !!buttonInView;
+	}
+
 	get active(): boolean {
-		return this._active;
+		return this._containerEl.classList.contains("button-active");
 	}
 
 	set active(value: boolean) {
-		this._active = value;
-		this._containerEl.classList.toggle("button-active", this._active);
+		this._containerEl.classList.toggle("button-active", value);
 	}
 
 	private setupEventListeners() {
@@ -86,6 +86,7 @@ export default class OutlineButton {
 	private getViewActionButtons(): HTMLElement | null {
 		return this._view.containerEl.querySelector(".view-actions");
 	}
+
 	private getViewHeaderLeft(): HTMLElement | null {
 		return this._view.containerEl.querySelector(
 			".view-header-left .view-header-nav-buttons"
@@ -115,6 +116,9 @@ export default class OutlineButton {
 	}
 
 	show(): void {
+		// Workaround because we have no view.onClose event to deactivate buttons properly.
+		this.active = this.visible;
+
 		if (this._plugin.settings.windowLocation === "right") {
 			const viewActions: HTMLElement | null = this.getViewActionButtons();
 
@@ -123,14 +127,12 @@ export default class OutlineButton {
 					this._containerEl,
 					viewActions?.firstChild
 				);
-				this.visible = true;
 			}
 		} else if (this._plugin.settings.windowLocation === "left") {
 			const viewHeaderLeft: HTMLElement | null = this.getViewHeaderLeft();
 
 			if (viewHeaderLeft) {
 				viewHeaderLeft.appendChild(this._containerEl);
-				this.visible = true;
 			}
 		} else {
 			console.error("Invalid window location");
@@ -138,7 +140,8 @@ export default class OutlineButton {
 	}
 
 	hide(): void {
+		if (!this.visible) return;
+
 		this._containerEl.remove();
-		this.visible = false;
 	}
 }

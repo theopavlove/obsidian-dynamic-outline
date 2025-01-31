@@ -91,8 +91,8 @@ export default class OutlineStateManager {
 	}
 
 	removeAll(): void {
-		this._windows.forEach((window) => window.visible && window.hide());
-		this._buttons.forEach((button) => button.visible && button.hide());
+		this._windows.forEach((window) => window.hide());
+		this._buttons.forEach((button) => button.hide());
 		this._windows.clear();
 		this._buttons.clear();
 	}

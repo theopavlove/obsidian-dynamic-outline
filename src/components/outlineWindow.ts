@@ -1,4 +1,4 @@
-import DynamicOutlinePlugin from "main";
+import DynamicOutlinePlugin, { WINDOW_ID } from "main";
 import { HeadingCache, MarkdownView } from "obsidian";
 import OutlineButton from "./outlineButton";
 import OutlineHeadings from "./outlineHeadings";
@@ -8,27 +8,29 @@ import SearchContainer from "./searchContainer";
 
 export default class OutlineWindow {
 	public static hideTimeout: NodeJS.Timeout | null = null;
-	public visible: boolean;
-
-	private _pinned = false;
-	private _containerEl: HTMLDivElement;
-	private _dynamicHeadings: OutlineHeadings;
-	private _lastHeadings: HeadingCache[] = [];
 
 	private _stateManager: OutlineStateManager;
 	private _plugin: DynamicOutlinePlugin;
 	private _view: MarkdownView;
+	private _containerEl: HTMLDivElement;
+	private _dynamicHeadings: OutlineHeadings;
+	private _latestHeadings: HeadingCache[] = [];
+	private _pinned = false;
 
 	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
 		this._plugin = plugin;
 		this._view = view;
 		this._stateManager = OutlineStateManager.getInstance();
-
-		this.visible = false;
 		this._containerEl = this.createElement();
-		this.setupEventListeners();
-
 		this._dynamicHeadings = new OutlineHeadings(this._plugin, this._view);
+
+		this.setupEventListeners();
+	}
+
+	get visible(): boolean {
+		const windowInView: HTMLElement | null =
+			this._view.containerEl.querySelector(`#${WINDOW_ID}`);
+		return !!windowInView;
 	}
 
 	get pinned(): boolean {
@@ -249,7 +251,6 @@ export default class OutlineWindow {
 		this.checkForLocation();
 		this.update();
 		this._view.contentEl.append(this._containerEl);
-		this.visible = true;
 
 		const button: OutlineButton = this._stateManager.getButton(this._view);
 		button.active = true;
@@ -271,7 +272,6 @@ export default class OutlineWindow {
 	hide(): void {
 		if (!this.visible) return;
 
-		this.visible = false;
 		this._containerEl.remove();
 
 		const button: OutlineButton = this._stateManager.getButton(this._view);
