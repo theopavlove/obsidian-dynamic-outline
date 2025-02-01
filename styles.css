@@ -103,51 +103,63 @@ settings:
 
 .theme-dark,
 .theme-light {
-    /* New color variables */
-    --dynamic-outline-background-modifier-hover-lighter: rgba(var(--mono-rgb-100), 0.045);
-    --dynamic-outline-background-accent: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.075);
+	/* New color variables */
+	--dynamic-outline-background-modifier-hover-lighter: rgba(
+		var(--mono-rgb-100),
+		0.045
+	);
+	--dynamic-outline-background-accent: hsla(
+		var(--accent-h),
+		var(--accent-s),
+		var(--accent-l),
+		0.075
+	);
 
-    /* Outline Window */
-    --dynamic-outline-input-height: var(--input-height);
-    --dynamic-outline-input-background-color: var(--background-primary);
-    --dynamic-outline-background: var(--background-primary);
-    --dynamic-outline-text-color: var(--text-normal);
-    --dynamic-outline-font-size: var(--font-text-size);
-    --dynamic-outline-color: var(--text-normal);
-    --dynamic-outline-border-color: var(--background-modifier-border);
-    --dynamic-outline-tab-size: 24px;
-    --dynamic-outline-window-width: 256px;
-    --dynamic-outline-top: 40px;
-    --dynamic-outline-opacity: 1;
+	/* Outline Window */
+	--dynamic-outline-input-height: var(--input-height);
+	--dynamic-outline-input-background-color: var(--background-primary);
+	--dynamic-outline-background: var(--background-primary);
+	--dynamic-outline-text-color: var(--text-normal);
+	--dynamic-outline-font-size: var(--font-text-size);
+	--dynamic-outline-color: var(--text-normal);
+	--dynamic-outline-border-color: var(--background-modifier-border);
+	--dynamic-outline-tab-size: 24px;
+	--dynamic-outline-window-width: 256px;
+	--dynamic-outline-top: 40px;
+	--dynamic-outline-opacity: 1;
 
-    /* List items */
-    --dynamic-outline-background-hover: var(--dynamic-outline-background-modifier-hover-lighter);
+	/* List items */
+	--dynamic-outline-background-hover: var(
+		--dynamic-outline-background-modifier-hover-lighter
+	);
 
-    /* Active Heading */
-    --dynamic-outline-active-heading-pill-color: var(--interactive-accent);
-    --dynamic-outline-active-heading-font-weight: var(--font-normal);
-    --dynamic-outline-active-heading-background: var(--background-modifier-hover);
+	/* Active Heading */
+	--dynamic-outline-active-heading-pill-color: var(--interactive-accent);
+	--dynamic-outline-active-heading-font-weight: var(--font-normal);
+	--dynamic-outline-active-heading-background: var(
+		--background-modifier-hover
+	);
 }
 
 .theme-light {
-    --dynamic-outline-shadow-color: rgba(99, 99, 99, .2);
+	--dynamic-outline-shadow-color: rgba(99, 99, 99, 0.2);
 }
 
 .theme-dark {
-    --dynamic-outline-shadow-color: rgba(0, 0, 0, .2);
+	--dynamic-outline-shadow-color: rgba(0, 0, 0, 0.2);
 }
 
 #dynamic-outline,
 #dynamic-outline ul,
 #dynamic-outline li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 .setting-item.is-disabled {
-    pointer-events: none;
-    opacity: 0.5;
+	pointer-events: none;
+	opacity: 0.5;
 }
 
 /* 
@@ -155,45 +167,47 @@ settings:
  */
 
 #dynamic-outline {
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    z-index: 2;
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	z-index: 2;
 
-    top: var(--dynamic-outline-top);
-    right: 20px;
+	top: var(--dynamic-outline-top);
+	right: 20px;
 
-    min-height: max-content;
-    max-height: calc(100% - 50px);
-    width: var(--dynamic-outline-window-width);
-    padding: 10px 0 5px;
+	min-height: max-content;
+	max-height: calc(100% - 50px);
+	width: var(--dynamic-outline-window-width);
+	padding: 10px 0 5px;
 
-    font-size: var(--dynamic-outline-font-size);
+	font-size: var(--dynamic-outline-font-size);
 
-    background-color: var(--dynamic-outline-background);
-    border: 1px solid var(--dynamic-outline-border-color);
-    border-radius: 12px;
-    box-shadow: var(--dynamic-outline-shadow-color) 0px 2px 8px 0px;
+	background-color: var(--dynamic-outline-background);
+	border: 1px solid var(--dynamic-outline-border-color);
+	border-radius: 12px;
+	box-shadow: var(--dynamic-outline-shadow-color) 0px 2px 8px 0px;
 
-    opacity: var(--dynamic-outline-opacity);
+	opacity: var(--dynamic-outline-opacity);
 }
 
 #dynamic-outline.location-left {
-    right: unset;
-    left: 20px;
+	right: unset;
+	left: 20px;
 }
 
 /* Corner case for the Editing Toolbar plugin */
-.view-content>.markdown-source-view[style=""]~#dynamic-outline.obstruction-top {
-    top: calc(var(--dynamic-outline-top) + 38px + 10px);
+.view-content
+	> .markdown-source-view[style=""]
+	~ #dynamic-outline.obstruction-top {
+	top: calc(var(--dynamic-outline-top) + 38px + 10px);
 }
 
 #dynamic-outline:hover {
-    opacity: 1.0;
+	opacity: 1;
 }
 
 button.dynamic-outline-reload[disabled] {
-    display: none;
+	display: none;
 }
 
 /* 
@@ -201,44 +215,44 @@ button.dynamic-outline-reload[disabled] {
  */
 
 .dynamic-outline-search-container {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 .dynamic-outline-search-container::before {
-    display: block;
-    content: '';
-    height: var(--search-icon-size);
-    width: var(--search-icon-size);
-    position: absolute;
-    inset-inline-start: 22px;
-    background-color: var(--search-icon-color);
-    -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'></circle><line x1='21' y1='21' x2='16.65' y2='16.65'></line></svg>");
-    -webkit-mask-repeat: no-repeat;
+	display: block;
+	content: "";
+	height: var(--search-icon-size);
+	width: var(--search-icon-size);
+	position: absolute;
+	inset-inline-start: 22px;
+	background-color: var(--search-icon-color);
+	-webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'></circle><line x1='21' y1='21' x2='16.65' y2='16.65'></line></svg>");
+	-webkit-mask-repeat: no-repeat;
 }
 
 /* Tweak pixels */
 .dynamic-outline-search-container input {
-    display: block;
-    width: 100%;
-    padding-inline-start: 32px;
+	display: block;
+	width: 100%;
+	padding-inline-start: 32px;
 }
 
 .dynamic-outline-search-container input.has-content {
-    padding-inline-end: 32px;
+	padding-inline-end: 32px;
 }
 
 .dynamic-outline-search-clear-button {
-    display: none;
-    margin: 0;
-    top: calc((var(--input-height) - var(--search-icon-size)) + 6px);
-    right: 10px;
+	display: none;
+	margin: 0;
+	top: calc((var(--input-height) - var(--search-icon-size)) + 6px);
+	right: 10px;
 }
 
 .dynamic-outline-search-clear-button.visible {
-    display: block;
+	display: block;
 }
 
 /* 
@@ -246,12 +260,12 @@ button.dynamic-outline-reload[disabled] {
  */
 
 .dynamic-outline-content-container {
-    overflow-y: auto;
-    padding: 0 15px;
+	overflow-y: auto;
+	padding: 0 15px;
 }
 
 .dynamic-outline-search-container {
-    padding: 0 15px;
+	padding: 0 15px;
 }
 
 /* 
@@ -259,78 +273,78 @@ button.dynamic-outline-reload[disabled] {
  */
 
 #dynamic-outline li {
-    display: flex;
-    align-items: flex-start;
+	display: flex;
+	align-items: flex-start;
 
-    padding: 7px 0;
-    margin: 1px 0;
-    transition: background 25ms linear;
-    cursor: pointer;
+	padding: 7px 0;
+	margin: 1px 0;
+	transition: background 25ms linear;
+	cursor: pointer;
 
-    border-radius: 6px;
+	border-radius: 6px;
 }
 
 #dynamic-outline li:hover,
 #dynamic-outline li.highlight:hover {
-    background-color: var(--dynamic-outline-background-hover);
+	background-color: var(--dynamic-outline-background-hover);
 }
 
 #dynamic-outline li.highlight {
-    position: relative;
-    background-color: var(--dynamic-outline-active-heading-background);
+	position: relative;
+	background-color: var(--dynamic-outline-active-heading-background);
 }
 
 #dynamic-outline li.highlight a:not(.heading-level-1) {
-    font-weight: var(--dynamic-outline-active-heading-font-weight);
+	font-weight: var(--dynamic-outline-active-heading-font-weight);
 }
 
 #dynamic-outline li.highlight::after {
-    content: "";
-    position: absolute;
+	content: "";
+	position: absolute;
 
-    inset-inline-start: -8px;
-    width: 4px;
-    background-color: var(--dynamic-outline-active-heading-pill-color);
-    border-radius: 8px;
+	inset-inline-start: -8px;
+	width: 4px;
+	background-color: var(--dynamic-outline-active-heading-pill-color);
+	border-radius: 8px;
 
-    /* Center the highlight indicator vertically. */
-    top: 50%;
-    transform: translateY(-50%);
-    height: 22px;
+	/* Center the highlight indicator vertically. */
+	top: 50%;
+	transform: translateY(-50%);
+	height: 22px;
 }
 
 #dynamic-outline li a {
-    padding: 0px 8px;
-    color: var(--dynamic-outline-text-color);
-    text-decoration: none;
+	padding: 0px 8px;
+	color: var(--dynamic-outline-text-color);
+	text-decoration: none;
 }
 
 #dynamic-outline li .heading-level-1 {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 #dynamic-outline li .heading-level-2 {
-    padding-left: var(--dynamic-outline-tab-size);
+	padding-left: var(--dynamic-outline-tab-size);
 }
 
 #dynamic-outline li .heading-level-3 {
-    padding-left: calc(var(--dynamic-outline-tab-size) * 2);
+	padding-left: calc(var(--dynamic-outline-tab-size) * 2);
 }
 
 #dynamic-outline li .heading-level-4 {
-    padding-left: calc(var(--dynamic-outline-tab-size) * 3);
+	padding-left: calc(var(--dynamic-outline-tab-size) * 3);
 }
 
 #dynamic-outline li .heading-level-5 {
-    padding-left: calc(var(--dynamic-outline-tab-size) * 4);
+	padding-left: calc(var(--dynamic-outline-tab-size) * 4);
 }
 
 #dynamic-outline li .heading-level-6 {
-    padding-left: calc(var(--dynamic-outline-tab-size) * 5);
+	padding-left: calc(var(--dynamic-outline-tab-size) * 5);
 }
 
 #dynamic-outline .outline-item-hidden {
-    display: none !important;
+	display: none !important;
 }
 
 /* 
@@ -338,9 +352,8 @@ button.dynamic-outline-reload[disabled] {
  */
 
 .dynamic-outline-button.button-active {
-    box-shadow: none;
-    opacity: var(--icon-opacity-hover);
-    color: var(--icon-color-hover);
-    background-color: var(--background-modifier-hover);
-
+	box-shadow: none;
+	opacity: var(--icon-opacity-hover);
+	color: var(--icon-color-hover);
+	background-color: var(--background-modifier-hover);
 }
