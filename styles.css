@@ -125,7 +125,7 @@ settings:
 	--dynamic-outline-border-color: var(--background-modifier-border);
 	--dynamic-outline-tab-size: 24px;
 	--dynamic-outline-window-width: 256px;
-	--dynamic-outline-top: 40px;
+	--dynamic-outline-top: calc(var(--header-height) + 4px);
 	--dynamic-outline-opacity: 1;
 
 	/* List items */
@@ -170,13 +170,14 @@ settings:
 	position: fixed;
 	display: flex;
 	flex-direction: column;
-	z-index: 2;
+
+	z-index: var(--layer-popover);
 
 	top: var(--dynamic-outline-top);
 	right: 20px;
 
 	min-height: max-content;
-	max-height: calc(100% - 50px);
+	max-height: calc(100% - var(--dynamic-outline-top));
 	width: var(--dynamic-outline-window-width);
 	padding: 10px 0 5px;
 
