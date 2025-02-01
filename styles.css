@@ -126,7 +126,9 @@ settings:
 	--dynamic-outline-tab-size: 24px;
 	--dynamic-outline-window-width: 256px;
 	--dynamic-outline-top: calc(var(--header-height) + 4px);
-	--dynamic-outline-top-editing-toolbar: calc(var(--header-height) + 38px + 4px);
+	--dynamic-outline-top-editing-toolbar: calc(
+		var(--header-height) + 38px + 4px
+	);
 	--dynamic-outline-bottom: calc(27px + 4px);
 	--dynamic-outline-opacity: 1;
 
@@ -176,12 +178,14 @@ settings:
 	z-index: var(--layer-popover);
 
 	top: var(--dynamic-outline-top);
-	right: 20px;
-
+	max-height: calc(
+		100% - var(--dynamic-outline-top) - var(--dynamic-outline-bottom)
+	);
 	min-height: max-content;
-	max-height: calc(100% - var(--dynamic-outline-top));
+
 	width: var(--dynamic-outline-window-width);
 	padding: 10px 0 5px;
+	right: 20px;
 
 	font-size: var(--dynamic-outline-font-size);
 
@@ -202,7 +206,11 @@ settings:
 .view-content
 	> .markdown-source-view[style=""]
 	~ #dynamic-outline.obstruction-top {
-	top: calc(var(--dynamic-outline-top) + 38px + 10px);
+	top: var(--dynamic-outline-top-editing-toolbar);
+	max-height: calc(
+		100% - var(--dynamic-outline-top-editing-toolbar) -
+			var(--dynamic-outline-bottom)
+	);
 }
 
 #dynamic-outline:hover {
