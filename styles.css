@@ -99,6 +99,29 @@ settings:
             -
                 label: None
                 value: none
+	-
+		id: dynamic-outline-window-offset-top
+		title: 'Window offset top'
+		description: 'Add more space before the outline window'
+		type: variable-number-slider
+		allowEmpty: false
+		default: 0
+		min: 0
+		max: 100
+		step: 1
+		format: px
+	-
+		id: dynamic-outline-window-offset-bottom
+		title: 'Window offset bottom'
+		description: 'Add more space after the outline window'
+		type: variable-number-slider
+		allowEmpty: false
+		default: 0
+		min: 0
+		max: 100
+		step: 1
+		format: px
+
 */
 
 .theme-dark,
@@ -125,12 +148,23 @@ settings:
 	--dynamic-outline-border-color: var(--background-modifier-border);
 	--dynamic-outline-tab-size: 24px;
 	--dynamic-outline-window-width: 256px;
-	--dynamic-outline-top: calc(var(--header-height) + 4px);
-	--dynamic-outline-top-editing-toolbar: calc(
-		var(--header-height) + 38px + 4px
-	);
-	--dynamic-outline-bottom: calc(27px + 4px);
 	--dynamic-outline-opacity: 1;
+
+	--dynamic-outline-window-gap: 4px;
+	--dynamic-outline-window-offset-top: 0px;
+	--dynamic-outline-window-offset-bottom: 0px;
+	--dynamic-outline-top: calc(
+		var(--header-height) + var(--dynamic-outline-window-gap) +
+			var(--dynamic-outline-window-offset-top)
+	);
+	--dynamic-outline-top-editing-toolbar: calc(
+		var(--header-height) + 38px + var(--dynamic-outline-window-gap) +
+			var(--dynamic-outline-window-offset-top)
+	);
+	--dynamic-outline-bottom: calc(
+		var(--dynamic-outline-window-gap) +
+			var(--dynamic-outline-window-offset-bottom)
+	);
 
 	/* List items */
 	--dynamic-outline-background-hover: var(
