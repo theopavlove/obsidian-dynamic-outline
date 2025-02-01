@@ -126,6 +126,8 @@ settings:
 	--dynamic-outline-tab-size: 24px;
 	--dynamic-outline-window-width: 256px;
 	--dynamic-outline-top: calc(var(--header-height) + 4px);
+	--dynamic-outline-top-editing-toolbar: calc(var(--header-height) + 38px + 4px);
+	--dynamic-outline-bottom: calc(27px + 4px);
 	--dynamic-outline-opacity: 1;
 
 	/* List items */
