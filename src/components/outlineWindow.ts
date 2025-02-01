@@ -127,10 +127,13 @@ export default class OutlineWindow {
 
 	private checkForObstructions(): void {
 		// Check for Editing Toolbar at the top of the screen
-		const editingToolbar = document.getElementById("cMenuToolbarModalBar");
-		if (editingToolbar?.classList.contains("top")) {
-			this._containerEl.classList.add("obstruction-top");
-		}
+		const editingToolbar: HTMLElement | null = document.getElementById(
+			"cMenuToolbarModalBar"
+		);
+		const isTop: boolean =
+			editingToolbar !== null && editingToolbar.classList.contains("top");
+
+		this._containerEl.classList.toggle("obstruction-top", isTop);
 	}
 
 	private checkForLocation(): void {
