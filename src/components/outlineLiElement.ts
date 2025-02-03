@@ -74,5 +74,12 @@ export default class DynamicLiElement {
 				searchContainer.clearInput();
 			}
 		};
+		liElement.addEventListener("mouseenter", () => {
+			liElement.classList.add("hovered");
+		});
+	
+		liElement.addEventListener("mouseleave", () => {
+			liElement.classList.remove("hovered");
+		});
 	}
 }

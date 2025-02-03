@@ -52,6 +52,13 @@ export default class OutlineWindow {
 				this.filterItems();
 			}
 		);
+		this._plugin.registerDomEvent(
+			this._containerEl.querySelector("input") as HTMLInputElement,
+			"keydown",
+			(event: KeyboardEvent) => {
+				this.handleKeyDown(event);
+			}
+		);
 		if (this._plugin.settings.toggleOnHover) {
 			this._plugin.registerDomEvent(this._containerEl, "mouseenter", () =>
 				this.handleMouseEnter()
@@ -59,6 +66,73 @@ export default class OutlineWindow {
 			this._plugin.registerDomEvent(this._containerEl, "mouseleave", () =>
 				this.handleMouseLeave()
 			);
+		}
+	}
+
+	private getVisibleLiItems(): Array<HTMLElement> {
+		return Array.from(
+			this._containerEl.querySelectorAll("li:not(.outline-item-hidden")
+		);
+	}
+
+	private handleKeyDown(event: KeyboardEvent): void {
+		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
+		const itemListLength: number = itemList.length;
+
+		const getCurrentIndex = () => {
+			let result: number = itemList.findIndex((item) =>
+				item.classList.contains("hovered")
+			);
+
+			if (result === -1) {
+				result = itemList.findIndex((item) =>
+					item.classList.contains("highlight")
+				);
+				if (result === -1) {
+					result = 0;
+				}
+			}
+			return result;
+		};
+
+		let currentIndex: number = getCurrentIndex();
+		let newIndex = currentIndex;
+
+		switch (event.key) {
+			case "ArrowDown":
+			case "Tab":
+				event.preventDefault();
+				newIndex = event.shiftKey
+					? (currentIndex + itemListLength - 1) % itemListLength
+					: (currentIndex + 1) % itemListLength;
+				break;
+			case "ArrowUp":
+				event.preventDefault();
+				newIndex = (currentIndex + itemListLength - 1) % itemListLength;
+				break;
+			case "Enter":
+				event.preventDefault();
+				if (currentIndex >= 0) {
+					const selectedOutlineItem: HTMLLIElement = itemList[
+						currentIndex
+					] as HTMLLIElement;
+					selectedOutlineItem.click();
+				}
+				break;
+			case "Escape":
+				event.preventDefault();
+				this.hide();
+				// this.removeHovered();
+				break;
+		}
+
+		if (newIndex !== currentIndex) {
+			itemList.forEach((item, index) => {
+				item.classList.toggle("hovered", index === newIndex);
+			});
+			itemList[newIndex].scrollIntoView({
+				block: "nearest",
+			});
 		}
 	}
 
@@ -73,16 +147,20 @@ export default class OutlineWindow {
 			this._containerEl.querySelectorAll("li");
 
 		outlineItems?.forEach((item: HTMLLIElement) => {
-			if (item.textContent?.toLowerCase().includes(value)) {
-				item.classList.remove("outline-item-hidden");
-			} else {
-				item.classList.add("outline-item-hidden");
-			}
+			const itemIncludesValue: boolean = !!item.textContent
+				?.toLowerCase()
+				.includes(value);
+			item.classList.toggle("outline-item-hidden", !itemIncludesValue);
 		});
 	}
 
 	private handleMouseEnter(): void {
 		this.clearHideTimeout();
+
+		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
+		itemList.forEach((item) => {
+			item.classList.remove("hovered");
+		});
 	}
 
 	private handleMouseLeave(): void {
@@ -141,6 +219,13 @@ export default class OutlineWindow {
 			"location-left",
 			this._plugin.settings.windowLocation === "left"
 		);
+	}
+
+	private removeHovered(): void {
+		const itemList = this.getVisibleLiItems();
+		itemList.forEach((liElement) => {
+			liElement.classList.remove("hovered");
+		});
 	}
 
 	updateView(view: MarkdownView) {
@@ -283,13 +368,19 @@ export default class OutlineWindow {
 	hide(): void {
 		if (!this.visible) return;
 
+		// Remove the container.
 		this._containerEl.remove();
 
+		// Remove the "hovered" effect on each heading.
+		this.removeHovered();
+
+		// Turn off the button.
 		const button: OutlineButton = this._stateManager.getButtonInView(
 			this._view
 		);
 		button.active = false;
 
+		// Remove optional pinning.
 		if (this._plugin.settings.toggleOnHover) {
 			this.pinned = false;
 		}

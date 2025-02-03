@@ -330,8 +330,10 @@ button.dynamic-outline-reload[disabled] {
 }
 
 #dynamic-outline li:hover,
-#dynamic-outline li.highlight:hover {
-	background-color: var(--dynamic-outline-background-hover);
+#dynamic-outline li.highlight:hover,
+#dynamic-outline li.hovered,
+#dynamic-outline li.highlight.hovered {
+    background-color: var(--dynamic-outline-background-hover);
 }
 
 #dynamic-outline li.highlight {

@@ -35,9 +35,9 @@ export default class OutlineButton {
 	private setupEventListeners() {
 		this._plugin.registerDomEvent(this._containerEl, "click", () =>
 			this.handleClick()
-		);
-
-		if (this._plugin.settings.toggleOnHover) {
+	);
+	
+	if (this._plugin.settings.toggleOnHover) {
 			this._plugin.registerDomEvent(this._containerEl, "mouseenter", () =>
 				this.handleMouseEnter()
 			);
