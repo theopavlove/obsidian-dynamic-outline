@@ -546,9 +546,8 @@ settings:
 
 	top: var(--dynamic-outline-top);
 	max-height: calc(
-		100% - var(--dynamic-outline-top) - var(--dynamic-outline-bottom)
+		92.5dvh - var(--dynamic-outline-top) - var(--dynamic-outline-bottom)
 	);
-	min-height: max-content;
 
 	width: var(--dynamic-outline-window-width);
 	padding: 10px 0 5px;
@@ -575,7 +574,7 @@ settings:
 	~ #dynamic-outline.obstruction-top {
 	top: var(--dynamic-outline-top-editing-toolbar);
 	max-height: calc(
-		100% - var(--dynamic-outline-top-editing-toolbar) -
+		92.5dvh - var(--dynamic-outline-top-editing-toolbar) -
 			var(--dynamic-outline-bottom)
 	);
 }
