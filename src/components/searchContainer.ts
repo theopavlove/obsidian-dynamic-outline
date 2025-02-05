@@ -24,7 +24,7 @@ export default class SearchContainer {
 
 			this.inputField = createEl("input", {
 				attr: {
-					placeholder: "Search headings...",
+					placeholder: "Search headings…",
 					type: "search",
 				},
 			});
