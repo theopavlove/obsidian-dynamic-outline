@@ -76,24 +76,28 @@ export default class OutlineWindow {
 	}
 
 	private handleKeyDown(event: KeyboardEvent): void {
-		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
-		const itemListLength: number = itemList.length;
-
+		/**
+		 * Retrieves the current index of the item in the list.
+		 *
+		 * The current index is determined by the item that is either hovered or highlighted.
+		 * If no item is hovered, the method looks for the highlighted item.
+		 * If neither an hovered nor a highlighted item is found, the method returns 0.
+		 *
+		 * @returns {number} The index of the current item in the list.
+		 */
 		const getCurrentIndex = () => {
-			let result: number = itemList.findIndex((item) =>
+			const hoveredIndex = itemList.findIndex((item) =>
 				item.classList.contains("hovered")
 			);
-
-			if (result === -1) {
-				result = itemList.findIndex((item) =>
-					item.classList.contains("highlight")
-				);
-				if (result === -1) {
-					result = 0;
-				}
-			}
-			return result;
+			return hoveredIndex !== -1
+				? hoveredIndex
+				: itemList.findIndex((item) =>
+						item.classList.contains("highlight")
+				  ) || 0;
 		};
+
+		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
+		const itemListLength: number = itemList.length;
 
 		let currentIndex: number = getCurrentIndex();
 		let newIndex = currentIndex;
