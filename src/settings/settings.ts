@@ -3,7 +3,7 @@ import { App, PluginSettingTab, sanitizeHTMLToDom } from "obsidian";
 import AutofocusSearchOnOpenSetting from "./options/autofocusSearchOnOpenSetting";
 
 import HighlightOnScrollSetting from "./options/highlightOnScrollSetting";
-import OutlineOpacitySetting from "./options/outlineOpacitySetting";
+import StyleCustomizationSetting from "./options/styleCustomizationSetting";
 import ResetSearchSetting from "./options/resetSearchSetting";
 import ToggleAutomaticallySetting from "./options/toggleAutomaticallySetting";
 import ToggleOnHoverSetting from "./options/toggleOnHoverSetting";
@@ -49,12 +49,12 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
-		new ToggleOnHoverSetting(this.plugin, containerEl).display();
 		new HighlightOnScrollSetting(this.plugin, containerEl).display();
-		new WindowLocationSetting(this.plugin, containerEl).display();
+		new ToggleOnHoverSetting(this.plugin, containerEl).display();
+		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
 		new AutofocusSearchOnOpenSetting(this.plugin, containerEl).display();
 		new ResetSearchSetting(this.plugin, containerEl).display();
-		new OutlineOpacitySetting(this.plugin, containerEl).display();
+		new WindowLocationSetting(this.plugin, containerEl).display();
+		new StyleCustomizationSetting(this.plugin, containerEl).display();
 	}
 }

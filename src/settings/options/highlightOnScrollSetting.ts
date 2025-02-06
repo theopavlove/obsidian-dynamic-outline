@@ -12,7 +12,7 @@ export default class HighlightOnScrollSetting extends DynamicOutlineSetting {
 			.setName("Highlight active heading")
 			.setDesc(
 				htmlDescription(
-					`Highlight the current outline heading when scrolling the file.</span>`
+					`Highlight current outline heading while scrolling down the file.`
 				)
 			)
 			.addButton((button) => {

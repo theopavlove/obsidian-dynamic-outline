@@ -4,9 +4,9 @@ import DynamicOutlineSetting from "../settingsOption";
 export default class ResetSearchSetting extends DynamicOutlineSetting {
 	public display(): void {
 		new Setting(this.containerEl)
-			.setName("Reset search field")
+			.setName("Reset search field on jump")
 			.setDesc(
-				"Erase the search field contents after jumping to a heading."
+				"Erase the search field contents after clicking a heading."
 			)
 			.addToggle((toggle) => {
 				toggle

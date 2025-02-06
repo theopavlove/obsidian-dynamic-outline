@@ -12,7 +12,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			.setName("Toggle automatically")
 			.setDesc(
 				htmlDescription(
-					`Show and hide the outline automatically based on the number of headings in the file.</span>`
+					`Show and hide automatically based on the number of headings in the file.`
 				)
 			)
 			.addButton((button) => {

@@ -11,7 +11,7 @@ export default class WindowLocationSetting extends DynamicOutlineSetting {
 			.setName("Window location")
 			.setDesc(
 				htmlDescription(
-					`Set the location for the window (right by default).</span>`
+					`Set the location both for window and button (right by default).`
 				)
 			)
 			.addButton((button) => {
