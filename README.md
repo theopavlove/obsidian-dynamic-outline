@@ -1,29 +1,43 @@
 # Dynamic Outline
 
-This [Obsidian](https://obsidian.md/) plugin displays a floating table of contents for your notes, freeing up space in the sidebar.
+This [Obsidian](https://obsidian.md/) plugin displays a floating table of contents for your notes for faster navigation, freeing up space in the sidebar.
 
-![](./assets/dynamic-outline-cover.png)
+![](./assets/dynamic-outline-cover-v3.png)
 
-## Demo
+## Usage
 
-### Basic Usage
+Click the icon on the top right of your current note to instantly open the Dynamic Outline and get a clear view of your note's structure. For an even faster workflow, you can bind the plugin command to a hotkey.
 
-Click the icon in the note toolbar to show the Dynamic Outline. Use the search field for quick navigation.
+![](./assets/demo-usage.gif)
 
-![](./assets/demo-basic-usage.gif)
+## Features
 
-### Search and Navigation
+Here are some of the key features included in the plugin:
 
-Use the search field to quickly navigate to a heading.
+-   **Active heading indication**
 
-![](./assets/demo-search-and-navigation.gif)
+    See your current position in the document within the outline. The indicator highlights the heading as you scroll.
 
-### Automatic Toggle
+-   **Search and navigation**
 
-Show and hide the Dynamic Outline automatically based on the number of headings in the file.
+    Quickly find headings using the search bar. Click a search result to jump directly to that section in your document.
 
-![](./assets/demo-automatic-toggle.gif)
+-   **Toggle on Hover**
+
+    Enable "Toggle on hover" option in settings to have the outline window appear automatically when you hover over the top right toolbar icon.
+
+-   **Keyboard control**
+
+    Navigate the outline using your keyboard for efficient workflow. Use the arrow keys (or `Tab`/`Shift+Tab`) to move, `Enter` to jump, and `Esc` to close.
+
+-   **Customization via Style Settings**
+
+    Personalize the outline's appearance to match your preferences. Customize colors, layout, and more using the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin.
+
+## How to install
+
+The plugin [is available](https://obsidian.md/plugins?id=dynamic-outline) on the Obsidian Community plugins collection.
 
 ## Contibution
 
-Feel free to open an issue or a pull request if you find a bug or have a feature request.
+Feel free to [report a bug](https://github.com/theopavlove/obsidian-dynamic-outline/issues/new?template=bug_report.md), [request a feature](https://github.com/theopavlove/obsidian-dynamic-outline/issues/new?template=feature_request.md) or [submit a pull request](https://github.com/theopavlove/obsidian-dynamic-outline/pulls).
