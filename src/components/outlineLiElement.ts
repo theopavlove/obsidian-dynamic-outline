@@ -73,6 +73,7 @@ export default class DynamicLiElement {
 				);
 
 				searchContainer.clearInput();
+				window.removeHovered();
 			}
 		};
 		liElement.addEventListener("mouseenter", () => {

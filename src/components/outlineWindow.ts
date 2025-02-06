@@ -233,7 +233,7 @@ export default class OutlineWindow {
 		);
 	}
 
-	private removeHovered(): void {
+	removeHovered(): void {
 		const itemList = this.getVisibleLiItems();
 		itemList.forEach((liElement) => {
 			liElement.classList.remove("hovered");
