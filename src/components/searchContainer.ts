@@ -38,8 +38,20 @@ export default class SearchContainer {
 			});
 			this.element.appendChild(this.clearButton);
 
-			this._setupEventListeners();
+			this.setupEventListeners();
 		}
+	}
+
+	private setupEventListeners(): void {
+		// this._plugin.registerDomEvent(this.element, "input", () => {
+		// 	this._toggleClearButton();
+		// });
+		this._plugin.registerDomEvent(this.inputField, "input", () => {
+			this.handleInput();
+		});
+		this._plugin.registerDomEvent(this.clearButton, "click", () => {
+			this.clearInput();
+		});
 	}
 
 	public clearInput(): void {
@@ -54,23 +66,13 @@ export default class SearchContainer {
 		this.inputField.focus();
 	}
 
-	private _setupEventListeners(): void {
-		// this._plugin.registerDomEvent(this.element, "input", () => {
-		// 	this._toggleClearButton();
-		// });
-		this._plugin.registerDomEvent(this.inputField, "input", () => {
-			this._toggleClearButton();
-		});
-		this._plugin.registerDomEvent(this.clearButton, "click", () => {
-			this.clearInput();
-		});
-	}
-
-	private _toggleClearButton(): void {
+	private handleInput(): void {
 		if (this.inputField.value.length > 0) {
+			// Show the clear button and add a class to indicate content
 			this.clearButton.classList.add("visible");
 			this.inputField.classList.add("has-content");
 		} else {
+			// Hide the clear button and remove a class to indicate no content
 			this.clearButton.classList.remove("visible");
 			this.inputField.classList.remove("has-content");
 		}

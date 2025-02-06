@@ -75,6 +75,12 @@ export default class OutlineWindow {
 		);
 	}
 
+	private setHovered(itemList: Array<HTMLElement>, newIndex: number): void {
+		itemList.forEach((item, index) => {
+			item.classList.toggle("hovered", index === newIndex);
+		});
+	}
+
 	private handleKeyDown(event: KeyboardEvent): void {
 		/**
 		 * Retrieves the current index of the item in the list.
@@ -131,9 +137,7 @@ export default class OutlineWindow {
 		}
 
 		if (newIndex !== currentIndex) {
-			itemList.forEach((item, index) => {
-				item.classList.toggle("hovered", index === newIndex);
-			});
+			this.setHovered(itemList, newIndex);
 			itemList[newIndex].scrollIntoView({
 				block: "nearest",
 			});
@@ -156,6 +160,10 @@ export default class OutlineWindow {
 				.includes(value);
 			item.classList.toggle("outline-item-hidden", !itemIncludesValue);
 		});
+
+		// Set the current index to the first visible item
+		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
+		this.setHovered(itemList, 0);
 	}
 
 	private handleMouseEnter(): void {

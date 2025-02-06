@@ -42,6 +42,7 @@ export default class DynamicLiElement {
 		this._setupEventListener(liElement, heading);
 	}
 
+	// TODO: the highlighted index should be on the top (scrollBlock="start")
 	private _setupEventListener(
 		liElement: HTMLLIElement,
 		heading: HeadingCache
@@ -77,7 +78,7 @@ export default class DynamicLiElement {
 		liElement.addEventListener("mouseenter", () => {
 			liElement.classList.add("hovered");
 		});
-	
+
 		liElement.addEventListener("mouseleave", () => {
 			liElement.classList.remove("hovered");
 		});
