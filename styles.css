@@ -4,41 +4,72 @@ name: Dynamic Outline
 id: obsidian-dynamic-outline
 settings:
 	-
-		id: text-and-formatting
-		title: 'Text and formatting'
+		id: active-heading
+		title: 'Active heading'
 		type: heading
 		level: 2
 		collapsed: true
-    - 
-        id: dynamic-outline-font-size
-        title: 'Font size'
-        description: 'Font size of the outline headings'
+	-
+        id: dynamic-outline-highlight-font-weight
+        title: 'Active heading font weight'
+        description: 'Font weight of active heading'
         type: variable-select
-        default: var(--font-text-size)
+        allowEmpty: false
+        default: var(--font-normal)
         options:
             -
-                label: 'Default'
-                value: var(--font-text-size)
+                label: Normal
+                value: var(--font-normal)
             -
-                label: 'Small'
-                value: var(--font-small)
+                label: Semibold
+                value: var(--font-semibold)
             -
-                label: 'Smaller'
-                value: var(--font-smaller)
-            -
-                label: 'Smallest'
-                value: var(--font-smallest)
+                label: Bold
+                value: var(--font-bold)
     -
-        id: dynamic-outline-tab-size
-        title: 'Tab size'
-        description: 'Left padding multiplier size (in pixels)'
-        type: variable-number-slider
-        default: 24
-        min: 0
-        max: 48
-        step: 1
-        format: px
+        id: dynamic-outline-active-heading-pill-color
+        title: 'Active heading indication color'
+        description: 'Color of active heading pill'
+        type: variable-select
+        allowEmpty: false
+        default: var(--text-accent)
+        options:
+            -
+                label: Accent
+                value: var(--text-accent)
+            -
+                label: Monochrome
+                value: var(--text-normal)
     -
+        id: dynamic-outline-active-heading-background
+        title: 'Active heading background color'
+        description: 'Background color of the active heading'
+        type: variable-select
+        allowEmpty: false
+        default: var(--background-modifier-hover)
+        options:
+            -
+                label: Monochrome
+                value: var(--background-modifier-hover)
+            -
+                label: Accent
+                value: var(--dynamic-outline-background-accent)
+            -
+                label: None
+                value: none
+	-
+		id: button
+		title: 'Button'
+		type: heading
+		level: 2
+		collapsed: true
+	-
+		id: hide-button-from-toolbar
+		title: 'Hide button'
+		description: 'Hide button from the toolbar'
+		type: class-toggle
+		default: false
+	-
 		id: headings
 		title: 'Headings'
 		type: heading
@@ -333,60 +364,41 @@ settings:
 				label: All small-caps
 				value: all-small-caps
 	-
-		id: active-heading-highlight
-		title: 'Active heading highlight'
+		id: text-and-formatting
+		title: 'Text and formatting'
 		type: heading
 		level: 2
 		collapsed: true
-	-
-        id: dynamic-outline-highlight-font-weight
-        title: 'Active heading font weight'
-        description: 'Font weight of active heading'
+    - 
+        id: dynamic-outline-font-size
+        title: 'Font size'
+        description: 'Font size of the outline headings'
         type: variable-select
-        allowEmpty: false
-        default: var(--font-normal)
+        default: var(--font-text-size)
         options:
             -
-                label: Normal
-                value: var(--font-normal)
+                label: 'Default'
+                value: var(--font-text-size)
             -
-                label: Semibold
-                value: var(--font-semibold)
+                label: 'Small'
+                value: var(--font-small)
             -
-                label: Bold
-                value: var(--font-bold)
+                label: 'Smaller'
+                value: var(--font-smaller)
+            -
+                label: 'Smallest'
+                value: var(--font-smallest)
     -
-        id: dynamic-outline-active-heading-pill-color
-        title: 'Active heading indication color'
-        description: 'Color of active heading pill'
-        type: variable-select
-        allowEmpty: false
-        default: var(--text-accent)
-        options:
-            -
-                label: Accent
-                value: var(--text-accent)
-            -
-                label: Monochrome
-                value: var(--text-normal)
+        id: dynamic-outline-tab-size
+        title: 'Tab size'
+        description: 'Left padding multiplier size (in pixels)'
+        type: variable-number-slider
+        default: 24
+        min: 0
+        max: 48
+        step: 1
+        format: px
     -
-        id: dynamic-outline-active-heading-background
-        title: 'Active heading background color'
-        description: 'Background color of the active heading'
-        type: variable-select
-        allowEmpty: false
-        default: var(--background-modifier-hover)
-        options:
-            -
-                label: Monochrome
-                value: var(--background-modifier-hover)
-            -
-                label: Accent
-                value: var(--dynamic-outline-background-accent)
-            -
-                label: None
-                value: none
-	-
 		id: window-layout
 		title: 'Window layout'
 		type: heading
@@ -433,18 +445,6 @@ settings:
         min: 0.0
         max: 1.0
         step: 0.05
-	-
-		id: button
-		title: 'Button'
-		type: heading
-		level: 2
-		collapsed: true
-	-
-		id: hide-button-from-toolbar
-		title: 'Hide button'
-		description: 'Hide button from the toolbar'
-		type: class-toggle
-		default: false
 */
 
 .theme-dark,
