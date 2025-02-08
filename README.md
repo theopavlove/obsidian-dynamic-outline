@@ -14,15 +14,15 @@ Click the icon on the top right of your current note to instantly open the Dynam
 
 Here are some of the key features included in the plugin:
 
--   **Active heading indication.** See current position in the document within the outline. The indicator highlights the heading as you scroll.
+-   **Active heading indication** – See current position in the document within the outline. The indicator highlights the heading as you scroll.
 
--   **Search and navigation.** Quickly find headings using the search bar. Click a search result to jump directly to that section in the note.
+-   **Search and navigation** – Quickly find headings using the search bar. Click a search result to jump directly to that section in the note.
 
--   **Toggle on Hover.** Enable "Toggle on hover" option in settings to have the outline window appear automatically when you hover over the top right toolbar icon.
+-   **Toggle on Hover** – Enable "Toggle on hover" option in settings to have the outline window appear automatically when you hover over the top right toolbar icon.
 
--   **Keyboard control.** Navigate the outline using keyboard for efficient workflow. Use the arrow keys (or `Tab`/`Shift+Tab`) to move, `Enter` to jump, and `Esc` to close.
+-   **Keyboard control** – Navigate the outline using keyboard for efficient workflow. Use the arrow keys (or `Tab`/`Shift+Tab`) to move, `Enter` to jump, and `Esc` to close.
 
--   **Customization via Style Settings.** Personalize the outline's appearance to match your preferences. Customize colors, layout, and more using the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin.
+-   **Customization via Style Settings** – Personalize the outline's appearance to match your preferences. Customize colors, layout, and more using the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin.
 
 ## How to install
 
