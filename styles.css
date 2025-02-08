@@ -433,6 +433,18 @@ settings:
         min: 0.0
         max: 1.0
         step: 0.05
+	-
+		id: button
+		title: 'Button'
+		type: heading
+		level: 2
+		collapsed: true
+	-
+		id: hide-button-from-toolbar
+		title: 'Hide button'
+		description: 'Hide button from the toolbar'
+		type: class-toggle
+		default: false
 */
 
 .theme-dark,
@@ -792,6 +804,10 @@ button.dynamic-outline-reload[disabled] {
 	opacity: var(--icon-opacity-hover);
 	color: var(--icon-color-hover);
 	background-color: var(--background-modifier-hover);
+}
+
+.hide-button-from-toolbar .dynamic-outline-button {
+	display: none;
 }
 
 /* 
