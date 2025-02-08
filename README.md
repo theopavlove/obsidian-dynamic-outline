@@ -1,6 +1,6 @@
 # Dynamic Outline
 
-This [Obsidian](https://obsidian.md/) plugin displays a floating table of contents for your notes for faster navigation, freeing up space in the sidebar.
+This [Obsidian](https://obsidian.md/) plugin displays a floating table of contents for faster navigation within your notes.
 
 ![](./assets/dynamic-outline-cover-v3.png)
 
@@ -32,6 +32,6 @@ The plugin [is available](https://obsidian.md/plugins?id=dynamic-outline) on the
 
 Feel free to [report a bug](https://github.com/theopavlove/obsidian-dynamic-outline/issues/new?template=bug_report.md), [request a feature](https://github.com/theopavlove/obsidian-dynamic-outline/issues/new?template=feature_request.md) or [submit a pull request](https://github.com/theopavlove/obsidian-dynamic-outline/pulls).
 
-If you find this plugin helpful, consider [buying me a coffee]((https://www.buymeacoffee.com/theopavlove)) to support its continued development :)
+If you find this plugin helpful, consider [buying me a coffee](https://www.buymeacoffee.com/theopavlove) to support its continued development :)
 
 <a href="https://www.buymeacoffee.com/theopavlove" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
