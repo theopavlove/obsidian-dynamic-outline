@@ -23,6 +23,7 @@ assignees: ''
  
  - Plugin version: 
  - Obsidian version:
+ - OS: 
 
 ## Screenshots (optional)
 
