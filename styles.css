@@ -547,7 +547,7 @@ settings:
     -
         id: dynamic-outline-tab-size
         title: 'Tab size'
-        description: 'Left padding multiplier size (in pixels)'
+        description: 'Left padding multiplier size (in pixels). Will be applied on next outline refresh'
         type: variable-number-slider
         default: 24
         min: 0
@@ -603,6 +603,12 @@ settings:
         step: 0.05
 */
 
+/* TODO: transfer variables to :root. */
+:root {
+	/* Applied to the li.style directly with dynamic tab levels. */
+	--dynamic-outline-tab-size: 24px;
+}
+
 .theme-dark,
 .theme-light {
 	/* New color variables */
@@ -625,7 +631,6 @@ settings:
 	--dynamic-outline-font-size: var(--font-text-size);
 	--dynamic-outline-color: var(--text-normal);
 	--dynamic-outline-border-color: var(--background-modifier-border);
-	--dynamic-outline-tab-size: 24px;
 	--dynamic-outline-window-width: 256px;
 	--dynamic-outline-opacity: 1;
 
@@ -882,8 +887,7 @@ button.dynamic-outline-reload[disabled] {
 	color: var(--dynamic-outline-h2-text-color);
 	font-weight: var(--dynamic-outline-h2-font-weight);
 	font-style: var(--dynamic-outline-h2-font-style);
-	font-variant: var(--dynamic-outline-h2-font-variant);
-	padding-left: var(--dynamic-outline-tab-size);
+	font-variant: var(--dynamic-outline-h2-font-variant)
 }
 
 #dynamic-outline li .heading-level-3 {
@@ -891,7 +895,6 @@ button.dynamic-outline-reload[disabled] {
 	font-weight: var(--dynamic-outline-h3-font-weight);
 	font-style: var(--dynamic-outline-h3-font-style);
 	font-variant: var(--dynamic-outline-h3-font-variant);
-	padding-left: calc(var(--dynamic-outline-tab-size) * 2);
 }
 
 #dynamic-outline li .heading-level-4 {
@@ -899,7 +902,6 @@ button.dynamic-outline-reload[disabled] {
 	font-weight: var(--dynamic-outline-h4-font-weight);
 	font-style: var(--dynamic-outline-h4-font-style);
 	font-variant: var(--dynamic-outline-h4-font-variant);
-	padding-left: calc(var(--dynamic-outline-tab-size) * 3);
 }
 
 #dynamic-outline li .heading-level-5 {
@@ -907,7 +909,6 @@ button.dynamic-outline-reload[disabled] {
 	font-weight: var(--dynamic-outline-h5-font-weight);
 	font-style: var(--dynamic-outline-h5-font-style);
 	font-variant: var(--dynamic-outline-h5-font-variant);
-	padding-left: calc(var(--dynamic-outline-tab-size) * 4);
 }
 
 #dynamic-outline li .heading-level-6 {
@@ -915,7 +916,6 @@ button.dynamic-outline-reload[disabled] {
 	font-weight: var(--dynamic-outline-h6-font-weight);
 	font-style: var(--dynamic-outline-h6-font-style);
 	font-variant: var(--dynamic-outline-h6-font-variant);
-	padding-left: calc(var(--dynamic-outline-tab-size) * 5);
 }
 
 #dynamic-outline li.highlight .heading-level-1 {

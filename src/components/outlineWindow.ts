@@ -324,8 +324,10 @@ export default class OutlineWindow {
 			this._plugin,
 			this._view
 		);
-
 		const headings: HeadingCache[] = this.getHeadings();
+
+		// Check if the headings are the same as before and, if so,
+		// update only the positions of the li elements.
 		if (
 			headings.length > 0 &&
 			arraysAreEqual(headings, this._latestHeadings)
@@ -340,10 +342,30 @@ export default class OutlineWindow {
 		this._latestHeadings = headings;
 		ulElement.empty();
 
-		headings?.forEach((heading) => {
-			const liElement: HTMLLIElement = dynamicLi.createLiElement(heading);
-			ulElement.append(liElement);
-		});
+		if (this._plugin.settings.dynamicHeadingIndentation) {
+			let stack: Array<number> = [];
+			headings?.forEach((heading) => {
+				while (
+					stack.length > 0 &&
+					heading.level <= stack[stack.length - 1]
+				) {
+					stack.pop();
+				}
+				stack.push(heading.level);
+
+				const liElement: HTMLLIElement = dynamicLi.createLiElement(
+					heading,
+					stack.length
+				);
+				ulElement.append(liElement);
+			});
+		} else {
+			headings?.forEach((heading) => {
+				const liElement: HTMLLIElement =
+					dynamicLi.createLiElement(heading);
+				ulElement.append(liElement);
+			});
+		}
 
 		if (this._plugin.settings.highlightCurrentHeading) {
 			this.highlightCurrentHeading();
