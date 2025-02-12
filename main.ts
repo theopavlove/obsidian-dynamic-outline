@@ -140,4 +140,18 @@ export default class DynamicOutlinePlugin extends Plugin {
 		await setting.openTabById(WINDOW_ID);
 		new Notice(`Dynamic Outline has been reloaded`);
 	}
+
+	// Set default element to be `document.body`, as it is the place
+	// where the Style Settings plugin applies its' `css-settings-manager` class.
+	// The value is dynamically changed, so we need to pick it from this class directly.
+	getCssVariableAsNumber(
+		variableName: string,
+		element: HTMLElement = document.body
+	): number | null {
+		const rawValue = getComputedStyle(element)
+			.getPropertyValue(variableName)
+			.trim();
+		const numericValue = parseFloat(rawValue);
+		return isNaN(numericValue) ? null : numericValue;
+	}
 }

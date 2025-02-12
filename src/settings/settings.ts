@@ -8,12 +8,14 @@ import ResetSearchSetting from "./options/resetSearchSetting";
 import ToggleAutomaticallySetting from "./options/toggleAutomaticallySetting";
 import ToggleOnHoverSetting from "./options/toggleOnHoverSetting";
 import WindowLocationSetting from "./options/windowLocationSetting";
+import DynamicHeadingIndentationSetting from "./options/dynamicTabSizeSetting";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
 
 interface DynamicOutlinePluginSettings {
 	autofocusSearchOnOpen: boolean;
+	dynamicHeadingIndentation: boolean;
 	highlightCurrentHeading: boolean;
 	minimumHeadings: number;
 	resetSearchFieldOnHeadingClick: boolean;
@@ -24,6 +26,7 @@ interface DynamicOutlinePluginSettings {
 
 const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	autofocusSearchOnOpen: true,
+	dynamicHeadingIndentation: true,
 	highlightCurrentHeading: true,
 	minimumHeadings: 1,
 	resetSearchFieldOnHeadingClick: true,
@@ -54,6 +57,10 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
 		new AutofocusSearchOnOpenSetting(this.plugin, containerEl).display();
 		new ResetSearchSetting(this.plugin, containerEl).display();
+		new DynamicHeadingIndentationSetting(
+			this.plugin,
+			containerEl
+		).display();
 		new WindowLocationSetting(this.plugin, containerEl).display();
 		new StyleCustomizationSetting(this.plugin, containerEl).display();
 	}
