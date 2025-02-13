@@ -154,4 +154,9 @@ export default class DynamicOutlinePlugin extends Plugin {
 		const numericValue = parseFloat(rawValue);
 		return isNaN(numericValue) ? null : numericValue;
 	}
+
+	runCommand(commandId: string) {
+		//@ts-ignore:2239
+		this.app.commands.executeCommandById(commandId);
+	}
 }

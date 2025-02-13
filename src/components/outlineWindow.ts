@@ -414,6 +414,9 @@ export default class OutlineWindow {
 		);
 		button.active = false;
 
+		// Call "Focus on last note" Obsidian built-in method
+		this._plugin.runCommand("editor:focus");
+
 		// Remove optional pinning.
 		if (this._plugin.settings.toggleOnHover) {
 			this.pinned = false;
