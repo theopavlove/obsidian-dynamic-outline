@@ -54,7 +54,7 @@ export default class SearchContainer {
 		});
 	}
 
-	public clearInput(): void {
+	public clearInput(focusInputField: boolean = true): void {
 		this.inputField.value = "";
 
 		const inputEvent = new Event("input", {
@@ -63,7 +63,9 @@ export default class SearchContainer {
 		});
 		this.inputField.dispatchEvent(inputEvent);
 
-		this.inputField.focus();
+		if (focusInputField) {
+			this.inputField.focus();
+		}
 	}
 
 	private handleInput(): void {

@@ -83,10 +83,14 @@ export default class DynamicLiElement {
 					searchContainerHTML
 				);
 
-				searchContainer.clearInput();
+				searchContainer.clearInput(false);
 				window.removeHovered();
 			}
+
+			// Probably, should be a better option.
+			this._plugin.runCommand("editor:focus");
 		};
+
 		liElement.addEventListener("mouseenter", () => {
 			liElement.classList.add("hovered");
 		});
