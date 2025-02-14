@@ -5,6 +5,7 @@ import OutlineHeadings from "./outlineHeadings";
 import DynamicLiElement from "./outlineLiElement";
 import OutlineStateManager from "./outlineStateManager";
 import SearchContainer from "./searchContainer";
+import * as fuzzysort from "fuzzysort";
 
 export default class OutlineWindow {
 	public static hideTimeout: NodeJS.Timeout | null = null;
@@ -154,11 +155,22 @@ export default class OutlineWindow {
 		const outlineItems: NodeListOf<HTMLLIElement> =
 			this._containerEl.querySelectorAll("li");
 
-		outlineItems?.forEach((item: HTMLLIElement) => {
-			const itemIncludesValue: boolean = !!item.textContent
-				?.toLowerCase()
-				.includes(value);
-			item.classList.toggle("outline-item-hidden", !itemIncludesValue);
+		let filteredItems: HTMLLIElement[];
+		if (value === "") {
+			filteredItems = Array.from(outlineItems);
+		} else {
+			filteredItems = fuzzysort
+				.go(value, Array.from(outlineItems), {
+					key: "textContent",
+				})
+				.map((result) => result.obj);
+		}
+
+		outlineItems.forEach((item: HTMLLIElement) => {
+			item.classList.toggle(
+				"outline-item-hidden",
+				!filteredItems.includes(item)
+			);
 		});
 
 		// Set the current index to the first visible item
