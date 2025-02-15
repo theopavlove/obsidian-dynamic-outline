@@ -36,7 +36,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 
 						restartButton.setDisabled(value === initialToggleValue);
 						minimumHeadingsSetting.setDisabled(!value);
-						allowContentOverlapSetting.setDisabled(!value);
+						preventContentOverlapSetting.setDisabled(!value);
 					});
 			});
 
@@ -59,18 +59,20 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			})
 			.setDisabled(!this.plugin.settings.toggleAutomatically);
 
-		const allowContentOverlapSetting: Setting = new Setting(this.containerEl)
-			.setName("Allow content overlap")
+		const preventContentOverlapSetting: Setting = new Setting(
+			this.containerEl
+		)
+			.setName("Prevent content overlap")
 			.setDesc(
 				htmlDescription(
-					`Always trigger the outline, even if it overlaps note contents.`
+					`When off, trigger the outline even if it overlaps note contents.`
 				)
 			)
 			.addToggle((toggle) => {
 				toggle
-					.setValue(this.plugin.settings.allowContentOverlap)
+					.setValue(this.plugin.settings.preventContentOverlap)
 					.onChange(async (value) => {
-						this.plugin.settings.allowContentOverlap = value;
+						this.plugin.settings.preventContentOverlap = value;
 						await this.plugin.saveSettings();
 					});
 			})

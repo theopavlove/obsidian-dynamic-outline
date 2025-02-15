@@ -74,7 +74,7 @@ export default class OutlineStateManager {
 			headings &&
 			headings.length >= this._plugin.settings.minimumHeadings;
 
-		if (!this._plugin.settings.allowContentOverlap) {
+		if (this._plugin.settings.preventContentOverlap) {
 			shouldShow = shouldShow && this.isEnoughWidth(mdView);
 		}
 
