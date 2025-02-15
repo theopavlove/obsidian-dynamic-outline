@@ -9,7 +9,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			this.plugin.settings.toggleAutomatically;
 
 		new Setting(this.containerEl)
-			.setName("Toggle automatically on open")
+			.setName("Toggle automatically on file open")
 			.setDesc(
 				htmlDescription(
 					`Show and hide outline automatically based on the number of headings in the file.`
@@ -36,14 +36,15 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 
 						restartButton.setDisabled(value === initialToggleValue);
 						minimumHeadingsSetting.setDisabled(!value);
+						allowContentOverlapSetting.setDisabled(!value);
 					});
 			});
 
 		const minimumHeadingsSetting: Setting = new Setting(this.containerEl)
-			.setName("Minimum headings")
+			.setName("Minimum number of headings")
 			.setDesc(
 				htmlDescription(
-					`The minimum number of headings in the file to trigger the outline.`
+					`Set the minimum number of headings to trigger the outline.`
 				)
 			)
 			.addSlider((slider) => {
@@ -53,6 +54,23 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 					.setValue(this.plugin.settings.minimumHeadings)
 					.onChange(async (value) => {
 						this.plugin.settings.minimumHeadings = value;
+						await this.plugin.saveSettings();
+					});
+			})
+			.setDisabled(!this.plugin.settings.toggleAutomatically);
+
+		const allowContentOverlapSetting: Setting = new Setting(this.containerEl)
+			.setName("Allow content overlap")
+			.setDesc(
+				htmlDescription(
+					`Always trigger the outline, even if it overlaps note contents.`
+				)
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.allowContentOverlap)
+					.onChange(async (value) => {
+						this.plugin.settings.allowContentOverlap = value;
 						await this.plugin.saveSettings();
 					});
 			})

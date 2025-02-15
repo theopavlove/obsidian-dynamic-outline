@@ -11,7 +11,7 @@ export default class ToggleOnHoverSetting extends DynamicOutlineSetting {
 			.setName("Toggle on button hover")
 			.setDesc(
 				htmlDescription(
-					`Show and hide outline window when hovering mouse cursor over the button, pin on click.`
+					`Hover to show or hide the outline, click to pin.`
 				)
 			)
 			.addButton((button) => {
