@@ -9,10 +9,10 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			this.plugin.settings.toggleAutomatically;
 
 		new Setting(this.containerEl)
-			.setName("Toggle automatically")
+			.setName("Toggle automatically on open")
 			.setDesc(
 				htmlDescription(
-					`Show and hide automatically based on the number of headings in the file.`
+					`Show and hide outline automatically based on the number of headings in the file.`
 				)
 			)
 			.addButton((button) => {

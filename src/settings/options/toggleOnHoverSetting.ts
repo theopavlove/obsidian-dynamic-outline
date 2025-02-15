@@ -8,10 +8,10 @@ export default class ToggleOnHoverSetting extends DynamicOutlineSetting {
 		const initialToggleValue: boolean = this.plugin.settings.toggleOnHover;
 
 		new Setting(this.containerEl)
-			.setName("Toggle on hover")
+			.setName("Toggle on button hover")
 			.setDesc(
 				htmlDescription(
-					`Show and hide when hovering over the button, pin on click.`
+					`Show and hide outline window when hovering mouse cursor over the button, pin on click.`
 				)
 			)
 			.addButton((button) => {

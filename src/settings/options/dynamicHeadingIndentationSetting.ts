@@ -11,7 +11,7 @@ export default class DynamicHeadingIndentationSetting extends DynamicOutlineSett
 		new Setting(this.containerEl)
 			.setName("Dynamic heading indentation")
 			.setDesc(
-				htmlDescription("Dynamically adjusts heading indentation based on the previous heading level, mimicking the Outline plugin's behavior for improved visual hierarchy.")
+				htmlDescription("Adjusts heading indentation based on the previous heading level for improved visual hierarchy.")
 			)
 			.addButton((button) => {
 				restartButton = button;

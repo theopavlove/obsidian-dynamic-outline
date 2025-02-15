@@ -8,10 +8,10 @@ export default class WindowLocationSetting extends DynamicOutlineSetting {
 		const initialToggleValue: string = this.plugin.settings.windowLocation;
 
 		new Setting(this.containerEl)
-			.setName("Window location")
+			.setName("Outline location")
 			.setDesc(
 				htmlDescription(
-					`Set the location both for window and button (right by default).`
+					`Set the location for both the window and the button.`
 				)
 			)
 			.addButton((button) => {
