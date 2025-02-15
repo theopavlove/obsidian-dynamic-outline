@@ -40,6 +40,10 @@ export default class OutlineWindow {
 
 	set pinned(value: boolean) {
 		this._pinned = value;
+
+		const button: OutlineButton = this._stateManager.getButtonInView(this._view);
+		button.pinned = value;
+
 		if (this._plugin.settings.toggleOnHover && !value) {
 			this.hide();
 		}

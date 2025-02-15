@@ -32,12 +32,16 @@ export default class OutlineButton {
 		this._containerEl.classList.toggle("button-active", value);
 	}
 
+	set pinned(value: boolean) {
+		this._containerEl.classList.toggle("pinned", value);
+	}
+
 	private setupEventListeners() {
 		this._plugin.registerDomEvent(this._containerEl, "click", () =>
 			this.handleClick()
-	);
-	
-	if (this._plugin.settings.toggleOnHover) {
+		);
+
+		if (this._plugin.settings.toggleOnHover) {
 			this._plugin.registerDomEvent(this._containerEl, "mouseenter", () =>
 				this.handleMouseEnter()
 			);
@@ -114,7 +118,9 @@ export default class OutlineButton {
 			window.show({
 				scrollBlock: "start",
 			});
-			window.pinned = true;
+			if (this._plugin.settings.toggleOnHover) {
+				window.pinned = true;
+			}
 		}
 	}
 

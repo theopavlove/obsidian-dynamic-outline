@@ -887,7 +887,7 @@ button.dynamic-outline-reload[disabled] {
 	color: var(--dynamic-outline-h2-text-color);
 	font-weight: var(--dynamic-outline-h2-font-weight);
 	font-style: var(--dynamic-outline-h2-font-style);
-	font-variant: var(--dynamic-outline-h2-font-variant)
+	font-variant: var(--dynamic-outline-h2-font-variant);
 }
 
 #dynamic-outline li .heading-level-3 {
@@ -973,6 +973,10 @@ button.dynamic-outline-reload[disabled] {
 	opacity: var(--icon-opacity-hover);
 	color: var(--icon-color-hover);
 	background-color: var(--background-modifier-hover);
+}
+
+.dynamic-outline-button.pinned {
+	color: var(--text-normal);
 }
 
 .hide-button-from-toolbar .dynamic-outline-button {
