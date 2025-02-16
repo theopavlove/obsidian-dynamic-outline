@@ -72,11 +72,8 @@ export default class OutlineStateManager {
 
 		let shouldShow: boolean =
 			headings &&
+			this.isEnoughWidth(mdView) &&
 			headings.length >= this._plugin.settings.minimumHeadings;
-
-		if (this._plugin.settings.preventContentOverlap) {
-			shouldShow = shouldShow && this.isEnoughWidth(mdView);
-		}
 
 		if (window.visible && !shouldShow) {
 			if (this._plugin.settings.toggleOnHover) window.pinned = false;
@@ -129,13 +126,23 @@ export default class OutlineStateManager {
 	}
 
 	private isEnoughWidth(mdView: MarkdownView): boolean {
+		if (this._plugin.settings.contentOverlap === "allow") {
+			return true;
+		}
+
 		const mdViewWidth: number = mdView.contentEl.innerWidth;
 		const windowWidth: number =
 			this._plugin.getCssVariableAsNumber(
 				"--dynamic-outline-window-width"
 			) ?? 256;
 
-		const enoughWidth: boolean = (mdViewWidth - 700) / 1.75 >= windowWidth;
-		return enoughWidth;
+		switch (this._plugin.settings.contentOverlap) {
+			case "partial":
+				return mdViewWidth - 700 >= windowWidth;
+			case "prevent":
+				return (mdViewWidth - 700) / 2 >= windowWidth;
+			default:
+				return true;
+		}
 	}
 }

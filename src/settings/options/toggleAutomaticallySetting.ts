@@ -62,17 +62,18 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 		const preventContentOverlapSetting: Setting = new Setting(
 			this.containerEl
 		)
-			.setName("Prevent content overlap")
+			.setName("Content overlap")
 			.setDesc(
-				htmlDescription(
-					`When off, trigger the outline even if it overlaps note contents.`
-				)
+				"Set how much content overlap is acceptable for the automatic outline to trigger. Choosing to prevent overlap will show the outline less frequently, particularly when horizontal space is limited."
 			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(this.plugin.settings.preventContentOverlap)
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption("allow", "Allow")
+					.addOption("partial", "Partial")
+					.addOption("prevent", "Prevent")
+					.setValue(this.plugin.settings.contentOverlap)
 					.onChange(async (value) => {
-						this.plugin.settings.preventContentOverlap = value;
+						this.plugin.settings.contentOverlap = value;
 						await this.plugin.saveSettings();
 					});
 			})

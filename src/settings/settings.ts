@@ -19,7 +19,7 @@ interface DynamicOutlinePluginSettings {
 	minimumHeadings: number;
 	resetSearchFieldOnHeadingClick: boolean;
 	toggleAutomatically: boolean;
-	preventContentOverlap: boolean;
+	contentOverlap: string;
 	toggleOnHover: boolean;
 	windowLocation: string;
 }
@@ -31,7 +31,7 @@ const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	minimumHeadings: 1,
 	resetSearchFieldOnHeadingClick: true,
 	toggleAutomatically: false,
-	preventContentOverlap: false,
+	contentOverlap: "allow",
 	toggleOnHover: false,
 	windowLocation: "right",
 };
