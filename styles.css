@@ -637,6 +637,7 @@ settings:
 	--dynamic-outline-window-gap: 4px;
 	--dynamic-outline-window-offset-top: 0px;
 	--dynamic-outline-window-offset-bottom: 0px;
+	--dynamic-outline-status-bar-height-offset-bottom: 30px;
 	--dynamic-outline-top: calc(
 		var(--header-height) + var(--dynamic-outline-window-gap) +
 			var(--dynamic-outline-window-offset-top)
@@ -647,7 +648,8 @@ settings:
 	);
 	--dynamic-outline-bottom: calc(
 		var(--dynamic-outline-window-gap) +
-			var(--dynamic-outline-window-offset-bottom)
+			var(--dynamic-outline-window-offset-bottom) +
+			var(--dynamic-outline-status-bar-height-offset-bottom)
 	);
 
 	/* List items */
@@ -718,15 +720,14 @@ settings:
  */
 
 #dynamic-outline {
-	position: fixed;
+	position: absolute;
 	display: flex;
 	flex-direction: column;
-
 	z-index: var(--layer-popover);
 
 	top: var(--dynamic-outline-top);
 	max-height: calc(
-		92.5dvh - var(--dynamic-outline-top) - var(--dynamic-outline-bottom)
+		100% - var(--dynamic-outline-top) - var(--dynamic-outline-bottom)
 	);
 
 	width: var(--dynamic-outline-window-width);
@@ -743,20 +744,20 @@ settings:
 	opacity: var(--dynamic-outline-opacity);
 }
 
-#dynamic-outline.location-left {
-	right: unset;
-	left: 20px;
-}
-
 /* Corner case for the Editing Toolbar plugin */
 .view-content
 	> .markdown-source-view[style=""]
 	~ #dynamic-outline.obstruction-top {
 	top: var(--dynamic-outline-top-editing-toolbar);
 	max-height: calc(
-		92.5dvh - var(--dynamic-outline-top-editing-toolbar) -
+		100% - var(--dynamic-outline-top-editing-toolbar) -
 			var(--dynamic-outline-bottom)
 	);
+}
+
+#dynamic-outline.location-left {
+	right: unset;
+	left: 20px;
 }
 
 #dynamic-outline:hover {
