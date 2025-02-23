@@ -418,22 +418,17 @@ export default class OutlineWindow {
 	hide(): void {
 		if (!this.visible) return;
 
-		// Remove the container.
 		this._containerEl.remove();
 
-		// Remove the "hovered" effect on each heading.
 		this.removeHovered();
 
-		// Turn off the button.
 		const button: OutlineButton = this._stateManager.getButtonInView(
 			this._view
 		);
 		button.active = false;
 
-		// Call "Focus on last note" Obsidian built-in method
 		this._plugin.runCommand("editor:focus");
 
-		// Remove optional pinning.
 		if (this._plugin.settings.toggleOnHover) {
 			this.pinned = false;
 		}
