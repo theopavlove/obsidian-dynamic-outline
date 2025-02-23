@@ -41,7 +41,9 @@ export default class OutlineWindow {
 	set pinned(value: boolean) {
 		this._pinned = value;
 
-		const button: OutlineButton = this._stateManager.getButtonInView(this._view);
+		const button: OutlineButton = this._stateManager.getButtonInView(
+			this._view
+		);
 		button.pinned = value;
 
 		if (this._plugin.settings.toggleOnHover && !value) {
@@ -340,6 +342,7 @@ export default class OutlineWindow {
 			this._plugin,
 			this._view
 		);
+
 		const headings: HeadingCache[] = this.getHeadings();
 
 		// Check if the headings are the same as before and, if so,
@@ -358,6 +361,7 @@ export default class OutlineWindow {
 		this._latestHeadings = headings;
 		ulElement.empty();
 
+		const fragment: DocumentFragment = document.createDocumentFragment();
 		if (this._plugin.settings.dynamicHeadingIndentation) {
 			let stack: Array<number> = [];
 			headings?.forEach((heading) => {
@@ -369,19 +373,16 @@ export default class OutlineWindow {
 				}
 				stack.push(heading.level);
 
-				const liElement: HTMLLIElement = dynamicLi.createLiElement(
-					heading,
-					stack.length
+				fragment.append(
+					dynamicLi.createLiElement(heading, stack.length)
 				);
-				ulElement.append(liElement);
 			});
 		} else {
 			headings?.forEach((heading) => {
-				const liElement: HTMLLIElement =
-					dynamicLi.createLiElement(heading);
-				ulElement.append(liElement);
+				fragment.append(dynamicLi.createLiElement(heading));
 			});
 		}
+		ulElement.appendChild(fragment);
 
 		if (this._plugin.settings.highlightCurrentHeading) {
 			this.highlightCurrentHeading();
