@@ -11,9 +11,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 		new Setting(this.containerEl)
 			.setName("Toggle automatically on file open")
 			.setDesc(
-				htmlDescription(
-					`Show and hide outline automatically based on the number of headings in the file.`
-				)
+				`Show and hide outline automatically based on the number of headings in the file.`
 			)
 			.addButton((button) => {
 				restartButton = button;
@@ -40,12 +38,31 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 					});
 			});
 
+			const preventContentOverlapSetting: Setting = new Setting(
+				this.containerEl
+			)
+				.setName("Content overlap")
+				.setDesc(
+					"Set how much content overlap is acceptable for the automatic outline to trigger. Choosing to prevent overlap will show the outline less frequently, particularly when horizontal space is limited."
+				)
+				.addDropdown((dropdown) => {
+					dropdown
+						.addOption("allow", "Allow")
+						.addOption("partial", "Partial")
+						.addOption("prevent", "Prevent")
+						.setValue(this.plugin.settings.contentOverlap)
+						.onChange(async (value) => {
+							this.plugin.settings.contentOverlap = value;
+							await this.plugin.saveSettings();
+						});
+				})
+				.setClass("dynamic-outline-setting-item-hidden")
+				.setDisabled(!this.plugin.settings.toggleAutomatically);
+
 		const minimumHeadingsSetting: Setting = new Setting(this.containerEl)
 			.setName("Minimum number of headings")
 			.setDesc(
-				htmlDescription(
-					`Set the minimum number of headings to trigger the outline.`
-				)
+				`Set the minimum number of headings to trigger the outline.`
 			)
 			.addSlider((slider) => {
 				slider
@@ -57,26 +74,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 						await this.plugin.saveSettings();
 					});
 			})
-			.setDisabled(!this.plugin.settings.toggleAutomatically);
-
-		const preventContentOverlapSetting: Setting = new Setting(
-			this.containerEl
-		)
-			.setName("Content overlap")
-			.setDesc(
-				"Set how much content overlap is acceptable for the automatic outline to trigger. Choosing to prevent overlap will show the outline less frequently, particularly when horizontal space is limited."
-			)
-			.addDropdown((dropdown) => {
-				dropdown
-					.addOption("allow", "Allow")
-					.addOption("partial", "Partial")
-					.addOption("prevent", "Prevent")
-					.setValue(this.plugin.settings.contentOverlap)
-					.onChange(async (value) => {
-						this.plugin.settings.contentOverlap = value;
-						await this.plugin.saveSettings();
-					});
-			})
+			.setClass("dynamic-outline-setting-item-hidden")
 			.setDisabled(!this.plugin.settings.toggleAutomatically);
 	}
 }

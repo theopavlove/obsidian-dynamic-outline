@@ -995,3 +995,8 @@ button.dynamic-outline-reload[disabled] {
 	+ .style-settings-container {
 	padding-left: 17px;
 }
+
+/* Custom hide logic for settings options */
+.setting-item.dynamic-outline-setting-item-hidden.is-disabled {
+	display: none;
+}
