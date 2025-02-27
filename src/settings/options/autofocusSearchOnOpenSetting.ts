@@ -4,7 +4,7 @@ import DynamicOutlineSetting from "../settingsOption";
 export default class AutofocusSearchOnOpenSetting extends DynamicOutlineSetting {
 	public display(): void {
 		new Setting(this.containerEl)
-			.setName("Autofocus search field on open")
+			.setName("Autofocus search field")
 			.setDesc(
 				"Focus the search field on window open. Useful for immediate keyboard control."
 			)
