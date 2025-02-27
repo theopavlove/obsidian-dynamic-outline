@@ -2,11 +2,13 @@ import DynamicOutlinePlugin from "main";
 import { HeadingCache, MarkdownView, Workspace } from "obsidian";
 import OutlineButton from "./outlineButton";
 import OutlineWindow from "./outlineWindow";
+import OutlineHeadings from "./outlineHeadings";
 
 export default class OutlineStateManager {
 	private static instance: OutlineStateManager;
 	private _windows: Map<string, OutlineWindow> = new Map();
 	private _buttons: Map<string, OutlineButton> = new Map();
+	private _headings: Map<string, OutlineHeadings> = new Map();
 	private _plugin: DynamicOutlinePlugin;
 
 	private constructor(plugin: DynamicOutlinePlugin) {

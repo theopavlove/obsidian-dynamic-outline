@@ -1,7 +1,7 @@
 import DynamicOutlinePlugin from "main";
 import { HeadingCache, MarkdownView, TFile, htmlToMarkdown } from "obsidian";
 
-export default class DynamicHeadings {
+export default class OutlineHeadings {
 	private _plugin: DynamicOutlinePlugin;
 	private _view: MarkdownView;
 

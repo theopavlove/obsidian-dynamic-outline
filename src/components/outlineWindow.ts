@@ -2,7 +2,7 @@ import DynamicOutlinePlugin, { WINDOW_ID } from "main";
 import { HeadingCache, MarkdownView } from "obsidian";
 import OutlineButton from "./outlineButton";
 import OutlineHeadings from "./outlineHeadings";
-import DynamicLiElement from "./outlineLiElement";
+import OutlineLiElement from "./outlineLiElement";
 import OutlineStateManager from "./outlineStateManager";
 import SearchContainer from "./searchContainer";
 import * as fuzzysort from "fuzzysort";
@@ -338,7 +338,7 @@ export default class OutlineWindow {
 			this._containerEl.querySelector("ul");
 		if (!ulElement) return;
 
-		const dynamicLi: DynamicLiElement = new DynamicLiElement(
+		const dynamicLi: OutlineLiElement = new OutlineLiElement(
 			this._plugin,
 			this._view
 		);
