@@ -384,6 +384,17 @@ export default class OutlineWindow {
 		}
 		ulElement.appendChild(fragment);
 
+		const shouldHideSearchBar: boolean =
+			this._plugin.settings.autoHideSearchBar &&
+			this.getHeadings().length <
+				this._plugin.settings.minHeadingsToHideSearchBar;
+
+		const searchFieldElement: HTMLDivElement | null =
+			this._containerEl.querySelector(
+				".dynamic-outline-search-container"
+			);
+		searchFieldElement?.classList.toggle("hidden", shouldHideSearchBar);
+
 		if (this._plugin.settings.highlightCurrentHeading) {
 			this.highlightCurrentHeading();
 		}

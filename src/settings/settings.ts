@@ -8,6 +8,7 @@ import ToggleAutomaticallySetting from "./options/toggleAutomaticallySetting";
 import ToggleOnHoverSetting from "./options/toggleOnHoverSetting";
 import WindowLocationSetting from "./options/windowLocationSetting";
 import DynamicHeadingIndentationSetting from "./options/dynamicHeadingIndentationSetting";
+import AutoHideSearchBarSetting from "./options/autoHideSearchBarSetting";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
@@ -22,6 +23,8 @@ interface DynamicOutlinePluginSettings {
 	contentOverlap: string;
 	toggleOnHover: boolean;
 	windowLocation: string;
+	autoHideSearchBar: boolean;
+	minHeadingsToHideSearchBar: number;
 }
 
 const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
@@ -34,6 +37,8 @@ const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	contentOverlap: "allow",
 	toggleOnHover: false,
 	windowLocation: "right",
+	autoHideSearchBar: true,
+	minHeadingsToHideSearchBar: 5,
 };
 
 export function htmlDescription(text: string): DocumentFragment {
@@ -62,36 +67,15 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 		new ToggleOnHoverSetting(this.plugin, containerEl).display();
 		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
 
-		// new Setting(containerEl)
-		// 	.setName("TODO: Hide (don't show?) when not enough space")
-		// 	.setDesc(
-		// 		'Also will not trigger the "Toggle Automatically" setting if the window is too narrow.'
-		// 	)
-		// 	.addToggle(() => {});
-		// new Setting(containerEl)
-		// 	.setName("TODO: Hide on jump")
-		// 	.setDesc("Close the window when you jump to a heading.")
-		// 	.addToggle(() => {});
-		// new Setting(containerEl)
-		// 	.setName("TODO: Hide automatically in view")
-		// 	.setDesc(
-		// 		"Choose when the outline window should appear in different views."
-		// 	)
-		// 	.addDropdown((dropdown) => {
-		// 		dropdown
-		// 			.addOption("never", "Never")
-		// 			.addOption("editing", "Editing view")
-		// 			.addOption("reading", "Reading view");
-		// 	});
-
 		new Setting(containerEl)
 			.setName(htmlDescription("Navigation and search"))
 			.setHeading()
 			.setDesc("Configure how you move through and search your outline.");
 		new HighlightOnScrollSetting(this.plugin, containerEl).display();
+		new AutoHideSearchBarSetting(this.plugin, containerEl).display();
 		new AutofocusSearchOnOpenSetting(this.plugin, containerEl).display();
 		new ResetSearchSetting(this.plugin, containerEl).display();
-
+		
 		new Setting(containerEl)
 			.setName(htmlDescription("Layout"))
 			.setHeading()

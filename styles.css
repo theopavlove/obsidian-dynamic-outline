@@ -731,7 +731,8 @@ settings:
 	);
 
 	width: var(--dynamic-outline-window-width);
-	padding: 10px 0 5px;
+	/* padding: 10px 0 5px; */
+	padding: 5px 0 5px;
 	right: 20px;
 
 	font-size: var(--dynamic-outline-font-size);
@@ -772,10 +773,15 @@ button.dynamic-outline-reload[disabled] {
  * Dynamic Outline Search Container
  */
 
+.dynamic-outline-search-container.hidden {
+	display: none;
+}
+
 .dynamic-outline-search-container {
 	display: flex;
 	align-items: center;
 
+	margin-top: 5px;
 	margin-bottom: 5px;
 }
 
@@ -816,6 +822,11 @@ button.dynamic-outline-reload[disabled] {
 /* 
  * Dynamic Outline Content Container
  */
+
+.dynamic-outline-search-container.hidden ~ .dynamic-outline-content-container {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
 
 .dynamic-outline-content-container {
 	overflow-y: auto;
