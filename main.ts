@@ -38,16 +38,21 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		this.stateManager = OutlineStateManager.initialize(this);
 
+		// When the plugin is enabled, it will create buttons in all visible views.
 		this.stateManager.createButtonsInOpenViews();
-		this.registerEvent(
-			this.app.workspace.on("active-leaf-change", () => {
-				this.stateManager.createButtonsInOpenViews();
-			})
-		);
 
 		this.registerEvent(
-			this.app.workspace.on("active-leaf-change", () => {
+			this.app.workspace.on("active-leaf-change", (leaf) => {
+				this.stateManager.createButtonsInOpenViews();
 				this.stateManager.handleMetadataChanged();
+
+				if (leaf?.view instanceof MarkdownView) {
+					const mdView = leaf.view;
+					const outlineWindow = this.stateManager.getWindowInView(mdView);
+					const outlineButton = this.stateManager.getButtonInView(mdView);
+					outlineWindow.syncWithView(mdView);
+					outlineButton.syncWithView(mdView);
+				}
 			})
 		);
 

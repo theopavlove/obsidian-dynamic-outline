@@ -19,9 +19,9 @@ export default class OutlineWindow {
 	private _pinned = false;
 
 	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
+		this._stateManager = OutlineStateManager.getInstance();
 		this._plugin = plugin;
 		this._view = view;
-		this._stateManager = OutlineStateManager.getInstance();
 		this._containerEl = this.createElement();
 		this._dynamicHeadings = new OutlineHeadings(this._plugin, this._view);
 
@@ -49,6 +49,16 @@ export default class OutlineWindow {
 		if (this._plugin.settings.toggleOnHover && !value) {
 			this.hide();
 		}
+	}
+
+	/**
+	 * Synchronizes the outline window with the provided Markdown view.
+	 * @param {MarkdownView} view - The Markdown view to synchronize with.
+	 */
+	syncWithView(view: MarkdownView) {
+		this._view = view;
+		this._dynamicHeadings.syncWithView(view);
+		this.update();
 	}
 
 	private setupEventListeners() {
@@ -256,11 +266,6 @@ export default class OutlineWindow {
 		itemList.forEach((liElement) => {
 			liElement.classList.remove("hovered");
 		});
-	}
-
-	updateView(view: MarkdownView) {
-		this._view = view;
-		this._dynamicHeadings.updateView(view);
 	}
 
 	highlightCurrentHeading(scrollBlock: ScrollLogicalPosition = "nearest") {

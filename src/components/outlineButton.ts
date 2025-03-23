@@ -9,9 +9,10 @@ export default class OutlineButton {
 	private _view: MarkdownView;
 	private _containerEl: HTMLButtonElement;
 
-	constructor(plugin: DynamicOutlinePlugin) {
-		this._plugin = plugin;
+	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
 		this._stateManager = OutlineStateManager.getInstance();
+		this._plugin = plugin;
+		this._view = view;
 		this._containerEl = this.createElement();
 
 		this.setupEventListeners();
@@ -34,6 +35,14 @@ export default class OutlineButton {
 
 	set pinned(value: boolean) {
 		this._containerEl.classList.toggle("pinned", value);
+	}
+
+	/**
+	 * Synchronizes the outline button with the provided Markdown view.
+	 * @param {MarkdownView} view - The Markdown view to synchronize with.
+	 */
+	syncWithView(view: MarkdownView) {
+		this._view = view;
 	}
 
 	private setupEventListeners() {
@@ -94,10 +103,6 @@ export default class OutlineButton {
 		return this._view.containerEl.querySelector(
 			".view-header-left .view-header-nav-buttons"
 		);
-	}
-
-	updateView(view: MarkdownView) {
-		this._view = view;
 	}
 
 	handleClick(): void {

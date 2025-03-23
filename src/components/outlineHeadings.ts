@@ -14,7 +14,11 @@ export default class OutlineHeadings {
 		return this._getHeadingsForView(this._view);
 	}
 
-	updateView(view: MarkdownView): void {
+	/**
+	 * Synchronizes the outline headings with the provided Markdown view.
+	 * @param {MarkdownView} view - The Markdown view to synchronize with.
+	 */
+	syncWithView(view: MarkdownView): void {
 		this._view = view;
 	}
 

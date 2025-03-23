@@ -44,12 +44,10 @@ export default class OutlineStateManager {
 	getButtonInView(view: MarkdownView): OutlineButton {
 		const key = this.getKey(view);
 		if (!this._buttons.has(key)) {
-			this._buttons.set(key, new OutlineButton(this._plugin));
+			this._buttons.set(key, new OutlineButton(this._plugin, view));
 		}
 
 		const button: OutlineButton = this._buttons.get(key)!;
-		button.updateView(view);
-
 		return button;
 	}
 
@@ -60,8 +58,6 @@ export default class OutlineStateManager {
 		}
 
 		const window: OutlineWindow = this._windows.get(key)!;
-		window.updateView(view);
-
 		return window;
 	}
 
