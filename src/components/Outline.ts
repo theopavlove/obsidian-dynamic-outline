@@ -71,7 +71,6 @@ export default class Outline {
 		return (
 			this.headings &&
 			this._isEnoughWindowWidth() &&
-			this._plugin.settings.toggleOnHover &&
 			this.headings.length >= this._plugin.settings.minimumHeadings
 		);
 	}
