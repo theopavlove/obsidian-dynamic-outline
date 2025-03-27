@@ -1,36 +1,29 @@
 import DynamicOutlinePlugin, { WINDOW_ID } from "main";
-import { HeadingCache, MarkdownView } from "obsidian";
-import OutlineButton from "./outlineButton";
-import OutlineHeadings from "./outlineHeadings";
+import { HeadingCache } from "obsidian";
 import OutlineLiElement from "./outlineLiElement";
-import OutlineStateManager from "./outlineStateManager";
 import SearchContainer from "./searchContainer";
 import * as fuzzysort from "fuzzysort";
+import Outline from "src/components/Outline";
 
 export default class OutlineWindow {
 	public static hideTimeout: NodeJS.Timeout | null = null;
 
-	private _stateManager: OutlineStateManager;
 	private _plugin: DynamicOutlinePlugin;
-	private _view: MarkdownView;
+	private _outline: Outline;
 	private _containerEl: HTMLDivElement;
-	private _dynamicHeadings: OutlineHeadings;
 	private _latestHeadings: HeadingCache[] = [];
 	private _pinned = false;
 
-	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
-		this._stateManager = OutlineStateManager.getInstance();
+	constructor(plugin: DynamicOutlinePlugin, outline: Outline) {
 		this._plugin = plugin;
-		this._view = view;
-		this._containerEl = this.createElement();
-		this._dynamicHeadings = new OutlineHeadings(this._plugin, this._view);
-
-		this.setupEventListeners();
+		this._outline = outline;
+		this._containerEl = this._createElement();
+		this._setupEventListeners();
 	}
 
 	get visible(): boolean {
 		const windowInView: HTMLElement | null =
-			this._view.containerEl.querySelector(`#${WINDOW_ID}`);
+			this._outline.view.containerEl.querySelector(`#${WINDOW_ID}`);
 		return !!windowInView;
 	}
 
@@ -41,47 +34,220 @@ export default class OutlineWindow {
 	set pinned(value: boolean) {
 		this._pinned = value;
 
-		const button: OutlineButton = this._stateManager.getButtonInView(
-			this._view
-		);
-		button.pinned = value;
+		this._outline.buttonPinned = value;
 
 		if (this._plugin.settings.toggleOnHover && !value) {
 			this.hide();
 		}
 	}
 
-	/**
-	 * Synchronizes the outline window with the provided Markdown view.
-	 * @param {MarkdownView} view - The Markdown view to synchronize with.
-	 */
-	syncWithView(view: MarkdownView) {
-		this._view = view;
-		this._dynamicHeadings.syncWithView(view);
-		this.update();
+	toggle(): void {
+		this.visible ? this.hide() : this.show();
 	}
 
-	private setupEventListeners() {
+	show(options?: { scrollBlock?: ScrollLogicalPosition }): void {
+		if (this.visible) return;
+
+		this._checkForObstructions();
+		this._checkForLocation();
+		this.update();
+
+		this._outline.view.contentEl.append(this._containerEl);
+
+		this._outline.buttonActive = true;
+
+		if (this._plugin.settings.autofocusSearchOnOpen) {
+			const inputField: HTMLInputElement | null =
+				this._containerEl.querySelector(
+					"input"
+				) as HTMLInputElement | null;
+			inputField?.focus();
+		}
+
+		if (this._plugin.settings.highlightCurrentHeading) {
+			this.highlightCurrentHeading(options?.scrollBlock);
+		}
+	}
+
+	// TODO: should trigger clearInput() for the search field
+	hide(): void {
+		if (!this.visible) return;
+
+		this._containerEl.remove();
+
+		this.removeHovered();
+
+		this._outline.buttonActive = false;
+
+		this._plugin.runCommand("editor:focus");
+
+		if (this._plugin.settings.toggleOnHover) {
+			this.pinned = false;
+		}
+	}
+
+	update(): void {
+		const arraysAreEqual = (
+			a: HeadingCache[],
+			b: HeadingCache[]
+		): boolean => {
+			return (
+				a.length === b.length &&
+				a.every(
+					(item, index) =>
+						item.heading === b[index].heading &&
+						item.level === b[index].level
+				)
+			);
+		};
+
+		// It should always be present as the .containerEl is always created (is it?).
+		const ulElement: HTMLUListElement | null =
+			this._containerEl.querySelector("ul");
+		if (!ulElement) return;
+
+		const dynamicLi: OutlineLiElement = new OutlineLiElement(
+			this._plugin,
+			this._outline
+		);
+
+		const headings: HeadingCache[] = this._outline.outlineHeadings.headings;
+
+		// Check if the headings are the same as before and, if so,
+		// update only the positions of the li elements.
+		if (
+			headings.length > 0 &&
+			arraysAreEqual(headings, this._latestHeadings)
+		) {
+			const currentLi = ulElement.querySelectorAll("li");
+			currentLi.forEach((liElement, index) => {
+				dynamicLi.updateLiElementLine(liElement, headings[index]);
+			});
+			return;
+		}
+
+		this._latestHeadings = headings;
+		ulElement.empty();
+
+		const fragment: DocumentFragment = document.createDocumentFragment();
+		if (this._plugin.settings.dynamicHeadingIndentation) {
+			let stack: Array<number> = [];
+			headings?.forEach((heading) => {
+				while (
+					stack.length > 0 &&
+					heading.level <= stack[stack.length - 1]
+				) {
+					stack.pop();
+				}
+				stack.push(heading.level);
+
+				fragment.append(
+					dynamicLi.createLiElement(heading, stack.length)
+				);
+			});
+		} else {
+			headings?.forEach((heading) => {
+				fragment.append(dynamicLi.createLiElement(heading));
+			});
+		}
+		ulElement.appendChild(fragment);
+
+		const shouldHideSearchBar: boolean =
+			this._plugin.settings.autoHideSearchBar &&
+			headings.length < this._plugin.settings.minHeadingsToHideSearchBar;
+
+		const searchFieldElement: HTMLDivElement | null =
+			this._containerEl.querySelector(
+				".dynamic-outline-search-container"
+			);
+		searchFieldElement?.classList.toggle("hidden", shouldHideSearchBar);
+
+		if (this._plugin.settings.highlightCurrentHeading) {
+			this.highlightCurrentHeading();
+		}
+	}
+
+	highlightCurrentHeading(scrollBlock: ScrollLogicalPosition = "nearest") {
+		const binarySearchClosestHeading = (
+			headings: HeadingCache[],
+			targetLine: number
+		): number => {
+			let closestIndex = 0;
+			let low = 0;
+			let high = headings.length - 1;
+			while (low <= high) {
+				const mid = Math.floor((low + high) / 2);
+				const midLine = headings[mid].position.start.line;
+				if (midLine <= targetLine) {
+					closestIndex = mid;
+					low = mid + 1;
+				} else {
+					high = mid - 1;
+				}
+			}
+			return closestIndex;
+		};
+
+		const currentScrollPosition: number =
+			this._outline.view.currentMode.getScroll();
+
+		// TODO: Should cache it and not call every time. (?)
+		const headings: HeadingCache[] = this._outline.outlineHeadings.headings;
+
+		if (headings.length == 0) {
+			return;
+		}
+
+		const closestIndex: number = binarySearchClosestHeading(
+			headings,
+			currentScrollPosition + 1
+		);
+
+		// TODO: Should cache this thing and not call it every time. (?)
+		const allHeadingElements = this._containerEl.querySelectorAll("li");
+		allHeadingElements.forEach((element, index) =>
+			element.classList.toggle("highlight", index === closestIndex)
+		);
+
+		// Check if there is a highlighted heading, and scroll to it
+		const element: HTMLElement | null =
+			this._containerEl.querySelector("li.highlight");
+		element?.scrollIntoView({
+			behavior: "instant" as ScrollBehavior,
+			block: scrollBlock,
+		});
+	}
+
+	removeHovered(): void {
+		const itemList = this.getVisibleLiItems();
+		itemList.forEach((liElement) => {
+			liElement.classList.remove("hovered");
+		});
+	}
+
+	private _setupEventListeners() {
 		this._plugin.registerDomEvent(
 			this._containerEl.querySelector("input") as HTMLInputElement,
 			"input",
 			() => {
-				this.filterItems();
+				this._filterItems();
 			}
 		);
+
 		this._plugin.registerDomEvent(
 			this._containerEl.querySelector("input") as HTMLInputElement,
 			"keydown",
 			(event: KeyboardEvent) => {
-				this.handleKeyDown(event);
+				this._handleKeyDown(event);
 			}
 		);
+
 		if (this._plugin.settings.toggleOnHover) {
 			this._plugin.registerDomEvent(this._containerEl, "mouseenter", () =>
-				this.handleMouseEnter()
+				this._handleMouseEnter()
 			);
 			this._plugin.registerDomEvent(this._containerEl, "mouseleave", () =>
-				this.handleMouseLeave()
+				this._handleMouseLeave()
 			);
 		}
 	}
@@ -98,7 +264,7 @@ export default class OutlineWindow {
 		});
 	}
 
-	private handleKeyDown(event: KeyboardEvent): void {
+	private _handleKeyDown(event: KeyboardEvent): void {
 		/**
 		 * Retrieves the current index of the item in the list.
 		 *
@@ -161,7 +327,7 @@ export default class OutlineWindow {
 		}
 	}
 
-	private filterItems(): void {
+	private _filterItems(): void {
 		// TODO: should be a better way to target the input field
 		// considering we already have a dedicated class
 		const inputField: HTMLInputElement = this._containerEl.querySelector(
@@ -194,8 +360,8 @@ export default class OutlineWindow {
 		this.setHovered(itemList, 0);
 	}
 
-	private handleMouseEnter(): void {
-		this.clearHideTimeout();
+	private _handleMouseEnter(): void {
+		this._clearHideTimeout();
 
 		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
 		itemList.forEach((item) => {
@@ -203,7 +369,7 @@ export default class OutlineWindow {
 		});
 	}
 
-	private handleMouseLeave(): void {
+	private _handleMouseLeave(): void {
 		if (this._plugin.settings.toggleOnHover && !this.pinned) {
 			OutlineWindow.hideTimeout = setTimeout(() => {
 				this.hide();
@@ -211,18 +377,18 @@ export default class OutlineWindow {
 		}
 	}
 
-	public getContainerElement(): HTMLDivElement {
+	public _getContainerElement(): HTMLDivElement {
 		return this._containerEl;
 	}
 
-	public clearHideTimeout(): void {
+	public _clearHideTimeout(): void {
 		if (OutlineWindow.hideTimeout) {
 			clearTimeout(OutlineWindow.hideTimeout);
 			OutlineWindow.hideTimeout = null;
 		}
 	}
 
-	private createElement(): HTMLDivElement {
+	private _createElement(): HTMLDivElement {
 		const mainElement: HTMLDivElement = createEl("div", {
 			attr: {
 				id: "dynamic-outline",
@@ -243,7 +409,7 @@ export default class OutlineWindow {
 		return mainElement;
 	}
 
-	private checkForObstructions(): void {
+	private _checkForObstructions(): void {
 		// Check for Editing Toolbar at the top of the screen
 		const editingToolbar: HTMLElement | null = document.getElementById(
 			"cMenuToolbarModalBar"
@@ -254,204 +420,10 @@ export default class OutlineWindow {
 		this._containerEl.classList.toggle("obstruction-top", isTop);
 	}
 
-	private checkForLocation(): void {
+	private _checkForLocation(): void {
 		this._containerEl.classList.toggle(
 			"location-left",
 			this._plugin.settings.windowLocation === "left"
 		);
-	}
-
-	removeHovered(): void {
-		const itemList = this.getVisibleLiItems();
-		itemList.forEach((liElement) => {
-			liElement.classList.remove("hovered");
-		});
-	}
-
-	highlightCurrentHeading(scrollBlock: ScrollLogicalPosition = "nearest") {
-		const binarySearchClosestHeading = (
-			headings: HeadingCache[],
-			targetLine: number
-		): number => {
-			let closestIndex = 0;
-			let low = 0;
-			let high = headings.length - 1;
-			while (low <= high) {
-				const mid = Math.floor((low + high) / 2);
-				const midLine = headings[mid].position.start.line;
-				if (midLine <= targetLine) {
-					closestIndex = mid;
-					low = mid + 1;
-				} else {
-					high = mid - 1;
-				}
-			}
-			return closestIndex;
-		};
-
-		const currentScrollPosition: number =
-			this._view.currentMode.getScroll();
-
-		// TODO: Should cache it and not call every time. (?)
-		const headings: HeadingCache[] = this.getHeadings();
-
-		if (headings.length == 0) {
-			return;
-		}
-
-		const closestIndex: number = binarySearchClosestHeading(
-			headings,
-			currentScrollPosition + 1
-		);
-
-		// TODO: Should cache this thing and not call it every time. (?)
-		const allHeadingElements = this._containerEl.querySelectorAll("li");
-		allHeadingElements.forEach((element, index) =>
-			element.classList.toggle("highlight", index === closestIndex)
-		);
-
-		// Check if there is a highlighted heading, and scroll to it
-		const element: HTMLElement | null =
-			this._containerEl.querySelector("li.highlight");
-		element?.scrollIntoView({
-			behavior: "instant" as ScrollBehavior,
-			block: scrollBlock,
-		});
-	}
-
-	getHeadings(): HeadingCache[] {
-		return this._dynamicHeadings.headings;
-	}
-
-	update(): void {
-		const arraysAreEqual = (
-			a: HeadingCache[],
-			b: HeadingCache[]
-		): boolean => {
-			return (
-				a.length === b.length &&
-				a.every(
-					(item, index) =>
-						item.heading === b[index].heading &&
-						item.level === b[index].level
-				)
-			);
-		};
-
-		// It should always be present as the .containerEl is always created (is it?).
-		const ulElement: HTMLUListElement | null =
-			this._containerEl.querySelector("ul");
-		if (!ulElement) return;
-
-		const dynamicLi: OutlineLiElement = new OutlineLiElement(
-			this._plugin,
-			this._view
-		);
-
-		const headings: HeadingCache[] = this.getHeadings();
-
-		// Check if the headings are the same as before and, if so,
-		// update only the positions of the li elements.
-		if (
-			headings.length > 0 &&
-			arraysAreEqual(headings, this._latestHeadings)
-		) {
-			const currentLi = ulElement.querySelectorAll("li");
-			currentLi.forEach((liElement, index) => {
-				dynamicLi.updateLiElementLine(liElement, headings[index]);
-			});
-			return;
-		}
-
-		this._latestHeadings = headings;
-		ulElement.empty();
-
-		const fragment: DocumentFragment = document.createDocumentFragment();
-		if (this._plugin.settings.dynamicHeadingIndentation) {
-			let stack: Array<number> = [];
-			headings?.forEach((heading) => {
-				while (
-					stack.length > 0 &&
-					heading.level <= stack[stack.length - 1]
-				) {
-					stack.pop();
-				}
-				stack.push(heading.level);
-
-				fragment.append(
-					dynamicLi.createLiElement(heading, stack.length)
-				);
-			});
-		} else {
-			headings?.forEach((heading) => {
-				fragment.append(dynamicLi.createLiElement(heading));
-			});
-		}
-		ulElement.appendChild(fragment);
-
-		const shouldHideSearchBar: boolean =
-			this._plugin.settings.autoHideSearchBar &&
-			this.getHeadings().length <
-				this._plugin.settings.minHeadingsToHideSearchBar;
-
-		const searchFieldElement: HTMLDivElement | null =
-			this._containerEl.querySelector(
-				".dynamic-outline-search-container"
-			);
-		searchFieldElement?.classList.toggle("hidden", shouldHideSearchBar);
-
-		if (this._plugin.settings.highlightCurrentHeading) {
-			this.highlightCurrentHeading();
-		}
-	}
-
-	show(options?: { scrollBlock?: ScrollLogicalPosition }): void {
-		if (this.visible) return;
-
-		this.checkForObstructions();
-		this.checkForLocation();
-		this.update();
-		this._view.contentEl.append(this._containerEl);
-
-		const button: OutlineButton = this._stateManager.getButtonInView(
-			this._view
-		);
-		button.active = true;
-
-		if (this._plugin.settings.autofocusSearchOnOpen) {
-			const inputField: HTMLInputElement | null =
-				this._containerEl.querySelector(
-					"input"
-				) as HTMLInputElement | null;
-			inputField?.focus();
-		}
-
-		if (this._plugin.settings.highlightCurrentHeading) {
-			this.highlightCurrentHeading(options?.scrollBlock);
-		}
-	}
-
-	// TODO: should trigger clearInput() for the search field
-	hide(): void {
-		if (!this.visible) return;
-
-		this._containerEl.remove();
-
-		this.removeHovered();
-
-		const button: OutlineButton = this._stateManager.getButtonInView(
-			this._view
-		);
-		button.active = false;
-
-		this._plugin.runCommand("editor:focus");
-
-		if (this._plugin.settings.toggleOnHover) {
-			this.pinned = false;
-		}
-	}
-
-	toggle(): void {
-		this.visible ? this.hide() : this.show();
 	}
 }

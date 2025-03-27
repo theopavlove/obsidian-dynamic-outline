@@ -1,25 +1,20 @@
 import DynamicOutlinePlugin from "main";
 import { HeadingCache, MarkdownView, TFile, htmlToMarkdown } from "obsidian";
+import Outline from "src/components/Outline";
 
 export default class OutlineHeadings {
 	private _plugin: DynamicOutlinePlugin;
-	private _view: MarkdownView;
+	private _outline: Outline;
+	private _headings: HeadingCache[] = [];
 
-	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
+	constructor(plugin: DynamicOutlinePlugin, outline: Outline) {
 		this._plugin = plugin;
-		this._view = view;
+		this._outline = outline;
 	}
 
 	get headings(): HeadingCache[] {
-		return this._getHeadingsForView(this._view);
-	}
-
-	/**
-	 * Synchronizes the outline headings with the provided Markdown view.
-	 * @param {MarkdownView} view - The Markdown view to synchronize with.
-	 */
-	syncWithView(view: MarkdownView): void {
-		this._view = view;
+		this._headings = this._getHeadingsForView(this._outline.view);
+		return this._headings;
 	}
 
 	private _getHeadingsForView(view: MarkdownView): HeadingCache[] {
@@ -31,11 +26,10 @@ export default class OutlineHeadings {
 		const fileHeadings: HeadingCache[] = fileMetadata.headings ?? [];
 
 		const cleanedHeadings = this._cleanupHeadings(fileHeadings);
-
 		return cleanedHeadings;
 	}
 
-	private _cleanupHeadings(headings: HeadingCache[]) {
+	private _cleanupHeadings(headings: HeadingCache[]): HeadingCache[] {
 		const cleanMarkdown = (inputHeading: string) => {
 			return htmlToMarkdown(inputHeading)
 				.replaceAll("*", "")

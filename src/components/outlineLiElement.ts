@@ -1,17 +1,16 @@
 import DynamicOutlinePlugin from "main";
 import { HeadingCache, MarkdownView } from "obsidian";
-import OutlineStateManager from "./outlineStateManager";
+import OutlineManager from "./OutlineManager";
 import SearchContainer from "./searchContainer";
+import Outline from "src/components/Outline";
 
 export default class DynamicLiElement {
 	private _plugin: DynamicOutlinePlugin;
-	private _view: MarkdownView;
-	private _stateManager: OutlineStateManager;
+	private _outline: Outline;
 
-	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
+	constructor(plugin: DynamicOutlinePlugin, outline: Outline) {
 		this._plugin = plugin;
-		this._view = view;
-		this._stateManager = OutlineStateManager.getInstance();
+		this._outline = outline;
 	}
 
 	public createLiElement(
@@ -42,10 +41,7 @@ export default class DynamicLiElement {
 		return liElement;
 	}
 
-	public updateLiElementLine(
-		liElement: HTMLLIElement,
-		heading: HeadingCache
-	): void {
+	updateLiElementLine(liElement: HTMLLIElement, heading: HeadingCache): void {
 		liElement.setAttribute(
 			"data-heading-line",
 			heading.position.start.line.toString()
@@ -59,20 +55,22 @@ export default class DynamicLiElement {
 		heading: HeadingCache
 	) {
 		liElement.onclick = () => {
-			if (!this._view.file) return;
+			if (!this._outline.view.file) return;
 
-			this._view.leaf.openFile(this._view.file, {
+			this._outline.view.leaf.openFile(this._outline.view.file, {
 				eState: { line: heading.position.start.line },
 			});
 
 			setTimeout(() => {
-				this._view.currentMode.applyScroll(heading.position.start.line);
+				this._outline.view.currentMode.applyScroll(
+					heading.position.start.line
+				);
 			}, 0);
 
 			if (this._plugin.settings.resetSearchFieldOnHeadingClick) {
-				const window = this._stateManager.getWindowInView(this._view);
+				const window = this._outline.outlineWindow;
 				const searchContainerHTML: HTMLDivElement | null = window
-					.getContainerElement()
+					._getContainerElement()
 					.querySelector(
 						".dynamic-outline-search-container"
 					) as HTMLDivElement | null;

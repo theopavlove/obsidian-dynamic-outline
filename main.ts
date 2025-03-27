@@ -1,6 +1,13 @@
-import { debounce, MarkdownView, Notice, Plugin, Workspace } from "obsidian";
+import {
+	debounce,
+	MarkdownView,
+	Notice,
+	Plugin,
+	TFile,
+	WorkspaceLeaf,
+} from "obsidian";
 import OutlineButton from "src/components/outlineButton";
-import OutlineStateManager from "src/components/outlineStateManager";
+import OutlineStateManager from "src/components/OutlineManager";
 import OutlineWindow from "src/components/outlineWindow";
 import {
 	DEFAULT_SETTINGS,
@@ -22,7 +29,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 			const mdView = this.stateManager.getActiveMDView();
 			if (mdView) {
 				const window: OutlineWindow =
-					this.stateManager.getWindowInView(mdView);
+					this.stateManager.getOutlineInView(mdView).window;
 				window.highlightCurrentHeading();
 			}
 		}
@@ -38,22 +45,20 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 		this.stateManager = OutlineStateManager.initialize(this);
 
-		// When the plugin is enabled, it will create buttons in all visible views.
-		this.stateManager.createButtonsInOpenViews();
+		this.app.workspace.onLayoutReady(() => {
+			this.stateManager.createButtonsInOpenViews();
+		});
 
 		this.registerEvent(
-			this.app.workspace.on("active-leaf-change", (leaf) => {
-				this.stateManager.createButtonsInOpenViews();
-				this.stateManager.handleMetadataChanged();
+			this.app.workspace.on(
+				"active-leaf-change",
+				(leaf: WorkspaceLeaf | null) => {
+					if (!(leaf?.view instanceof MarkdownView)) return;
 
-				if (leaf?.view instanceof MarkdownView) {
-					const mdView = leaf.view;
-					const outlineWindow = this.stateManager.getWindowInView(mdView);
-					const outlineButton = this.stateManager.getButtonInView(mdView);
-					outlineWindow.syncWithView(mdView);
-					outlineButton.syncWithView(mdView);
+					const view: MarkdownView = leaf.view as MarkdownView;
+					this.stateManager.handleActiveLeafChange(view);
 				}
-			})
+			)
 		);
 
 		this.registerEvent(
@@ -62,16 +67,19 @@ export default class DynamicOutlinePlugin extends Plugin {
 			})
 		);
 
-		if (this.settings.toggleAutomatically) {
-			this.registerEvent(
-				// BUG: probably should pick another event.
-				// E.g., if there are two tabs and the setting is toggled
-				// then the inactive tab will not have an effect.
-				this.app.workspace.on("file-open", () => {
-					this.stateManager.handleFileOpen();
-				})
-			);
-		}
+		// if (this.settings.toggleAutomatically) {
+		// 	this.registerEvent(
+		// 		// BUG: probably should pick another event.
+		// 		// E.g., if there are two tabs and the setting is toggled, then the inactive tab will not have an effect.
+		// 		this.app.workspace.on("file-open", () => {
+		// 			console.debug(
+		// 				"File opened, view: ",
+		// 				this.stateManager.getActiveMDView()?.file?.name
+		// 			);
+		// 			this.stateManager.handleFileOpen();
+		// 		})
+		// 	);
+		// }
 
 		if (this.settings.highlightCurrentHeading) {
 			activeWindow.document.addEventListener(
@@ -84,9 +92,9 @@ export default class DynamicOutlinePlugin extends Plugin {
 				this.app.metadataCache.on("changed", () => {
 					const mdView = this.stateManager.getActiveMDView();
 					if (mdView) {
-						this.stateManager
-							.getWindowInView(mdView)
-							.highlightCurrentHeading();
+						const window: OutlineWindow =
+							this.stateManager.getOutlineInView(mdView).window;
+						window.highlightCurrentHeading();
 					}
 				})
 			);
@@ -100,7 +108,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 				if (mdView) {
 					if (!checking) {
 						const button: OutlineButton =
-							this.stateManager.getButtonInView(mdView);
+							this.stateManager.getOutlineInView(mdView).button;
 						button.handleClick();
 					}
 					return true;
