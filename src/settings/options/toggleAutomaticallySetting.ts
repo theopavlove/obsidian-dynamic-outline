@@ -66,7 +66,7 @@ export default class ToggleAutomaticallySetting extends DynamicOutlineSetting {
 			)
 			.addSlider((slider) => {
 				slider
-					.setLimits(1, 10, 1)
+					.setLimits(2, 10, 1)
 					.setDynamicTooltip()
 					.setValue(this.plugin.settings.minimumHeadings)
 					.onChange(async (value) => {

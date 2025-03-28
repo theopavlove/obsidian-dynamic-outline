@@ -1,25 +1,24 @@
 import DynamicOutlinePlugin, { BUTTON_CLASS, LUCID_ICON_NAME } from "main";
 import { MarkdownView, setIcon } from "obsidian";
-import OutlineStateManager from "./outlineStateManager";
+import OutlineManager from "./OutlineManager";
 import OutlineWindow from "./outlineWindow";
+import Outline from "src/components/Outline";
 
 export default class OutlineButton {
-	private _stateManager: OutlineStateManager;
 	private _plugin: DynamicOutlinePlugin;
-	private _view: MarkdownView;
+	private _outline: Outline;
 	private _containerEl: HTMLButtonElement;
 
-	constructor(plugin: DynamicOutlinePlugin, view: MarkdownView) {
-		this._stateManager = OutlineStateManager.getInstance();
+	constructor(plugin: DynamicOutlinePlugin, outline: Outline) {
 		this._plugin = plugin;
-		this._view = view;
+		this._outline = outline;
 		this._containerEl = this.createElement();
 
 		this.setupEventListeners();
 	}
 
 	get visible(): boolean {
-		const buttonInView = this._view.containerEl.querySelector(
+		const buttonInView = this._outline.view.containerEl.querySelector(
 			`button.${BUTTON_CLASS}`
 		);
 		return !!buttonInView;
@@ -35,14 +34,6 @@ export default class OutlineButton {
 
 	set pinned(value: boolean) {
 		this._containerEl.classList.toggle("pinned", value);
-	}
-
-	/**
-	 * Synchronizes the outline button with the provided Markdown view.
-	 * @param {MarkdownView} view - The Markdown view to synchronize with.
-	 */
-	syncWithView(view: MarkdownView) {
-		this._view = view;
 	}
 
 	private setupEventListeners() {
@@ -72,59 +63,51 @@ export default class OutlineButton {
 	}
 
 	private handleMouseEnter(): void {
-		const window = this._stateManager.getWindowInView(this._view);
-
-		if (!window.visible) {
-			window.show({
+		if (!this._outline.isWindowVisible) {
+			this._outline.showWindow({
 				scrollBlock: "start",
 			});
 		}
 
 		if (this._plugin.settings.toggleOnHover) {
-			window.clearHideTimeout();
+			this._outline.clearWindowHideTimeout();
 		}
 	}
 
 	private handleMouseLeave(): void {
-		const window = this._stateManager.getWindowInView(this._view);
-
-		if (window.visible && !window.pinned) {
-			OutlineWindow.hideTimeout = setTimeout(() => {
-				window.hide();
-			}, 100);
+		if (this._outline.isWindowVisible && !this._outline.isWindowPinned) {
+			this._outline.hideWindow(100);
 		}
 	}
 
 	private getViewActionButtons(): HTMLElement | null {
-		return this._view.containerEl.querySelector(".view-actions");
+		return this._outline.view.containerEl.querySelector(".view-actions");
 	}
 
 	private getViewHeaderLeft(): HTMLElement | null {
-		return this._view.containerEl.querySelector(
+		return this._outline.view.containerEl.querySelector(
 			".view-header-left .view-header-nav-buttons"
 		);
 	}
 
 	handleClick(): void {
-		const window = this._stateManager.getWindowInView(this._view);
-
-		if (window.visible) {
+		if (this._outline.isWindowVisible) {
 			if (this._plugin.settings.toggleOnHover) {
-				if (!window.pinned) {
-					window.pinned = true;
+				if (!this._outline.isWindowPinned) {
+					this._outline.windowPinned = true;
 					return;
 				} else {
-					window.pinned = false;
-					window.clearHideTimeout();
+					this._outline.windowPinned = false;
+					this._outline.clearWindowHideTimeout();
 				}
 			}
-			window.hide();
+			this._outline.hideWindow();
 		} else {
-			window.show({
+			this._outline.showWindow({
 				scrollBlock: "start",
 			});
 			if (this._plugin.settings.toggleOnHover) {
-				window.pinned = true;
+				this._outline.windowPinned = true;
 			}
 		}
 	}
