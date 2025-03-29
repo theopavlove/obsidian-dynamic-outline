@@ -15,12 +15,18 @@ export default class OutlineButton {
 	}
 
 	get visible(): boolean {
+		const isInDOM: boolean = this._containerEl.isConnected;
 		const isHidden: boolean =
 			this._containerEl.classList.contains("hidden");
-		return !isHidden;
+
+		return isInDOM && !isHidden;
 	}
 
 	set visible(value: boolean) {
+		const isInDOM: boolean = this._containerEl.isConnected;
+		if (!isInDOM) {
+			this._connectToDOM(this._containerEl);
+		}
 		this._containerEl.classList.toggle("hidden", !value);
 	}
 
@@ -60,6 +66,12 @@ export default class OutlineButton {
 		});
 		setIcon(button, LUCID_ICON_NAME);
 
+		this._connectToDOM(button);
+
+		return button;
+	}
+
+	private _connectToDOM(button: HTMLButtonElement): void {
 		if (this._plugin.settings.windowLocation === "right") {
 			const viewActions: HTMLElement | null =
 				this._outline.view.containerEl.querySelector(".view-actions");
@@ -76,8 +88,6 @@ export default class OutlineButton {
 				this._plugin.settings.windowLocation
 			);
 		}
-
-		return button;
 	}
 
 	private _handleMouseEnter(): void {

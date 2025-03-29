@@ -55,6 +55,8 @@ export default class DynamicOutlinePlugin extends Plugin {
 					if (!(leaf?.view instanceof MarkdownView)) return;
 
 					const view: MarkdownView = leaf.view as MarkdownView;
+
+					this.stateManager.updateViewForOutline(view);					
 					this.stateManager.handleActiveLeafChange(view);
 				}
 			)
@@ -65,20 +67,6 @@ export default class DynamicOutlinePlugin extends Plugin {
 				this.stateManager.handleMetadataChanged();
 			})
 		);
-
-		// if (this.settings.toggleAutomatically) {
-		// 	this.registerEvent(
-		// 		// BUG: probably should pick another event.
-		// 		// E.g., if there are two tabs and the setting is toggled, then the inactive tab will not have an effect.
-		// 		this.app.workspace.on("file-open", () => {
-		// 			console.debug(
-		// 				"File opened, view: ",
-		// 				this.stateManager.getActiveMDView()?.file?.name
-		// 			);
-		// 			this.stateManager.handleFileOpen();
-		// 		})
-		// 	);
-		// }
 
 		if (this.settings.highlightCurrentHeading) {
 			activeWindow.document.addEventListener(
