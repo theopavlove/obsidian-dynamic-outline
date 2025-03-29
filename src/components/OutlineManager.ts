@@ -1,5 +1,5 @@
 import DynamicOutlinePlugin from "main";
-import { MarkdownView, Workspace, WorkspaceLeaf } from "obsidian";
+import { MarkdownView } from "obsidian";
 import Outline from "src/components/Outline";
 
 export default class OutlineManager {
@@ -32,10 +32,11 @@ export default class OutlineManager {
 		return view;
 	}
 
-	getOpenMDViews(): MarkdownView[] {
+	getVisibleMDViews(): MarkdownView[] {
 		const views: MarkdownView[] = this._plugin.app.workspace
 			.getLeavesOfType("markdown")
-			.map((leaf) => leaf.view as MarkdownView);
+			.map((leaf) => leaf.view as MarkdownView)
+			.filter((view) => view.contentEl);
 		return views;
 	}
 
@@ -43,7 +44,6 @@ export default class OutlineManager {
 		const viewId: string = this._getViewId(view);
 		if (!this._outlines.has(viewId)) {
 			this._outlines.set(viewId, new Outline(this._plugin, view));
-			// this._outlines.get(viewId)!.outlineButton.show();
 		}
 
 		return this._outlines.get(viewId)!;
@@ -61,28 +61,16 @@ export default class OutlineManager {
 	}
 
 	createButtonsInOpenViews(): void {
-		const views: MarkdownView[] = this.getOpenMDViews();
+		const views: MarkdownView[] = this.getVisibleMDViews();
 		if (views.length === 0) return;
 
-		views.forEach((view) => {
-			// When the Obsidian is initially loaded, some active leaves do not have
-			// any HTML content yet. But when we initialize the button, we pass
-			// the current view as it is (and it is not updated in the future).
-			// So, we should check that our view is fully loaded (so that we could
-			// later get the View Action Buttons) in order to avoid
-			// false button initialization.
-
-			// @ts-ignore:2339
-			if (view.leaf.width === 0) return;
-
-			this._createButtonInView(view);
-		});
+		views.map((view) => this._createButtonInView(view));
 	}
 
 	removeAll(): void {
 		this._outlines.forEach((outline) => {
-			outline.window.hide();
-			outline.button.hide();
+			outline.window.destroy();
+			outline.button.destroy();
 		});
 		this._outlines.clear();
 	}
@@ -128,7 +116,7 @@ export default class OutlineManager {
 		outline.hideWindowIfEmpty();
 
 		// If the window was toggled on the previous step, this would do the same work, because .show() also contains .update()
-		if (outline.isWindowVisible) {
+		if (outline.windowVisible) {
 			outline.updateWindow();
 		}
 	}

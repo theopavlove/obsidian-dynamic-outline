@@ -1,7 +1,5 @@
 import DynamicOutlinePlugin, { BUTTON_CLASS, LUCID_ICON_NAME } from "main";
-import { MarkdownView, setIcon } from "obsidian";
-import OutlineManager from "./OutlineManager";
-import OutlineWindow from "./outlineWindow";
+import { setIcon } from "obsidian";
 import Outline from "src/components/Outline";
 
 export default class OutlineButton {
@@ -12,16 +10,18 @@ export default class OutlineButton {
 	constructor(plugin: DynamicOutlinePlugin, outline: Outline) {
 		this._plugin = plugin;
 		this._outline = outline;
-		this._containerEl = this.createElement();
-
-		this.setupEventListeners();
+		this._containerEl = this._createElement();
+		this._setupEventListeners();
 	}
 
 	get visible(): boolean {
-		const buttonInView = this._outline.view.containerEl.querySelector(
-			`button.${BUTTON_CLASS}`
-		);
-		return !!buttonInView;
+		const isHidden: boolean =
+			this._containerEl.classList.contains("hidden");
+		return !isHidden;
+	}
+
+	set visible(value: boolean) {
+		this._containerEl.classList.toggle("hidden", !value);
 	}
 
 	get active(): boolean {
@@ -36,34 +36,52 @@ export default class OutlineButton {
 		this._containerEl.classList.toggle("pinned", value);
 	}
 
-	private setupEventListeners() {
+	private _setupEventListeners() {
 		this._plugin.registerDomEvent(this._containerEl, "click", () =>
 			this.handleClick()
 		);
 
 		if (this._plugin.settings.toggleOnHover) {
 			this._plugin.registerDomEvent(this._containerEl, "mouseenter", () =>
-				this.handleMouseEnter()
+				this._handleMouseEnter()
 			);
 			this._plugin.registerDomEvent(this._containerEl, "mouseleave", () =>
-				this.handleMouseLeave()
+				this._handleMouseLeave()
 			);
 		}
 	}
 
-	private createElement(): HTMLButtonElement {
+	private _createElement(): HTMLButtonElement {
 		const button: HTMLButtonElement = createEl("button", {
-			cls: `clickable-icon view-action ${BUTTON_CLASS}`,
+			cls: `clickable-icon view-action ${BUTTON_CLASS} hidden`,
 			attr: {
 				"aria-label": "Toggle Dynamic Outline",
 			},
 		});
 		setIcon(button, LUCID_ICON_NAME);
+
+		if (this._plugin.settings.windowLocation === "right") {
+			const viewActions: HTMLElement | null =
+				this._outline.view.containerEl.querySelector(".view-actions");
+			viewActions?.insertBefore(button, viewActions?.firstChild);
+		} else if (this._plugin.settings.windowLocation === "left") {
+			const viewHeaderLeft: HTMLElement | null =
+				this._outline.view.containerEl.querySelector(
+					".view-header-left .view-header-nav-buttons"
+				);
+			viewHeaderLeft?.appendChild(button);
+		} else {
+			console.error(
+				"Invalid window location: ",
+				this._plugin.settings.windowLocation
+			);
+		}
+
 		return button;
 	}
 
-	private handleMouseEnter(): void {
-		if (!this._outline.isWindowVisible) {
+	private _handleMouseEnter(): void {
+		if (!this._outline.windowVisible) {
 			this._outline.showWindow({
 				scrollBlock: "start",
 			});
@@ -74,26 +92,16 @@ export default class OutlineButton {
 		}
 	}
 
-	private handleMouseLeave(): void {
-		if (this._outline.isWindowVisible && !this._outline.isWindowPinned) {
+	private _handleMouseLeave(): void {
+		if (this._outline.windowVisible && !this._outline.windowPinned) {
 			this._outline.hideWindow(100);
 		}
 	}
 
-	private getViewActionButtons(): HTMLElement | null {
-		return this._outline.view.containerEl.querySelector(".view-actions");
-	}
-
-	private getViewHeaderLeft(): HTMLElement | null {
-		return this._outline.view.containerEl.querySelector(
-			".view-header-left .view-header-nav-buttons"
-		);
-	}
-
 	handleClick(): void {
-		if (this._outline.isWindowVisible) {
+		if (this._outline.windowVisible) {
 			if (this._plugin.settings.toggleOnHover) {
-				if (!this._outline.isWindowPinned) {
+				if (!this._outline.windowPinned) {
 					this._outline.windowPinned = true;
 					return;
 				} else {
@@ -113,32 +121,18 @@ export default class OutlineButton {
 	}
 
 	show(): void {
+		if (this.visible) return;
 		// Workaround because we have no view.onClose event to deactivate buttons properly.
 		this.active = this.visible;
-
-		if (this._plugin.settings.windowLocation === "right") {
-			const viewActions: HTMLElement | null = this.getViewActionButtons();
-
-			if (viewActions) {
-				viewActions.insertBefore(
-					this._containerEl,
-					viewActions?.firstChild
-				);
-			}
-		} else if (this._plugin.settings.windowLocation === "left") {
-			const viewHeaderLeft: HTMLElement | null = this.getViewHeaderLeft();
-
-			if (viewHeaderLeft) {
-				viewHeaderLeft.appendChild(this._containerEl);
-			}
-		} else {
-			console.error("Invalid window location");
-		}
+		this.visible = true;
 	}
 
 	hide(): void {
 		if (!this.visible) return;
+		this.visible = false;
+	}
 
+	destroy(): void {
 		this._containerEl.remove();
 	}
 }

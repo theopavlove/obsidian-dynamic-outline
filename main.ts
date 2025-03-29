@@ -3,7 +3,6 @@ import {
 	MarkdownView,
 	Notice,
 	Plugin,
-	TFile,
 	WorkspaceLeaf,
 } from "obsidian";
 import OutlineButton from "src/components/outlineButton";

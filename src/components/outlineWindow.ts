@@ -22,9 +22,13 @@ export default class OutlineWindow {
 	}
 
 	get visible(): boolean {
-		const windowInView: HTMLElement | null =
-			this._outline.view.containerEl.querySelector(`#${WINDOW_ID}`);
-		return !!windowInView;
+		const isHidden: boolean =
+			this._containerEl.classList.contains("hidden");
+		return !isHidden;
+	}
+
+	set visible(value: boolean) {
+		this._containerEl.classList.toggle("hidden", !value);
 	}
 
 	get pinned(): boolean {
@@ -48,11 +52,11 @@ export default class OutlineWindow {
 	show(options?: { scrollBlock?: ScrollLogicalPosition }): void {
 		if (this.visible) return;
 
-		this._checkForObstructions();
 		this._checkForLocation();
-		this.update();
+		// this.visible = true;
+		this._setVisibilityBasedOnEditingToolbar();
 
-		this._outline.view.contentEl.append(this._containerEl);
+		this.update();
 
 		this._outline.buttonActive = true;
 
@@ -73,12 +77,9 @@ export default class OutlineWindow {
 	hide(): void {
 		if (!this.visible) return;
 
-		this._containerEl.remove();
-
+		this.visible = false;
 		this.removeHovered();
-
 		this._outline.buttonActive = false;
-
 		this._plugin.runCommand("editor:focus");
 
 		if (this._plugin.settings.toggleOnHover) {
@@ -87,6 +88,8 @@ export default class OutlineWindow {
 	}
 
 	update(): void {
+		if (!this.visible) return;
+
 		const arraysAreEqual = (
 			a: HeadingCache[],
 			b: HeadingCache[]
@@ -390,6 +393,7 @@ export default class OutlineWindow {
 
 	private _createElement(): HTMLDivElement {
 		const mainElement: HTMLDivElement = createEl("div", {
+			cls: "hidden",
 			attr: {
 				id: "dynamic-outline",
 			},
@@ -406,18 +410,41 @@ export default class OutlineWindow {
 		contentElement.createEl("ul", {});
 		mainElement.appendChild(contentElement);
 
+		this._outline.view.contentEl.append(mainElement);
+
 		return mainElement;
 	}
 
-	private _checkForObstructions(): void {
-		// Check for Editing Toolbar at the top of the screen
+	private _setVisibilityBasedOnEditingToolbar(): void {
 		const editingToolbar: HTMLElement | null = document.getElementById(
-			"cMenuToolbarModalBar"
+			"editingToolbarModalBar"
 		);
-		const isTop: boolean =
-			editingToolbar !== null && editingToolbar.classList.contains("top");
+		if (!editingToolbar) {
+			this.visible = true;
+			return;
+		}
 
+		// Check for Editing Toolbar at the top of the screen
+		const isTop: boolean = editingToolbar.classList.contains("top");
 		this._containerEl.classList.toggle("obstruction-top", isTop);
+
+		// An awful hack to make sure the Outline does not shift the entire viewport upwards.
+		// It is needed because the EditingToolbar populates DOM with invisible pixels.
+		if (!isTop) {
+			const displayValue: string = editingToolbar.style.display;
+
+			editingToolbar.style.setProperty("display", "none", "important");
+
+			this.visible = true;
+
+			setTimeout(() => {
+				console.debug("Restoring toolbar display");
+				editingToolbar.style.display = displayValue;
+			}, 0);
+			return;
+		}
+
+		this.visible = true;
 	}
 
 	private _checkForLocation(): void {
@@ -425,5 +452,10 @@ export default class OutlineWindow {
 			"location-left",
 			this._plugin.settings.windowLocation === "left"
 		);
+	}
+
+	destroy(): void {
+		this._clearHideTimeout();
+		this._containerEl.remove();
 	}
 }

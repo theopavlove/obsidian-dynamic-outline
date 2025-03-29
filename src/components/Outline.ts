@@ -55,11 +55,11 @@ export default class Outline {
 		return this.headings && this.headings.length > 1;
 	}
 
-	get isWindowVisible(): boolean {
+	get windowVisible(): boolean {
 		return this.outlineWindow.visible;
 	}
 
-	get isWindowPinned(): boolean {
+	get windowPinned(): boolean {
 		return this.outlineWindow.pinned;
 	}
 
@@ -96,13 +96,13 @@ export default class Outline {
 	}
 
 	showWindow(options?: { scrollBlock?: ScrollLogicalPosition }) {
-		if (!this.isWindowVisible) {
+		if (!this.windowVisible) {
 			this.outlineWindow.show(options);
 		}
 	}
 
 	hideWindow(timeout?: number) {
-		if (this.isWindowVisible) {
+		if (this.windowVisible) {
 			if (timeout) {
 				OutlineWindow.hideTimeout = setTimeout(() => {
 					this.outlineWindow.hide();
@@ -114,7 +114,7 @@ export default class Outline {
 	}
 
 	hideWindowIfEmpty() {
-		if (this.isWindowVisible && this.headings.length === 0) {
+		if (this.windowVisible && this.headings.length <= 1) {
 			this.outlineWindow.hide();
 		}
 	}
