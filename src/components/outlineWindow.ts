@@ -52,11 +52,11 @@ export default class OutlineWindow {
 	show(options?: { scrollBlock?: ScrollLogicalPosition }): void {
 		if (this.visible) return;
 
-		this.update();
-
 		this._checkForLocation();
 		// this.visible = true;
 		this._setVisibilityBasedOnEditingToolbar();
+
+		this.update();
 
 		this._outline.buttonActive = true;
 
@@ -88,6 +88,8 @@ export default class OutlineWindow {
 	}
 
 	update(): void {
+		if (!this.visible) return;
+
 		const arraysAreEqual = (
 			a: HeadingCache[],
 			b: HeadingCache[]
@@ -427,7 +429,7 @@ export default class OutlineWindow {
 		this._containerEl.classList.toggle("obstruction-top", isTop);
 
 		// An awful hack to make sure the Outline does not shift the entire viewport upwards.
-		// In is needed because the EditingToolbar populates DOM with invisible pixels.
+		// It is needed because the EditingToolbar populates DOM with invisible pixels.
 		if (!isTop) {
 			const displayValue: string = editingToolbar.style.display;
 
