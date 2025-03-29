@@ -69,8 +69,8 @@ export default class OutlineManager {
 
 	removeAll(): void {
 		this._outlines.forEach((outline) => {
-			outline.window.hide();
-			outline.button.hide();
+			outline.window.destroy();
+			outline.button.destroy();
 		});
 		this._outlines.clear();
 	}

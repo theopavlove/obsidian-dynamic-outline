@@ -22,9 +22,13 @@ export default class OutlineWindow {
 	}
 
 	get visible(): boolean {
-		const windowInView: HTMLElement | null =
-			this._outline.view.containerEl.querySelector(`#${WINDOW_ID}`);
-		return !!windowInView;
+		const isHidden: boolean =
+			this._containerEl.classList.contains("hidden");
+		return !isHidden;
+	}
+
+	set visible(value: boolean) {
+		this._containerEl.classList.toggle("hidden", !value);
 	}
 
 	get pinned(): boolean {
@@ -52,8 +56,7 @@ export default class OutlineWindow {
 		this._checkForLocation();
 		this.update();
 
-		this._outline.view.contentEl.append(this._containerEl);
-
+		this.visible = true;
 		this._outline.buttonActive = true;
 
 		if (this._plugin.settings.autofocusSearchOnOpen) {
@@ -73,12 +76,9 @@ export default class OutlineWindow {
 	hide(): void {
 		if (!this.visible) return;
 
-		this._containerEl.remove();
-
+		this.visible = false;
 		this.removeHovered();
-
 		this._outline.buttonActive = false;
-
 		this._plugin.runCommand("editor:focus");
 
 		if (this._plugin.settings.toggleOnHover) {
@@ -390,6 +390,7 @@ export default class OutlineWindow {
 
 	private _createElement(): HTMLDivElement {
 		const mainElement: HTMLDivElement = createEl("div", {
+			cls: "hidden",
 			attr: {
 				id: "dynamic-outline",
 			},
@@ -405,6 +406,8 @@ export default class OutlineWindow {
 		});
 		contentElement.createEl("ul", {});
 		mainElement.appendChild(contentElement);
+
+		this._outline.view.contentEl.append(mainElement);
 
 		return mainElement;
 	}
@@ -425,5 +428,10 @@ export default class OutlineWindow {
 			"location-left",
 			this._plugin.settings.windowLocation === "left"
 		);
+	}
+
+	destroy(): void {
+		this._clearHideTimeout();
+		this._containerEl.remove();
 	}
 }

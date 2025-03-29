@@ -745,6 +745,10 @@ settings:
 	opacity: var(--dynamic-outline-opacity);
 }
 
+#dynamic-outline.hidden {
+	display: none;
+}
+
 /* Corner case for the Editing Toolbar plugin */
 .view-content
 	> .markdown-source-view[style=""]

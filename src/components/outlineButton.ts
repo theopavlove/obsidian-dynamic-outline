@@ -125,10 +125,15 @@ export default class OutlineButton {
 		this.visible = true;
 		// Workaround because we have no view.onClose event to deactivate buttons properly.
 		this.active = this.visible;
+		this.visible = true;
 	}
 
 	hide(): void {
 		if (!this.visible) return;
 		this.visible = false;
+	}
+
+	destroy(): void {
+		this._containerEl.remove();
 	}
 }
