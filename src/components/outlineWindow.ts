@@ -412,7 +412,7 @@ export default class OutlineWindow {
 	private _checkForObstructions(): void {
 		// Check for Editing Toolbar at the top of the screen
 		const editingToolbar: HTMLElement | null = document.getElementById(
-			"cMenuToolbarModalBar"
+			"editingToolbarModalBar"
 		);
 		const isTop: boolean =
 			editingToolbar !== null && editingToolbar.classList.contains("top");
