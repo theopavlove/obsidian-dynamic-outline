@@ -22,12 +22,17 @@ export default class OutlineWindow {
 	}
 
 	get visible(): boolean {
+		const isInDOM: boolean = this._containerEl.isConnected;
 		const isHidden: boolean =
 			this._containerEl.classList.contains("hidden");
-		return !isHidden;
+		return isInDOM && !isHidden;
 	}
 
 	set visible(value: boolean) {
+		const isInDOM: boolean = this._containerEl.isConnected;
+		if (!isInDOM) {
+			this._connectToDOM(this._containerEl);
+		}
 		this._containerEl.classList.toggle("hidden", !value);
 	}
 
@@ -85,6 +90,11 @@ export default class OutlineWindow {
 		if (this._plugin.settings.toggleOnHover) {
 			this.pinned = false;
 		}
+	}
+
+	destroy(): void {
+		this._clearHideTimeout();
+		this._containerEl.remove();
 	}
 
 	update(): void {
@@ -410,8 +420,6 @@ export default class OutlineWindow {
 		contentElement.createEl("ul", {});
 		mainElement.appendChild(contentElement);
 
-		this._outline.view.contentEl.append(mainElement);
-
 		return mainElement;
 	}
 
@@ -438,7 +446,6 @@ export default class OutlineWindow {
 			this.visible = true;
 
 			setTimeout(() => {
-				console.debug("Restoring toolbar display");
 				editingToolbar.style.display = displayValue;
 			}, 0);
 			return;
@@ -454,8 +461,7 @@ export default class OutlineWindow {
 		);
 	}
 
-	destroy(): void {
-		this._clearHideTimeout();
-		this._containerEl.remove();
+	private _connectToDOM(container: HTMLDivElement): void {
+		this._outline.view.contentEl.append(container);
 	}
 }

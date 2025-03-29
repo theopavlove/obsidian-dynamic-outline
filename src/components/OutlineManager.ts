@@ -49,15 +49,20 @@ export default class OutlineManager {
 		return this._outlines.get(viewId)!;
 	}
 
+	updateViewForOutline(view: MarkdownView): void {
+		const outline: Outline = this.getOutlineInView(view);
+		outline.view = view;
+	}
+
 	handleActiveLeafChange(view: MarkdownView): void {
-		this._updateOutlineState(view, { allowWindowToggle: true });
+		this._updateOutlineVisibility(view);
 	}
 
 	handleMetadataChanged(): void {
-		const view: MarkdownView | null = this.getActiveMDView();
+		const view = this.getActiveMDView();
 		if (!view) return;
 
-		this._updateOutlineState(view);
+		this._updateOutlineVisibility(view, true);
 	}
 
 	createButtonsInOpenViews(): void {
@@ -94,30 +99,78 @@ export default class OutlineManager {
 
 	private _createButtonInView(view: MarkdownView): void {
 		const outline: Outline = this.getOutlineInView(view);
-		if (!outline.isButtonVisible && outline.shouldShowButton) {
+		if (
+			!outline.isButtonVisible &&
+			outline.headings &&
+			outline.headings.length > 1
+		) {
 			outline.showButton();
 		}
 	}
 
-	private _updateOutlineState(
+	private _updateOutlineVisibility(
 		view: MarkdownView,
-		options?: { allowWindowToggle: boolean }
+		isMetadataChange = false
 	): void {
 		const outline: Outline = this.getOutlineInView(view);
 
-		outline.toggleButton(outline.shouldShowButton);
+		const hasHeadings: boolean =
+			outline.headings && outline.headings.length > 1;
+		const hasMinimumHeadings: boolean =
+			hasHeadings &&
+			outline.headings.length >= this._plugin.settings.minimumHeadings;
 
-		if (options?.allowWindowToggle) {
-			outline.toggleWindow(outline.shouldShowWindow);
-			outline.windowPinned = outline.shouldShowWindow;
+		// Update button visibility
+		outline.toggleButton(hasHeadings);
+
+		// Determine window visibility
+		const shouldHideWindow: boolean =
+			!hasHeadings ||
+			(!isMetadataChange &&
+				this._plugin.settings.toggleAutomatically &&
+				!hasMinimumHeadings);
+
+		const shouldShowWindow: boolean =
+			!isMetadataChange &&
+			!outline.toggledAutomaticallyOnce &&
+			this._plugin.settings.toggleAutomatically &&
+			hasMinimumHeadings &&
+			this._isEnoughWindowWidth(view);
+
+		// Update window state
+		if (shouldHideWindow) {
+			outline.hideWindow();
+			outline.windowPinned = false;
+		} else if (shouldShowWindow) {
+			outline.showWindow();
+			outline.windowPinned = true;
 		}
 
-		// Fallback to hide the window if there are no more headings
-		outline.hideWindowIfEmpty();
-
-		// If the window was toggled on the previous step, this would do the same work, because .show() also contains .update()
+		// Update window if visible
 		if (outline.windowVisible) {
+			outline.toggledAutomaticallyOnce = true;
 			outline.updateWindow();
+		}
+	}
+
+	private _isEnoughWindowWidth(view: MarkdownView): boolean {
+		if (this._plugin.settings.contentOverlap === "allow") {
+			return true;
+		}
+
+		const viewWidth: number = view.contentEl.innerWidth;
+		const windowWidth: number =
+			this._plugin.getCssVariableAsNumber(
+				"--dynamic-outline-window-width"
+			) ?? 256;
+
+		switch (this._plugin.settings.contentOverlap) {
+			case "partial":
+				return viewWidth - 700 >= windowWidth;
+			case "prevent":
+				return (viewWidth - 700) / 2 >= windowWidth;
+			default:
+				return true;
 		}
 	}
 }
