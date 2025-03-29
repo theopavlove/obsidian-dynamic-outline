@@ -42,7 +42,7 @@ export default class OutlineHeadings {
 			return (
 				inputHeading
 					// Extract markdown link [text](link) text
-					.replace(/\[([^\]]+)\]\(.*?\)/g, "$1")
+					.replace(/\[(.*?)\]\(.*?\)/g, "$1")
 					// Extract wikilink [[link|text]] text
 					.replace(/\[\[([^\]]+)\|([^\]]+)\]\]/g, "$2")
 					// Extact another wikilink [[text]] text
