@@ -32,10 +32,11 @@ export default class OutlineManager {
 		return view;
 	}
 
-	getOpenMDViews(): MarkdownView[] {
+	getVisibleMDViews(): MarkdownView[] {
 		const views: MarkdownView[] = this._plugin.app.workspace
 			.getLeavesOfType("markdown")
-			.map((leaf) => leaf.view as MarkdownView);
+			.map((leaf) => leaf.view as MarkdownView)
+			.filter((view) => view.contentEl);
 		return views;
 	}
 
@@ -61,7 +62,7 @@ export default class OutlineManager {
 	}
 
 	createButtonsInOpenViews(): void {
-		const views: MarkdownView[] = this.getOpenMDViews();
+		const views: MarkdownView[] = this.getVisibleMDViews();
 		if (views.length === 0) return;
 
 		views.forEach((view) => {
