@@ -741,6 +741,7 @@ settings:
 	border: 1px solid var(--dynamic-outline-border-color);
 	border-radius: 12px;
 	box-shadow: var(--dynamic-outline-shadow-color) 0px 2px 8px 0px;
+	box-sizing: border-box;
 
 	opacity: var(--dynamic-outline-opacity);
 }

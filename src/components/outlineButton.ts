@@ -53,7 +53,7 @@ export default class OutlineButton {
 
 	private _createElement(): HTMLButtonElement {
 		const button: HTMLButtonElement = createEl("button", {
-			cls: `clickable-icon view-action ${BUTTON_CLASS}`,
+			cls: `clickable-icon view-action ${BUTTON_CLASS} hidden`,
 			attr: {
 				"aria-label": "Toggle Dynamic Outline",
 			},
@@ -122,7 +122,6 @@ export default class OutlineButton {
 
 	show(): void {
 		if (this.visible) return;
-		this.visible = true;
 		// Workaround because we have no view.onClose event to deactivate buttons properly.
 		this.active = this.visible;
 		this.visible = true;

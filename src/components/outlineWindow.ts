@@ -52,11 +52,12 @@ export default class OutlineWindow {
 	show(options?: { scrollBlock?: ScrollLogicalPosition }): void {
 		if (this.visible) return;
 
-		this._checkForObstructions();
-		this._checkForLocation();
 		this.update();
 
-		this.visible = true;
+		this._checkForLocation();
+		// this.visible = true;
+		this._setVisibilityBasedOnEditingToolbar();
+
 		this._outline.buttonActive = true;
 
 		if (this._plugin.settings.autofocusSearchOnOpen) {
@@ -412,15 +413,36 @@ export default class OutlineWindow {
 		return mainElement;
 	}
 
-	private _checkForObstructions(): void {
-		// Check for Editing Toolbar at the top of the screen
+	private _setVisibilityBasedOnEditingToolbar(): void {
 		const editingToolbar: HTMLElement | null = document.getElementById(
 			"editingToolbarModalBar"
 		);
-		const isTop: boolean =
-			editingToolbar !== null && editingToolbar.classList.contains("top");
+		if (!editingToolbar) {
+			this.visible = true;
+			return;
+		}
 
+		// Check for Editing Toolbar at the top of the screen
+		const isTop: boolean = editingToolbar.classList.contains("top");
 		this._containerEl.classList.toggle("obstruction-top", isTop);
+
+		// An awful hack to make sure the Outline does not shift the entire viewport upwards.
+		// In is needed because the EditingToolbar populates DOM with invisible pixels.
+		if (!isTop) {
+			const displayValue: string = editingToolbar.style.display;
+
+			editingToolbar.style.setProperty("display", "none", "important");
+
+			this.visible = true;
+
+			setTimeout(() => {
+				console.debug("Restoring toolbar display");
+				editingToolbar.style.display = displayValue;
+			}, 0);
+			return;
+		}
+
+		this.visible = true;
 	}
 
 	private _checkForLocation(): void {
