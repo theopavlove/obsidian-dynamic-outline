@@ -991,6 +991,7 @@ button.dynamic-outline-reload[disabled] {
 	color: var(--text-normal);
 }
 
+.dynamic-outline-button.hidden,
 .hide-button-from-toolbar .dynamic-outline-button {
 	display: none;
 }
