@@ -10,6 +10,7 @@ import WindowLocationSetting from "./options/windowLocationSetting";
 import DynamicHeadingIndentationSetting from "./options/dynamicHeadingIndentationSetting";
 import AutoHideSearchBarSetting from "./options/autoHideSearchBarSetting";
 import HideOutlineOnHeadingJump from "./options/hideOutlineOnHeadingJump";
+import ToggleWhenNotEnoughWidthSetting from "./options/ToggleWhenNotEnoughWidth";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
@@ -20,6 +21,7 @@ interface DynamicOutlinePluginSettings {
 	contentOverlap: string;
 	dynamicHeadingIndentation: boolean;
 	hideOutlineOnHeadingJump: boolean;
+	toggleWhenNotEnoughWidth: boolean;
 	highlightCurrentHeading: boolean;
 	minHeadingsToHideSearchBar: number;
 	minimumHeadings: number;
@@ -35,6 +37,7 @@ const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	contentOverlap: "allow",
 	dynamicHeadingIndentation: true,
 	hideOutlineOnHeadingJump: false,
+	toggleWhenNotEnoughWidth: false,
 	highlightCurrentHeading: true,
 	minHeadingsToHideSearchBar: 5,
 	minimumHeadings: 1,
@@ -69,6 +72,7 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 			);
 		new ToggleOnHoverSetting(this.plugin, containerEl).display();
 		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
+		new ToggleWhenNotEnoughWidthSetting(this.plugin, containerEl).display();
 		new HideOutlineOnHeadingJump(this.plugin, containerEl).display();
 
 		new Setting(containerEl)

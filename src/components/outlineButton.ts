@@ -104,7 +104,7 @@ export default class OutlineButton {
 
 	private _handleMouseLeave(): void {
 		if (this._outline.windowVisible && !this._outline.windowPinned) {
-			this._outline.hideWindow(100);
+			this._outline.hideWindow({timeout: 100});
 		}
 	}
 

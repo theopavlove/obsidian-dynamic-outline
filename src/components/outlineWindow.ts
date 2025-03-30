@@ -8,6 +8,8 @@ import Outline from "src/components/Outline";
 export default class OutlineWindow {
 	public static hideTimeout: NodeJS.Timeout | null = null;
 
+	public hiddenOnResize: boolean = false;
+	
 	private _plugin: DynamicOutlinePlugin;
 	private _outline: Outline;
 	private _containerEl: HTMLDivElement;
@@ -64,6 +66,7 @@ export default class OutlineWindow {
 		this.update();
 
 		this._outline.buttonActive = true;
+		this.hiddenOnResize = false;
 
 		if (this._plugin.settings.autofocusSearchOnOpen) {
 			const inputField: HTMLInputElement | null =

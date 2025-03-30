@@ -22,17 +22,26 @@ export default class DynamicOutlinePlugin extends Plugin {
 	private stateManager: OutlineStateManager;
 	settings: DynamicOutlinePluginSettings;
 
-	private debounceHandler = debounce((event: Event) => {
-		const target = event.target as HTMLElement;
-		if (!target?.classList.contains("dynamic-outline-content-container")) {
-			const mdView = this.stateManager.getActiveMDView();
-			if (mdView) {
-				const window: OutlineWindow =
-					this.stateManager.getOutlineInView(mdView).window;
-				window.highlightCurrentHeading();
+	private highlightCurrentHeadingDebounceHandler = debounce(
+		(event: Event) => {
+			const target = event.target as HTMLElement;
+			if (
+				!target?.classList.contains("dynamic-outline-content-container")
+			) {
+				const mdView = this.stateManager.getActiveMDView();
+				if (mdView) {
+					const window: OutlineWindow =
+						this.stateManager.getOutlineInView(mdView).window;
+					window.highlightCurrentHeading();
+				}
 			}
-		}
-	}, 0);
+		},
+		0
+	);
+
+	private resizeDebounceHandler = debounce(() => {
+		this.stateManager.handleResize();
+	}, 100);
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
@@ -56,7 +65,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 
 					const view: MarkdownView = leaf.view as MarkdownView;
 
-					this.stateManager.updateViewForOutline(view);					
+					this.stateManager.updateViewForOutline(view);
 					this.stateManager.handleActiveLeafChange(view);
 				}
 			)
@@ -68,10 +77,16 @@ export default class DynamicOutlinePlugin extends Plugin {
 			})
 		);
 
+		if (this.settings.toggleWhenNotEnoughWidth) {
+			this.registerEvent(
+				this.app.workspace.on("resize", this.resizeDebounceHandler)
+			);
+		}
+
 		if (this.settings.highlightCurrentHeading) {
 			activeWindow.document.addEventListener(
 				"scroll",
-				this.debounceHandler,
+				this.highlightCurrentHeadingDebounceHandler,
 				true
 			);
 
@@ -109,7 +124,7 @@ export default class DynamicOutlinePlugin extends Plugin {
 		this.stateManager.removeAll();
 		activeWindow.document.removeEventListener(
 			"scroll",
-			this.debounceHandler,
+			this.highlightCurrentHeadingDebounceHandler,
 			true
 		);
 	}
