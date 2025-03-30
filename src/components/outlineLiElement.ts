@@ -1,6 +1,5 @@
 import DynamicOutlinePlugin from "main";
-import { HeadingCache, MarkdownView } from "obsidian";
-import OutlineManager from "./OutlineManager";
+import { HeadingCache } from "obsidian";
 import SearchContainer from "./searchContainer";
 import Outline from "src/components/Outline";
 
@@ -13,7 +12,7 @@ export default class DynamicLiElement {
 		this._outline = outline;
 	}
 
-	public createLiElement(
+	createLiElement(
 		heading: HeadingCache,
 		tab_level: number = heading.level
 	): HTMLLIElement {
@@ -54,40 +53,7 @@ export default class DynamicLiElement {
 		liElement: HTMLLIElement,
 		heading: HeadingCache
 	) {
-		liElement.onclick = () => {
-			if (!this._outline.view.file) return;
-
-			this._outline.view.leaf.openFile(this._outline.view.file, {
-				eState: { line: heading.position.start.line },
-			});
-
-			setTimeout(() => {
-				this._outline.view.currentMode.applyScroll(
-					heading.position.start.line
-				);
-			}, 0);
-
-			if (this._plugin.settings.resetSearchFieldOnHeadingClick) {
-				const window = this._outline.outlineWindow;
-				const searchContainerHTML: HTMLDivElement | null = window
-					._getContainerElement()
-					.querySelector(
-						".dynamic-outline-search-container"
-					) as HTMLDivElement | null;
-				if (!searchContainerHTML) return;
-
-				const searchContainer: SearchContainer = new SearchContainer(
-					this._plugin,
-					searchContainerHTML
-				);
-
-				searchContainer.clearInput(false);
-				window.removeHovered();
-			}
-
-			// Probably, should be a better option.
-			this._plugin.runCommand("editor:focus");
-		};
+		liElement.onclick = () => this._handleClick(heading);
 
 		liElement.addEventListener("mouseenter", () => {
 			liElement.classList.add("hovered");
@@ -96,5 +62,57 @@ export default class DynamicLiElement {
 		liElement.addEventListener("mouseleave", () => {
 			liElement.classList.remove("hovered");
 		});
+	}
+
+	private _handleClick(heading: HeadingCache): void {
+		if (!this._outline.view.file) return;
+
+		this._navigateToHeading(heading);
+		this._resetSearchField();
+
+		// Focus the editor after navigation
+		this._plugin.runCommand("editor:focus");
+	}
+
+	private _navigateToHeading(heading: HeadingCache): void {
+		const file = this._outline.view.file;
+		if (!file) return;
+
+		// Open the file at the heading's line
+		this._outline.view.leaf.openFile(file, {
+			eState: { line: heading.position.start.line },
+		});
+
+		// Apply scroll after a small delay to ensure the view is ready
+		setTimeout(() => {
+			this._outline.view.currentMode.applyScroll(
+				heading.position.start.line
+			);
+		}, 0);
+
+		if (this._plugin.settings.hideOutlineOnHeadingJump) {
+			this._outline.outlineWindow.hide();
+		}
+	}
+
+	private _resetSearchField(): void {
+		if (!this._plugin.settings.resetSearchFieldOnHeadingClick) return;
+
+		const window = this._outline.outlineWindow;
+		const searchContainerHTML: HTMLDivElement | null = window
+			._getContainerElement()
+			.querySelector(
+				".dynamic-outline-search-container"
+			) as HTMLDivElement | null;
+
+		if (!searchContainerHTML) return;
+
+		const searchContainer: SearchContainer = new SearchContainer(
+			this._plugin,
+			searchContainerHTML
+		);
+
+		searchContainer.clearInput(false);
+		window.removeHovered();
 	}
 }

@@ -9,36 +9,39 @@ import ToggleOnHoverSetting from "./options/toggleOnHoverSetting";
 import WindowLocationSetting from "./options/windowLocationSetting";
 import DynamicHeadingIndentationSetting from "./options/dynamicHeadingIndentationSetting";
 import AutoHideSearchBarSetting from "./options/autoHideSearchBarSetting";
+import HideOutlineOnHeadingJump from "./options/hideOutlineOnHeadingJump";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
 
 interface DynamicOutlinePluginSettings {
 	autofocusSearchOnOpen: boolean;
+	autoHideSearchBar: boolean;
+	contentOverlap: string;
 	dynamicHeadingIndentation: boolean;
+	hideOutlineOnHeadingJump: boolean;
 	highlightCurrentHeading: boolean;
+	minHeadingsToHideSearchBar: number;
 	minimumHeadings: number;
 	resetSearchFieldOnHeadingClick: boolean;
 	toggleAutomatically: boolean;
-	contentOverlap: string;
 	toggleOnHover: boolean;
 	windowLocation: string;
-	autoHideSearchBar: boolean;
-	minHeadingsToHideSearchBar: number;
 }
 
 const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	autofocusSearchOnOpen: true,
+	autoHideSearchBar: true,
+	contentOverlap: "allow",
 	dynamicHeadingIndentation: true,
+	hideOutlineOnHeadingJump: false,
 	highlightCurrentHeading: true,
+	minHeadingsToHideSearchBar: 5,
 	minimumHeadings: 1,
 	resetSearchFieldOnHeadingClick: true,
 	toggleAutomatically: false,
-	contentOverlap: "allow",
 	toggleOnHover: false,
 	windowLocation: "right",
-	autoHideSearchBar: true,
-	minHeadingsToHideSearchBar: 5,
 };
 
 export function htmlDescription(text: string): DocumentFragment {
@@ -66,6 +69,7 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 			);
 		new ToggleOnHoverSetting(this.plugin, containerEl).display();
 		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
+		new HideOutlineOnHeadingJump(this.plugin, containerEl).display();
 
 		new Setting(containerEl)
 			.setName(htmlDescription("Navigation and search"))
