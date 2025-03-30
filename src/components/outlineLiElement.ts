@@ -12,7 +12,7 @@ export default class DynamicLiElement {
 		this._outline = outline;
 	}
 
-	public createLiElement(
+	createLiElement(
 		heading: HeadingCache,
 		tab_level: number = heading.level
 	): HTMLLIElement {
@@ -89,6 +89,10 @@ export default class DynamicLiElement {
 				heading.position.start.line
 			);
 		}, 0);
+
+		if (this._plugin.settings.hideOutlineOnHeadingJump) {
+			this._outline.outlineWindow.hide();
+		}
 	}
 
 	private _resetSearchField(): void {
