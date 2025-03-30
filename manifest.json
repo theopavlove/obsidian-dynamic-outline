@@ -1,7 +1,7 @@
 {
 	"id": "dynamic-outline",
 	"name": "Dynamic Outline",
-	"version": "1.15.1",
+	"version": "1.16.0",
 	"minAppVersion": "0.15.0",
 	"description": "Adds a customizable GitHub-like floating table of contents.",
 	"author": "theopavlove",
