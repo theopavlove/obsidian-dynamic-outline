@@ -75,8 +75,10 @@ export default class OutlineManager {
 			const outline: Outline = this.getOutlineInView(view);
 
 			const isWindowVisible: boolean = outline.windowVisible;
-			const isEnoughWidth: boolean =
-				this._isEnoughWidthForHideOnResize(view);
+			const isEnoughWidth: boolean = this._plugin.settings
+				.toggleAutomatically
+				? this._isEnoughWidthForAutomaticToggle(view)
+				: this._isEnoughWidthForHideOnResize(view);
 
 			if (isWindowVisible) {
 				if (!isEnoughWidth) {
