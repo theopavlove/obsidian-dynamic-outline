@@ -85,21 +85,32 @@ export default class Outline {
 		value ? this.showWindow() : this.hideWindow();
 	}
 
-	showWindow(options?: { scrollBlock?: ScrollLogicalPosition }) {
+	showWindow(options?: {
+		scrollBlock?: ScrollLogicalPosition;
+		hiddenOnResize?: boolean;
+	}) {
 		if (!this.windowVisible) {
 			this.outlineWindow.show(options);
+
+			if (options?.hiddenOnResize) {
+				this.outlineWindow.hiddenOnResize = options.hiddenOnResize;
+			}
 		}
 	}
 
-	hideWindow(timeout?: number) {
-		if (this.windowVisible) {
-			if (timeout) {
-				OutlineWindow.hideTimeout = setTimeout(() => {
-					this.outlineWindow.hide();
-				}, timeout);
-			} else {
+	hideWindow(options?: { timeout?: number; hiddenOnResize?: boolean }) {
+		if (!this.windowVisible) return;
+
+		if (options?.timeout) {
+			OutlineWindow.hideTimeout = setTimeout(() => {
 				this.outlineWindow.hide();
-			}
+			}, options?.timeout);
+		} else {
+			this.outlineWindow.hide();
+		}
+
+		if (options?.hiddenOnResize) {
+			this.outlineWindow.hiddenOnResize = options.hiddenOnResize;
 		}
 	}
 

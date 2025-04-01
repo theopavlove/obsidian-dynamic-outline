@@ -65,6 +65,34 @@ export default class OutlineManager {
 		this._updateOutlineVisibility(view, true);
 	}
 
+	handleResize(): void {
+		if (!this._plugin.settings.toggleWhenNotEnoughWidth) return;
+
+		const views: MarkdownView[] = this.getVisibleMDViews();
+		if (views.length === 0) return;
+
+		views.forEach((view) => {
+			const outline: Outline = this.getOutlineInView(view);
+
+			const isWindowVisible: boolean = outline.windowVisible;
+			const isEnoughWidth: boolean =
+				this._isEnoughWidthForHideOnResize(view);
+
+			if (isWindowVisible) {
+				if (!isEnoughWidth) {
+					outline.hideWindow({ hiddenOnResize: true });
+				}
+			} else {
+				if (outline.window.hiddenOnResize) {
+					if (isEnoughWidth) {
+						outline.showWindow({ hiddenOnResize: false });
+						outline.windowPinned = true;
+					}
+				}
+			}
+		});
+	}
+
 	createButtonsInOpenViews(): void {
 		const views: MarkdownView[] = this.getVisibleMDViews();
 		if (views.length === 0) return;
@@ -135,7 +163,7 @@ export default class OutlineManager {
 			!outline.toggledAutomaticallyOnce &&
 			this._plugin.settings.toggleAutomatically &&
 			hasMinimumHeadings &&
-			this._isEnoughWindowWidth(view);
+			this._isEnoughWidthForAutomaticToggle(view);
 
 		// Update window state
 		if (shouldHideWindow) {
@@ -153,24 +181,30 @@ export default class OutlineManager {
 		}
 	}
 
-	private _isEnoughWindowWidth(view: MarkdownView): boolean {
+	private _isEnoughWidthForAutomaticToggle(view: MarkdownView): boolean {
 		if (this._plugin.settings.contentOverlap === "allow") {
 			return true;
 		}
 
+		const divisionFactor =
+			this._plugin.settings.contentOverlap === "partial" ? 1 : 2;
+		return this._calculateAvailableWidth(view, divisionFactor) >= 0;
+	}
+
+	private _isEnoughWidthForHideOnResize(view: MarkdownView): boolean {
+		return this._calculateAvailableWidth(view, 2) >= 0;
+	}
+
+	private _calculateAvailableWidth(
+		view: MarkdownView,
+		divisionFactor: number = 1
+	): number {
 		const viewWidth: number = view.contentEl.innerWidth;
 		const windowWidth: number =
 			this._plugin.getCssVariableAsNumber(
 				"--dynamic-outline-window-width"
 			) ?? 256;
 
-		switch (this._plugin.settings.contentOverlap) {
-			case "partial":
-				return viewWidth - 700 >= windowWidth;
-			case "prevent":
-				return (viewWidth - 700) / 2 >= windowWidth;
-			default:
-				return true;
-		}
+		return (viewWidth - 700) / divisionFactor - windowWidth;
 	}
 }
