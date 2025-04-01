@@ -47,7 +47,7 @@ export default class OutlineButton {
 			this.handleClick()
 		);
 
-		if (this._plugin.settings.toggleOnHover) {
+		if (this._plugin.settings.revealOnHover) {
 			this._plugin.registerDomEvent(this._containerEl, "mouseenter", () =>
 				this._handleMouseEnter()
 			);
@@ -72,11 +72,11 @@ export default class OutlineButton {
 	}
 
 	private _connectToDOM(button: HTMLButtonElement): void {
-		if (this._plugin.settings.windowLocation === "right") {
+		if (this._plugin.settings.outlinePosition === "right") {
 			const viewActions: HTMLElement | null =
 				this._outline.view.containerEl.querySelector(".view-actions");
 			viewActions?.insertBefore(button, viewActions?.firstChild);
-		} else if (this._plugin.settings.windowLocation === "left") {
+		} else if (this._plugin.settings.outlinePosition === "left") {
 			const viewHeaderLeft: HTMLElement | null =
 				this._outline.view.containerEl.querySelector(
 					".view-header-left .view-header-nav-buttons"
@@ -85,7 +85,7 @@ export default class OutlineButton {
 		} else {
 			console.error(
 				"Invalid window location: ",
-				this._plugin.settings.windowLocation
+				this._plugin.settings.outlinePosition
 			);
 		}
 	}
@@ -97,7 +97,7 @@ export default class OutlineButton {
 			});
 		}
 
-		if (this._plugin.settings.toggleOnHover) {
+		if (this._plugin.settings.revealOnHover) {
 			this._outline.clearWindowHideTimeout();
 		}
 	}
@@ -110,7 +110,7 @@ export default class OutlineButton {
 
 	handleClick(): void {
 		if (this._outline.windowVisible) {
-			if (this._plugin.settings.toggleOnHover) {
+			if (this._plugin.settings.revealOnHover) {
 				if (!this._outline.windowPinned) {
 					this._outline.windowPinned = true;
 					return;
@@ -124,7 +124,7 @@ export default class OutlineButton {
 			this._outline.showWindow({
 				scrollBlock: "start",
 			});
-			if (this._plugin.settings.toggleOnHover) {
+			if (this._plugin.settings.revealOnHover) {
 				this._outline.windowPinned = true;
 			}
 		}

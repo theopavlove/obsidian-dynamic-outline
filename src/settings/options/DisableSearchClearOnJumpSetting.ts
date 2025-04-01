@@ -1,20 +1,20 @@
 import { Setting } from "obsidian";
 import DynamicOutlineSetting from "../settingsOption";
 
-export default class ResetSearchSetting extends DynamicOutlineSetting {
+export default class DisableSearchClearOnJumpSetting extends DynamicOutlineSetting {
 	public display(): void {
 		new Setting(this.containerEl)
-			.setName("Reset search field on jump")
+			.setName("Disable search clear on jump")
 			.setDesc(
-				"Erase the search field contents after clicking a heading."
+				"Enable to prevent the search field from being cleared automatically after clicking a heading."
 			)
 			.addToggle((toggle) => {
 				toggle
 					.setValue(
-						this.plugin.settings.resetSearchFieldOnHeadingClick
+						this.plugin.settings.disableSearchClearOnJump
 					)
 					.onChange(async (value) => {
-						this.plugin.settings.resetSearchFieldOnHeadingClick =
+						this.plugin.settings.disableSearchClearOnJump =
 							value;
 						await this.plugin.saveSettings();
 					});

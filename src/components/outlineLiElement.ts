@@ -90,13 +90,13 @@ export default class DynamicLiElement {
 			);
 		}, 0);
 
-		if (this._plugin.settings.hideOutlineOnHeadingJump) {
+		if (this._plugin.settings.hideOutlineOnJump) {
 			this._outline.outlineWindow.hide();
 		}
 	}
 
 	private _resetSearchField(): void {
-		if (!this._plugin.settings.resetSearchFieldOnHeadingClick) return;
+		if (this._plugin.settings.disableSearchClearOnJump) return;
 
 		const window = this._outline.outlineWindow;
 		const searchContainerHTML: HTMLDivElement | null = window

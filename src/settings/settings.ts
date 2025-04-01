@@ -1,50 +1,50 @@
 import DynamicOutlinePlugin from "main";
 import { App, PluginSettingTab, sanitizeHTMLToDom, Setting } from "obsidian";
-import AutofocusSearchOnOpenSetting from "./options/autofocusSearchOnOpenSetting";
+import DisableSearchFieldAutofocusSetting from "./options/DisableSearchFieldAutoFocusSetting";
 
-import HighlightOnScrollSetting from "./options/highlightOnScrollSetting";
-import ResetSearchSetting from "./options/resetSearchSetting";
-import ToggleAutomaticallySetting from "./options/toggleAutomaticallySetting";
-import ToggleOnHoverSetting from "./options/toggleOnHoverSetting";
-import WindowLocationSetting from "./options/windowLocationSetting";
-import DynamicHeadingIndentationSetting from "./options/dynamicHeadingIndentationSetting";
-import AutoHideSearchBarSetting from "./options/autoHideSearchBarSetting";
-import HideOutlineOnHeadingJump from "./options/hideOutlineOnHeadingJump";
-import ToggleWhenNotEnoughWidthSetting from "./options/ToggleWhenNotEnoughWidth";
+import DisableActiveHeadingHighlightingSetting from "./options/DisableActiveHeadingHighlightingSetting";
+import DisableSearchClearOnJumpSetting from "./options/DisableSearchClearOnJumpSetting";
+import RevealAutomaticallyOnFileOpenSetting from "./options/RevealAutomaticallyOnFileOpenSetting";
+import RevealOnHoverSetting from "./options/RevealOnHoverSetting";
+import OutlinePositionSetting from "./options/OutlinePositionSetting";
+import DisableDynamicHeadingIndentationSetting from "./options/DisableDynamicHeadingIndentationSetting";
+import DisableSearchAutoHideSetting from "./options/DisableSearchAutoHideSetting";
+import HideOutlineOnJumpSetting from "./options/HideOutlineOnJumpSetting";
+import AvoidContentOverlapSetting from "./options/AvoidContentOverlapSetting";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
 
 interface DynamicOutlinePluginSettings {
-	autofocusSearchOnOpen: boolean;
-	autoHideSearchBar: boolean;
-	contentOverlap: string;
-	dynamicHeadingIndentation: boolean;
-	hideOutlineOnHeadingJump: boolean;
-	toggleWhenNotEnoughWidth: boolean;
-	highlightCurrentHeading: boolean;
+	handleContentOverlap: string;
+	disableActiveHeadingHighlighting: boolean;
+	disableDynamicHeadingIndentation: boolean;
+	disableSearchBarAutoHide: boolean;
+	disableSearchClearOnJump: boolean;
+	disableSearchFieldAutofocus: boolean;
+	hideOutlineOnJump: boolean;
 	minHeadingsToHideSearchBar: number;
-	minimumHeadings: number;
-	resetSearchFieldOnHeadingClick: boolean;
-	toggleAutomatically: boolean;
-	toggleOnHover: boolean;
-	windowLocation: string;
+	minimumHeadingsToRevealAutomatically: number;
+	revealAutomaticallyOnFileOpen: boolean;
+	revealOnHover: boolean;
+	avoidContentOverlap: boolean;
+	outlinePosition: string;
 }
 
 const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
-	autofocusSearchOnOpen: true,
-	autoHideSearchBar: true,
-	contentOverlap: "allow",
-	dynamicHeadingIndentation: true,
-	hideOutlineOnHeadingJump: false,
-	toggleWhenNotEnoughWidth: false,
-	highlightCurrentHeading: true,
+	handleContentOverlap: "allow",
+	disableActiveHeadingHighlighting: false,
+	disableDynamicHeadingIndentation: false,
+	disableSearchBarAutoHide: false,
+	disableSearchClearOnJump: false,
+	disableSearchFieldAutofocus: false,
+	hideOutlineOnJump: false,
 	minHeadingsToHideSearchBar: 5,
-	minimumHeadings: 1,
-	resetSearchFieldOnHeadingClick: true,
-	toggleAutomatically: false,
-	toggleOnHover: false,
-	windowLocation: "right",
+	minimumHeadingsToRevealAutomatically: 2,
+	revealAutomaticallyOnFileOpen: false,
+	revealOnHover: false,
+	avoidContentOverlap: false,
+	outlinePosition: "right",
 };
 
 export function htmlDescription(text: string): DocumentFragment {
@@ -70,32 +70,38 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 			.setDesc(
 				"Customize the visibility and behavior of the outline window."
 			);
-		new ToggleOnHoverSetting(this.plugin, containerEl).display();
-		new ToggleAutomaticallySetting(this.plugin, containerEl).display();
-		new ToggleWhenNotEnoughWidthSetting(this.plugin, containerEl).display();
-		new HideOutlineOnHeadingJump(this.plugin, containerEl).display();
+		new OutlinePositionSetting(this.plugin, containerEl).display();
+		new RevealOnHoverSetting(this.plugin, containerEl).display();
+		new RevealAutomaticallyOnFileOpenSetting(this.plugin, containerEl).display();
+		new AvoidContentOverlapSetting(this.plugin, containerEl).display();
+		new HideOutlineOnJumpSetting(this.plugin, containerEl).display();
 
 		new Setting(containerEl)
-			.setName(htmlDescription("Navigation and search"))
+			.setName(htmlDescription("Search bar"))
 			.setHeading()
-			.setDesc("Configure how you move through and search your outline.");
-		new HighlightOnScrollSetting(this.plugin, containerEl).display();
-		new AutoHideSearchBarSetting(this.plugin, containerEl).display();
-		new AutofocusSearchOnOpenSetting(this.plugin, containerEl).display();
-		new ResetSearchSetting(this.plugin, containerEl).display();
-		
+			.setDesc("Customize the search bar behavior.");
+		new DisableSearchAutoHideSetting(this.plugin, containerEl).display();
+		new DisableSearchFieldAutofocusSetting(
+			this.plugin,
+			containerEl
+		).display();
+		new DisableSearchClearOnJumpSetting(this.plugin, containerEl).display();
+
 		new Setting(containerEl)
-			.setName(htmlDescription("Layout"))
+			.setName(htmlDescription("Outline content"))
 			.setHeading()
 			.setDesc(
 				htmlDescription(
 					`To customize the appearance of the Dynamic Outline, please use the <a href="https://obsidian.md/plugins?id=obsidian-style-settings">Style Settings</a> plugin.`
 				)
 			);
-		new DynamicHeadingIndentationSetting(
+		new DisableActiveHeadingHighlightingSetting(
 			this.plugin,
 			containerEl
 		).display();
-		new WindowLocationSetting(this.plugin, containerEl).display();
+		new DisableDynamicHeadingIndentationSetting(
+			this.plugin,
+			containerEl
+		).display();
 	}
 }

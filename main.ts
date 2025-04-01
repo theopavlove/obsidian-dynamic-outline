@@ -77,13 +77,13 @@ export default class DynamicOutlinePlugin extends Plugin {
 			})
 		);
 
-		if (this.settings.toggleWhenNotEnoughWidth) {
+		if (this.settings.avoidContentOverlap) {
 			this.registerEvent(
 				this.app.workspace.on("resize", this.resizeDebounceHandler)
 			);
 		}
 
-		if (this.settings.highlightCurrentHeading) {
+		if (!this.settings.disableActiveHeadingHighlighting) {
 			activeWindow.document.addEventListener(
 				"scroll",
 				this.highlightCurrentHeadingDebounceHandler,

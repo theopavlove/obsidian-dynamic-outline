@@ -47,7 +47,7 @@ export default class OutlineWindow {
 
 		this._outline.buttonPinned = value;
 
-		if (this._plugin.settings.toggleOnHover && !value) {
+		if (this._plugin.settings.revealOnHover && !value) {
 			this.hide();
 		}
 	}
@@ -68,7 +68,7 @@ export default class OutlineWindow {
 		this._outline.buttonActive = true;
 		this.hiddenOnResize = false;
 
-		if (this._plugin.settings.autofocusSearchOnOpen) {
+		if (!this._plugin.settings.disableSearchFieldAutofocus) {
 			const inputField: HTMLInputElement | null =
 				this._containerEl.querySelector(
 					"input"
@@ -76,7 +76,7 @@ export default class OutlineWindow {
 			inputField?.focus();
 		}
 
-		if (this._plugin.settings.highlightCurrentHeading) {
+		if (!this._plugin.settings.disableActiveHeadingHighlighting) {
 			this.highlightCurrentHeading(options?.scrollBlock);
 		}
 	}
@@ -90,7 +90,7 @@ export default class OutlineWindow {
 		this._outline.buttonActive = false;
 		this._plugin.runCommand("editor:focus");
 
-		if (this._plugin.settings.toggleOnHover) {
+		if (this._plugin.settings.revealOnHover) {
 			this.pinned = false;
 		}
 	}
@@ -146,7 +146,7 @@ export default class OutlineWindow {
 		ulElement.empty();
 
 		const fragment: DocumentFragment = document.createDocumentFragment();
-		if (this._plugin.settings.dynamicHeadingIndentation) {
+		if (!this._plugin.settings.disableDynamicHeadingIndentation) {
 			let stack: Array<number> = [];
 			headings?.forEach((heading) => {
 				while (
@@ -169,7 +169,7 @@ export default class OutlineWindow {
 		ulElement.appendChild(fragment);
 
 		const shouldHideSearchBar: boolean =
-			this._plugin.settings.autoHideSearchBar &&
+			!this._plugin.settings.disableSearchBarAutoHide &&
 			headings.length < this._plugin.settings.minHeadingsToHideSearchBar;
 
 		const searchFieldElement: HTMLDivElement | null =
@@ -178,7 +178,7 @@ export default class OutlineWindow {
 			);
 		searchFieldElement?.classList.toggle("hidden", shouldHideSearchBar);
 
-		if (this._plugin.settings.highlightCurrentHeading) {
+		if (!this._plugin.settings.disableActiveHeadingHighlighting) {
 			this.highlightCurrentHeading();
 		}
 	}
@@ -258,7 +258,7 @@ export default class OutlineWindow {
 			}
 		);
 
-		if (this._plugin.settings.toggleOnHover) {
+		if (this._plugin.settings.revealOnHover) {
 			this._plugin.registerDomEvent(this._containerEl, "mouseenter", () =>
 				this._handleMouseEnter()
 			);
@@ -386,7 +386,7 @@ export default class OutlineWindow {
 	}
 
 	private _handleMouseLeave(): void {
-		if (this._plugin.settings.toggleOnHover && !this.pinned) {
+		if (this._plugin.settings.revealOnHover && !this.pinned) {
 			OutlineWindow.hideTimeout = setTimeout(() => {
 				this.hide();
 			}, 100);
@@ -460,7 +460,7 @@ export default class OutlineWindow {
 	private _checkForLocation(): void {
 		this._containerEl.classList.toggle(
 			"location-left",
-			this._plugin.settings.windowLocation === "left"
+			this._plugin.settings.outlinePosition === "left"
 		);
 	}
 

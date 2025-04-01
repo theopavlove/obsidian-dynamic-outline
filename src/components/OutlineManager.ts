@@ -66,7 +66,7 @@ export default class OutlineManager {
 	}
 
 	handleResize(): void {
-		if (!this._plugin.settings.toggleWhenNotEnoughWidth) return;
+		if (!this._plugin.settings.avoidContentOverlap) return;
 
 		const views: MarkdownView[] = this.getVisibleMDViews();
 		if (views.length === 0) return;
@@ -76,7 +76,7 @@ export default class OutlineManager {
 
 			const isWindowVisible: boolean = outline.windowVisible;
 			const isEnoughWidth: boolean = this._plugin.settings
-				.toggleAutomatically
+				.revealAutomaticallyOnFileOpen
 				? this._isEnoughWidthForAutomaticToggle(view)
 				: this._isEnoughWidthForHideOnResize(view);
 
@@ -148,7 +148,8 @@ export default class OutlineManager {
 			outline.headings && outline.headings.length > 1;
 		const hasMinimumHeadings: boolean =
 			hasHeadings &&
-			outline.headings.length >= this._plugin.settings.minimumHeadings;
+			outline.headings.length >=
+				this._plugin.settings.minimumHeadingsToRevealAutomatically;
 
 		// Update button visibility
 		outline.toggleButton(hasHeadings);
@@ -157,13 +158,13 @@ export default class OutlineManager {
 		const shouldHideWindow: boolean =
 			!hasHeadings ||
 			(!isMetadataChange &&
-				this._plugin.settings.toggleAutomatically &&
+				this._plugin.settings.revealAutomaticallyOnFileOpen &&
 				!hasMinimumHeadings);
 
 		const shouldShowWindow: boolean =
 			!isMetadataChange &&
 			!outline.toggledAutomaticallyOnce &&
-			this._plugin.settings.toggleAutomatically &&
+			this._plugin.settings.revealAutomaticallyOnFileOpen &&
 			hasMinimumHeadings &&
 			this._isEnoughWidthForAutomaticToggle(view);
 
@@ -184,12 +185,12 @@ export default class OutlineManager {
 	}
 
 	private _isEnoughWidthForAutomaticToggle(view: MarkdownView): boolean {
-		if (this._plugin.settings.contentOverlap === "allow") {
+		if (this._plugin.settings.handleContentOverlap === "allow") {
 			return true;
 		}
 
 		const divisionFactor =
-			this._plugin.settings.contentOverlap === "partial" ? 1 : 2;
+			this._plugin.settings.handleContentOverlap === "partial" ? 1 : 2;
 		return this._calculateAvailableWidth(view, divisionFactor) >= 0;
 	}
 
