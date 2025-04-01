@@ -577,7 +577,7 @@ settings:
 		type: variable-number-slider
 		allowEmpty: false
 		default: 0
-		min: 0
+		min: -100
 		max: 100
 		step: 1
 		format: px
@@ -588,7 +588,7 @@ settings:
 		type: variable-number-slider
 		allowEmpty: false
 		default: 0
-		min: 0
+		min: -100
 		max: 100
 		step: 1
 		format: px
