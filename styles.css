@@ -720,7 +720,7 @@ settings:
  */
 
 #dynamic-outline {
-	position: absolute;
+	position: fixed;
 	display: flex;
 	flex-direction: column;
 	z-index: var(--layer-popover);
