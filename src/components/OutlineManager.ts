@@ -65,6 +65,25 @@ export default class OutlineManager {
 		this._updateOutlineVisibility(view, true);
 	}
 
+	mobileOutsideClickHandler = (event: MouseEvent) => {
+		// @ts-ignore
+		if (!this._plugin.app.isMobile) return;
+
+		const mdView = this.getActiveMDView();
+		if (!mdView) return;
+
+		const outline = this.getOutlineInView(mdView);
+		if (!outline.windowVisible) return;
+
+		const outlineEl = outline.window.getContainerElement();
+		const buttonEl = outline.button.getContainerElement();
+
+		const target = event.target as HTMLElement;
+		if (!outlineEl.contains(target) && !buttonEl.contains(target)) {
+			outline.hideWindow();
+		}
+	};
+
 	handleResize(): void {
 		if (!this._plugin.settings.avoidContentOverlap) return;
 

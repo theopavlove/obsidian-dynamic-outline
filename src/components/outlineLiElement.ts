@@ -100,7 +100,7 @@ export default class DynamicLiElement {
 
 		const window = this._outline.outlineWindow;
 		const searchContainerHTML: HTMLDivElement | null = window
-			._getContainerElement()
+			.getContainerElement()
 			.querySelector(
 				".dynamic-outline-search-container"
 			) as HTMLDivElement | null;

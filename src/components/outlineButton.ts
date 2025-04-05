@@ -42,6 +42,10 @@ export default class OutlineButton {
 		this._containerEl.classList.toggle("pinned", value);
 	}
 
+	getContainerElement(): HTMLButtonElement {
+		return this._containerEl;
+	}
+
 	private _setupEventListeners() {
 		this._plugin.registerDomEvent(this._containerEl, "click", () =>
 			this.handleClick()

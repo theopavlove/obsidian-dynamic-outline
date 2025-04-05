@@ -9,7 +9,7 @@ export default class OutlineWindow {
 	public static hideTimeout: NodeJS.Timeout | null = null;
 
 	public hiddenOnResize: boolean = false;
-	
+
 	private _plugin: DynamicOutlinePlugin;
 	private _outline: Outline;
 	private _containerEl: HTMLDivElement;
@@ -393,7 +393,7 @@ export default class OutlineWindow {
 		}
 	}
 
-	public _getContainerElement(): HTMLDivElement {
+	getContainerElement(): HTMLDivElement {
 		return this._containerEl;
 	}
 
