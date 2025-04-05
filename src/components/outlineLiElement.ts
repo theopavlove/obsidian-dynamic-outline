@@ -1,5 +1,5 @@
 import DynamicOutlinePlugin from "main";
-import { HeadingCache } from "obsidian";
+import { HeadingCache, MarkdownRenderChild, MarkdownRenderer } from "obsidian";
 import SearchContainer from "./searchContainer";
 import Outline from "src/components/Outline";
 
@@ -29,10 +29,21 @@ export default class DynamicLiElement {
 			},
 		});
 
+		// Create container element for the heading
 		const aElement = createEl("a", {
 			cls: `heading-level-${heading.level}`,
-			text: heading.heading,
 		});
+
+		// Use Obsidian's renderMarkdown function to render formatting
+		const markdownRenderChild = new MarkdownRenderChild(aElement);
+		MarkdownRenderer.render(
+			this._plugin.app,
+			heading.heading,
+			aElement,
+			"", // TODO: replace with path
+			markdownRenderChild
+		);
+
 		liElement.append(aElement);
 
 		this._setupEventListener(liElement, heading);

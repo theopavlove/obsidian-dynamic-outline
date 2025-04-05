@@ -53,7 +53,7 @@ export default class OutlineHeadings {
 		const cleanedHeadings: HeadingCache[] = headings;
 		cleanedHeadings.forEach((headingData) => {
 			let cleanedHeading: string = headingData.heading;
-			cleanedHeading = cleanMarkdown(cleanedHeading);
+			// cleanedHeading = cleanMarkdown(cleanedHeading);
 			cleanedHeading = extractLinkText(cleanedHeading);
 			headingData.heading = cleanedHeading;
 		});
