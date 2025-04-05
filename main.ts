@@ -71,6 +71,15 @@ export default class DynamicOutlinePlugin extends Plugin {
 			)
 		);
 
+		// @ts-ignore
+		if (this.app.isMobile) {
+			activeWindow.document.addEventListener(
+				"click",
+				this.stateManager.mobileOutsideClickHandler,
+				true
+			);
+		}
+
 		this.registerEvent(
 			this.app.metadataCache.on("changed", () => {
 				this.stateManager.handleMetadataChanged();
@@ -125,6 +134,12 @@ export default class DynamicOutlinePlugin extends Plugin {
 		activeWindow.document.removeEventListener(
 			"scroll",
 			this.highlightCurrentHeadingDebounceHandler,
+			true
+		);
+
+		activeWindow.document.removeEventListener(
+			"click",
+			this.stateManager.mobileOutsideClickHandler,
 			true
 		);
 	}
