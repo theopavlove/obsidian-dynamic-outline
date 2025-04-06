@@ -87,6 +87,12 @@ settings:
 				label: "H1, H2…"
 				value: heading-level-styling-1
 	-
+		id: disable-heading-word-wrap
+		title: "Disable heading word wrap"
+		description: 'Prevent line breaks in headings, ensuring they are displayed on a single line without wrapping'
+		type: class-toggle
+		default: false
+	-
 		id: headings-level-1
 		title: 'Headings level 1'
 		type: heading
@@ -566,12 +572,6 @@ settings:
         step: 1
         format: px
     -
-		id: disable-heading-word-wrap
-		title: "Disable heading word wrap"
-		description: 'Prevent line breaks in headings, ensuring they are displayed on a single line without wrapping'
-		type: class-toggle
-		default: false
-	-
 		id: window-layout
 		title: 'Window layout'
 		type: heading
