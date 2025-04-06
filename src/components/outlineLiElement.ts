@@ -14,10 +14,10 @@ export default class DynamicLiElement {
 
 	createLiElement(
 		heading: HeadingCache,
-		tab_level: number = heading.level
+		tabLevel: number = heading.level
 	): HTMLLIElement {
 		const liElement: HTMLLIElement = createEl("li", {
-			cls: `tab-level-${tab_level} li-heading-level-${heading.level}`,
+			cls: `tab-level-${tabLevel} li-heading-level-${heading.level}`,
 			attr: {
 				"data-heading-line": heading.position.start.line,
 			},
