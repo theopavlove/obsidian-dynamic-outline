@@ -891,7 +891,7 @@ button.dynamic-outline-reload[disabled] {
 }
 
 #dynamic-outline li.highlight::before {
-	color: var(--text-accent) !important;
+	color: var(--dynamic-outline-active-heading-pill-color) !important;
 }
 
 #dynamic-outline li.highlight::after {
