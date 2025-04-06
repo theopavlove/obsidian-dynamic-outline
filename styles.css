@@ -893,42 +893,62 @@ button.dynamic-outline-reload[disabled] {
 	text-decoration: none;
 }
 
-#dynamic-outline li .heading-level-1 {
+#dynamic-outline li.tab-level-2 {
+	padding-left: var(--dynamic-outline-tab-size);
+}
+
+#dynamic-outline li.tab-level-3 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 2);
+}
+
+#dynamic-outline li.tab-level-4 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 3);
+}
+
+#dynamic-outline li.tab-level-5 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 4);
+}
+
+#dynamic-outline li.tab-level-6 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 5);
+}
+
+#dynamic-outline li a.heading-level-1 {
 	color: var(--dynamic-outline-h1-text-color);
 	font-weight: var(--dynamic-outline-h1-font-weight);
 	font-style: var(--dynamic-outline-h1-font-style);
 	font-variant: var(--dynamic-outline-h1-font-variant);
 }
 
-#dynamic-outline li .heading-level-2 {
+#dynamic-outline li a.heading-level-2 {
 	color: var(--dynamic-outline-h2-text-color);
 	font-weight: var(--dynamic-outline-h2-font-weight);
 	font-style: var(--dynamic-outline-h2-font-style);
 	font-variant: var(--dynamic-outline-h2-font-variant);
 }
 
-#dynamic-outline li .heading-level-3 {
+#dynamic-outline li a.heading-level-3 {
 	color: var(--dynamic-outline-h3-text-color);
 	font-weight: var(--dynamic-outline-h3-font-weight);
 	font-style: var(--dynamic-outline-h3-font-style);
 	font-variant: var(--dynamic-outline-h3-font-variant);
 }
 
-#dynamic-outline li .heading-level-4 {
+#dynamic-outline li a.heading-level-4 {
 	color: var(--dynamic-outline-h4-text-color);
 	font-weight: var(--dynamic-outline-h4-font-weight);
 	font-style: var(--dynamic-outline-h4-font-style);
 	font-variant: var(--dynamic-outline-h4-font-variant);
 }
 
-#dynamic-outline li .heading-level-5 {
+#dynamic-outline li a.heading-level-5 {
 	color: var(--dynamic-outline-h5-text-color);
 	font-weight: var(--dynamic-outline-h5-font-weight);
 	font-style: var(--dynamic-outline-h5-font-style);
 	font-variant: var(--dynamic-outline-h5-font-variant);
 }
 
-#dynamic-outline li .heading-level-6 {
+#dynamic-outline li a.heading-level-6 {
 	color: var(--dynamic-outline-h6-text-color);
 	font-weight: var(--dynamic-outline-h6-font-weight);
 	font-style: var(--dynamic-outline-h6-font-style);
