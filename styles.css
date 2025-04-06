@@ -76,6 +76,35 @@ settings:
 		level: 2
 		collapsed: true
 	-
+        id: dynamic-outline-font-size
+        title: 'Font size'
+        description: 'Font size of the outline headings'
+        type: variable-select
+        default: var(--font-text-size)
+        options:
+            -
+                label: 'Default'
+                value: var(--font-text-size)
+            -
+                label: 'Small'
+                value: var(--font-small)
+            -
+                label: 'Smaller'
+                value: var(--font-smaller)
+            -
+                label: 'Smallest'
+                value: var(--font-smallest)
+    -
+        id: dynamic-outline-tab-size
+        title: 'Tab size'
+        description: 'Left padding multiplier size (in pixels). Will be applied on next outline refresh'
+        type: variable-number-slider
+        default: 24
+        min: 0
+        max: 48
+        step: 1
+        format: px
+    -
 		id: heading-level-styling
 		title: 'Heading level styling'
 		description: 'Add heading level styling to the outline'
@@ -540,41 +569,6 @@ settings:
 				label: Bold
 				value: var(--font-bold)
 	-
-		id: text-and-formatting
-		title: 'Text and formatting'
-		type: heading
-		level: 2
-		collapsed: true
-    -
-        id: dynamic-outline-font-size
-        title: 'Font size'
-        description: 'Font size of the outline headings'
-        type: variable-select
-        default: var(--font-text-size)
-        options:
-            -
-                label: 'Default'
-                value: var(--font-text-size)
-            -
-                label: 'Small'
-                value: var(--font-small)
-            -
-                label: 'Smaller'
-                value: var(--font-smaller)
-            -
-                label: 'Smallest'
-                value: var(--font-smallest)
-    -
-        id: dynamic-outline-tab-size
-        title: 'Tab size'
-        description: 'Left padding multiplier size (in pixels). Will be applied on next outline refresh'
-        type: variable-number-slider
-        default: 24
-        min: 0
-        max: 48
-        step: 1
-        format: px
-    -
 		id: window-layout
 		title: 'Window layout'
 		type: heading
