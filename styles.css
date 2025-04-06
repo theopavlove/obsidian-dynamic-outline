@@ -525,7 +525,7 @@ settings:
 		type: heading
 		level: 2
 		collapsed: true
-    - 
+    -
         id: dynamic-outline-font-size
         title: 'Font size'
         description: 'Font size of the outline headings'
@@ -555,6 +555,12 @@ settings:
         step: 1
         format: px
     -
+		id: disable-heading-word-wrap
+		title: "Disable heading word wrap"
+		description: 'Prevent line breaks in headings, ensuring they are displayed on a single line without wrapping'
+		type: class-toggle
+		default: false
+	-
 		id: window-layout
 		title: 'Window layout'
 		type: heading
@@ -891,6 +897,13 @@ button.dynamic-outline-reload[disabled] {
 	padding: 0px 8px;
 	color: var(--dynamic-outline-text-color);
 	text-decoration: none;
+}
+
+.disable-heading-word-wrap #dynamic-outline li a {
+	/* Text Handling */
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 #dynamic-outline li.tab-level-2 {
