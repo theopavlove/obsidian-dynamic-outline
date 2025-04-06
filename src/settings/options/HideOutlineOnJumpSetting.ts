@@ -4,8 +4,8 @@ import DynamicOutlineSetting from "../settingsOption";
 export default class HideOutlineOnJumpSetting extends DynamicOutlineSetting {
     public display(): void {
         new Setting(this.containerEl)
-            .setName("Hide outline on jump")
-            .setDesc("Automatically hide the outline panel when you navigate by selecting a heading.")
+            .setName("Hide on jump")
+            .setDesc("Hide outline automatically when selecting a heading.")
             .addToggle((toggle) => {
                 toggle
                     .setValue(this.plugin.settings.hideOutlineOnJump)

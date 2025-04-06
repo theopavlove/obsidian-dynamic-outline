@@ -76,6 +76,55 @@ settings:
 		level: 2
 		collapsed: true
 	-
+        id: dynamic-outline-font-size
+        title: 'Font size'
+        description: 'Font size of the outline headings'
+        type: variable-select
+        default: var(--font-text-size)
+        options:
+            -
+                label: 'Default'
+                value: var(--font-text-size)
+            -
+                label: 'Small'
+                value: var(--font-small)
+            -
+                label: 'Smaller'
+                value: var(--font-smaller)
+            -
+                label: 'Smallest'
+                value: var(--font-smallest)
+    -
+        id: dynamic-outline-tab-size
+        title: 'Tab size'
+        description: 'Left padding multiplier size (in pixels). Will be applied on next outline refresh'
+        type: variable-number-slider
+        default: 24
+        min: 0
+        max: 48
+        step: 1
+        format: px
+    -
+		id: heading-level-styling
+		title: 'Heading level styling'
+		description: 'Add heading level styling to the outline'
+		type: class-select
+        allowEmpty: true
+		default: none
+		options:
+			-
+				label: "H1, H2…"
+				value: heading-level-styling-1
+			-
+				label: "#, ##…"
+				value: heading-level-styling-2
+	-
+		id: disable-heading-word-wrap
+		title: "Disable heading word wrap"
+		description: 'Prevent line breaks in headings, ensuring they are displayed on a single line without wrapping'
+		type: class-toggle
+		default: false
+	-
 		id: headings-level-1
 		title: 'Headings level 1'
 		type: heading
@@ -520,41 +569,6 @@ settings:
 				label: Bold
 				value: var(--font-bold)
 	-
-		id: text-and-formatting
-		title: 'Text and formatting'
-		type: heading
-		level: 2
-		collapsed: true
-    - 
-        id: dynamic-outline-font-size
-        title: 'Font size'
-        description: 'Font size of the outline headings'
-        type: variable-select
-        default: var(--font-text-size)
-        options:
-            -
-                label: 'Default'
-                value: var(--font-text-size)
-            -
-                label: 'Small'
-                value: var(--font-small)
-            -
-                label: 'Smaller'
-                value: var(--font-smaller)
-            -
-                label: 'Smallest'
-                value: var(--font-smallest)
-    -
-        id: dynamic-outline-tab-size
-        title: 'Tab size'
-        description: 'Left padding multiplier size (in pixels). Will be applied on next outline refresh'
-        type: variable-number-slider
-        default: 24
-        min: 0
-        max: 48
-        step: 1
-        format: px
-    -
 		id: window-layout
 		title: 'Window layout'
 		type: heading
@@ -848,7 +862,7 @@ button.dynamic-outline-reload[disabled] {
 
 #dynamic-outline li {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 
 	padding: 7px 0;
 	margin: 1px 0;
@@ -870,6 +884,10 @@ button.dynamic-outline-reload[disabled] {
 	background-color: var(--dynamic-outline-active-heading-background);
 }
 
+#dynamic-outline li.highlight::before {
+	color: var(--dynamic-outline-active-heading-pill-color) !important;
+}
+
 #dynamic-outline li.highlight::after {
 	content: "";
 	position: absolute;
@@ -887,48 +905,131 @@ button.dynamic-outline-reload[disabled] {
 	height: 22px;
 }
 
+.heading-level-styling-1 #dynamic-outline li::before,
+.heading-level-styling-2 #dynamic-outline li::before {
+	font-size: var(--font-smallest);
+	color: var(--text-faint);
+	margin-left: 0.5em;
+	margin-right: 0.25em;
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-1::before {
+	content: "H1";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-2::before {
+	content: "H2";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-3::before {
+	content: "H3";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-4::before {
+	content: "H4";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-5::before {
+	content: "H5";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-6::before {
+	content: "H6";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-1::before {
+	content: "#";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-2::before {
+	content: "##";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-3::before {
+	content: "###";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-4::before {
+	content: "####";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-5::before {
+	content: "#####";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-6::before {
+	content: "######";
+}
+
 #dynamic-outline li a {
 	padding: 0px 8px;
 	color: var(--dynamic-outline-text-color);
 	text-decoration: none;
 }
 
-#dynamic-outline li .heading-level-1 {
+.disable-heading-word-wrap #dynamic-outline li a {
+	/* Text Handling */
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#dynamic-outline li.tab-level-2 {
+	padding-left: var(--dynamic-outline-tab-size);
+}
+
+#dynamic-outline li.tab-level-3 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 2);
+}
+
+#dynamic-outline li.tab-level-4 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 3);
+}
+
+#dynamic-outline li.tab-level-5 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 4);
+}
+
+#dynamic-outline li.tab-level-6 {
+	padding-left: calc(var(--dynamic-outline-tab-size) * 5);
+}
+
+#dynamic-outline li a.heading-level-1 {
 	color: var(--dynamic-outline-h1-text-color);
 	font-weight: var(--dynamic-outline-h1-font-weight);
 	font-style: var(--dynamic-outline-h1-font-style);
 	font-variant: var(--dynamic-outline-h1-font-variant);
 }
 
-#dynamic-outline li .heading-level-2 {
+#dynamic-outline li a.heading-level-2 {
 	color: var(--dynamic-outline-h2-text-color);
 	font-weight: var(--dynamic-outline-h2-font-weight);
 	font-style: var(--dynamic-outline-h2-font-style);
 	font-variant: var(--dynamic-outline-h2-font-variant);
 }
 
-#dynamic-outline li .heading-level-3 {
+#dynamic-outline li a.heading-level-3 {
 	color: var(--dynamic-outline-h3-text-color);
 	font-weight: var(--dynamic-outline-h3-font-weight);
 	font-style: var(--dynamic-outline-h3-font-style);
 	font-variant: var(--dynamic-outline-h3-font-variant);
 }
 
-#dynamic-outline li .heading-level-4 {
+#dynamic-outline li a.heading-level-4 {
 	color: var(--dynamic-outline-h4-text-color);
 	font-weight: var(--dynamic-outline-h4-font-weight);
 	font-style: var(--dynamic-outline-h4-font-style);
 	font-variant: var(--dynamic-outline-h4-font-variant);
 }
 
-#dynamic-outline li .heading-level-5 {
+#dynamic-outline li a.heading-level-5 {
 	color: var(--dynamic-outline-h5-text-color);
 	font-weight: var(--dynamic-outline-h5-font-weight);
 	font-style: var(--dynamic-outline-h5-font-style);
 	font-variant: var(--dynamic-outline-h5-font-variant);
 }
 
-#dynamic-outline li .heading-level-6 {
+#dynamic-outline li a.heading-level-6 {
 	color: var(--dynamic-outline-h6-text-color);
 	font-weight: var(--dynamic-outline-h6-font-weight);
 	font-style: var(--dynamic-outline-h6-font-style);

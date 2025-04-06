@@ -14,18 +14,12 @@ export default class DynamicLiElement {
 
 	createLiElement(
 		heading: HeadingCache,
-		tab_level: number = heading.level
+		tabLevel: number = heading.level
 	): HTMLLIElement {
-		const tab_size: number =
-			this._plugin.getCssVariableAsNumber("--dynamic-outline-tab-size") ??
-			24;
-
 		const liElement: HTMLLIElement = createEl("li", {
+			cls: `tab-level-${tabLevel} li-heading-level-${heading.level}`,
 			attr: {
 				"data-heading-line": heading.position.start.line,
-				style: `padding-left: ${
-					(tab_level - 1) * tab_size
-				}px !important`,
 			},
 		});
 
