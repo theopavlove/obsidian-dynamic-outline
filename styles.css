@@ -86,6 +86,9 @@ settings:
 			-
 				label: "H1, H2…"
 				value: heading-level-styling-1
+			-
+				label: "#, ##…"
+				value: heading-level-styling-2
 	-
 		id: disable-heading-word-wrap
 		title: "Disable heading word wrap"
@@ -908,7 +911,8 @@ button.dynamic-outline-reload[disabled] {
 	height: 22px;
 }
 
-.heading-level-styling-1 #dynamic-outline li::before {
+.heading-level-styling-1 #dynamic-outline li::before,
+.heading-level-styling-2 #dynamic-outline li::before {
 	font-size: var(--font-smallest);
 	color: var(--text-faint);
 	margin-left: 0.5em;
@@ -937,6 +941,30 @@ button.dynamic-outline-reload[disabled] {
 
 .heading-level-styling-1 #dynamic-outline li.li-heading-level-6::before {
 	content: "H6";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-1::before {
+	content: "#";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-2::before {
+	content: "##";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-3::before {
+	content: "###";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-4::before {
+	content: "####";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-5::before {
+	content: "#####";
+}
+
+.heading-level-styling-2 #dynamic-outline li.li-heading-level-6::before {
+	content: "######";
 }
 
 #dynamic-outline li a {
