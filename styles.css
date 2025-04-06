@@ -76,6 +76,17 @@ settings:
 		level: 2
 		collapsed: true
 	-
+		id: heading-level-styling
+		title: 'Heading level styling'
+		description: 'Add heading level styling to the outline'
+		type: class-select
+        allowEmpty: true
+		default: none
+		options:
+			-
+				label: "H1, H2…"
+				value: heading-level-styling-1
+	-
 		id: headings-level-1
 		title: 'Headings level 1'
 		type: heading
@@ -854,7 +865,7 @@ button.dynamic-outline-reload[disabled] {
 
 #dynamic-outline li {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 
 	padding: 7px 0;
 	margin: 1px 0;
@@ -876,6 +887,10 @@ button.dynamic-outline-reload[disabled] {
 	background-color: var(--dynamic-outline-active-heading-background);
 }
 
+#dynamic-outline li.highlight::before {
+	color: var(--text-accent) !important;
+}
+
 #dynamic-outline li.highlight::after {
 	content: "";
 	position: absolute;
@@ -891,6 +906,37 @@ button.dynamic-outline-reload[disabled] {
 	top: 50%;
 	transform: translateY(-50%);
 	height: 22px;
+}
+
+.heading-level-styling-1 #dynamic-outline li::before {
+	font-size: var(--font-smallest);
+	color: var(--text-faint);
+	margin-left: 0.5em;
+	margin-right: 0.25em;
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-1::before {
+	content: "H1";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-2::before {
+	content: "H2";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-3::before {
+	content: "H3";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-4::before {
+	content: "H4";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-5::before {
+	content: "H5";
+}
+
+.heading-level-styling-1 #dynamic-outline li.li-heading-level-6::before {
+	content: "H6";
 }
 
 #dynamic-outline li a {

@@ -17,7 +17,7 @@ export default class DynamicLiElement {
 		tab_level: number = heading.level
 	): HTMLLIElement {
 		const liElement: HTMLLIElement = createEl("li", {
-			cls: `tab-level-${tab_level}`,
+			cls: `tab-level-${tab_level} li-heading-level-${heading.level}`,
 			attr: {
 				"data-heading-line": heading.position.start.line,
 			},
