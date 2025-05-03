@@ -11,6 +11,7 @@ import DisableDynamicHeadingIndentationSetting from "./options/DisableDynamicHea
 import DisableSearchAutoHideSetting from "./options/DisableSearchAutoHideSetting";
 import HideOutlineOnJumpSetting from "./options/HideOutlineOnJumpSetting";
 import AvoidContentOverlapSetting from "./options/AvoidContentOverlapSetting";
+import DisableHeadingCollapsingSetting from "./options/DisableHeadingCollapsingSetting";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
@@ -22,6 +23,7 @@ interface DynamicOutlinePluginSettings {
 	disableSearchBarAutoHide: boolean;
 	disableSearchClearOnJump: boolean;
 	disableSearchFieldAutofocus: boolean;
+	disableHeadingCollapsing: boolean;
 	hideOutlineOnJump: boolean;
 	minHeadingsToHideSearchBar: number;
 	minimumHeadingsToRevealAutomatically: number;
@@ -38,6 +40,7 @@ const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	disableSearchBarAutoHide: false,
 	disableSearchClearOnJump: false,
 	disableSearchFieldAutofocus: false,
+	disableHeadingCollapsing: false,
 	hideOutlineOnJump: false,
 	minHeadingsToHideSearchBar: 5,
 	minimumHeadingsToRevealAutomatically: 2,
@@ -72,7 +75,10 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 			);
 		new OutlinePositionSetting(this.plugin, containerEl).display();
 		new RevealOnHoverSetting(this.plugin, containerEl).display();
-		new RevealAutomaticallyOnFileOpenSetting(this.plugin, containerEl).display();
+		new RevealAutomaticallyOnFileOpenSetting(
+			this.plugin,
+			containerEl
+		).display();
 		new AvoidContentOverlapSetting(this.plugin, containerEl).display();
 		new HideOutlineOnJumpSetting(this.plugin, containerEl).display();
 
@@ -95,6 +101,7 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 					`To customize the appearance of the Dynamic Outline, please use the <a href="https://obsidian.md/plugins?id=obsidian-style-settings">Style Settings</a> plugin.`
 				)
 			);
+		new DisableHeadingCollapsingSetting(this.plugin, containerEl).display();
 		new DisableActiveHeadingHighlightingSetting(
 			this.plugin,
 			containerEl
