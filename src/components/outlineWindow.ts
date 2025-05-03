@@ -52,6 +52,10 @@ export default class OutlineWindow {
 		}
 	}
 
+	getContainerElement(): HTMLDivElement {
+		return this._containerEl;
+	}
+
 	toggle(): void {
 		this.visible ? this.hide() : this.show();
 	}
@@ -145,10 +149,25 @@ export default class OutlineWindow {
 		this._latestHeadings = headings;
 		ulElement.empty();
 
+		let isCollapsingPossibleGlobally = false;
+		if (!this._plugin.settings.disableHeadingCollapsing) {
+			const levels = headings.map((h) => h.level);
+			const uniqueLevels = new Set(levels);
+			if (uniqueLevels.size > 1) {
+				isCollapsingPossibleGlobally = true;
+			}
+		}
+
+		const minLevel: number = Math.min(...headings.map((h) => h.level));
+		const topLevelCount: number = headings.filter(
+			(h) => h.level === minLevel
+		).length;
+		const hasMultipleTopLevelHeadings: boolean = topLevelCount > 1;
+
 		const fragment: DocumentFragment = document.createDocumentFragment();
 		if (!this._plugin.settings.disableDynamicHeadingIndentation) {
 			let stack: Array<number> = [];
-			headings?.forEach((heading) => {
+			headings?.forEach((heading, i) => {
 				while (
 					stack.length > 0 &&
 					heading.level <= stack[stack.length - 1]
@@ -158,15 +177,33 @@ export default class OutlineWindow {
 				stack.push(heading.level);
 
 				fragment.append(
-					dynamicLi.createLiElement(heading, stack.length)
+					dynamicLi.createLiElement(
+						heading,
+						stack.length,
+						headings,
+						i,
+						isCollapsingPossibleGlobally,
+						hasMultipleTopLevelHeadings
+					)
 				);
 			});
 		} else {
-			headings?.forEach((heading) => {
-				fragment.append(dynamicLi.createLiElement(heading));
+			headings?.forEach((heading, i) => {
+				fragment.append(
+					dynamicLi.createLiElement(
+						heading,
+						heading.level,
+						headings,
+						i,
+						isCollapsingPossibleGlobally,
+						hasMultipleTopLevelHeadings
+					)
+				);
 			});
 		}
 		ulElement.appendChild(fragment);
+
+		this._containerEl.classList.toggle("has-single-top-level", !hasMultipleTopLevelHeadings);
 
 		const shouldHideSearchBar: boolean =
 			!this._plugin.settings.disableSearchBarAutoHide &&
@@ -235,7 +272,7 @@ export default class OutlineWindow {
 	}
 
 	removeHovered(): void {
-		const itemList = this.getVisibleLiItems();
+		const itemList = this._getVisibleLiItems();
 		itemList.forEach((liElement) => {
 			liElement.classList.remove("hovered");
 		});
@@ -268,18 +305,6 @@ export default class OutlineWindow {
 		}
 	}
 
-	private getVisibleLiItems(): Array<HTMLElement> {
-		return Array.from(
-			this._containerEl.querySelectorAll("li:not(.outline-item-hidden")
-		);
-	}
-
-	private setHovered(itemList: Array<HTMLElement>, newIndex: number): void {
-		itemList.forEach((item, index) => {
-			item.classList.toggle("hovered", index === newIndex);
-		});
-	}
-
 	private _handleKeyDown(event: KeyboardEvent): void {
 		/**
 		 * Retrieves the current index of the item in the list.
@@ -301,7 +326,7 @@ export default class OutlineWindow {
 				  ) || 0;
 		};
 
-		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
+		const itemList: Array<HTMLElement> = this._getVisibleLiItems();
 		const itemListLength: number = itemList.length;
 
 		let currentIndex: number = getCurrentIndex();
@@ -336,50 +361,17 @@ export default class OutlineWindow {
 		}
 
 		if (newIndex !== currentIndex) {
-			this.setHovered(itemList, newIndex);
+			this._setHovered(itemList, newIndex);
 			itemList[newIndex].scrollIntoView({
 				block: "nearest",
 			});
 		}
 	}
 
-	private _filterItems(): void {
-		// TODO: should be a better way to target the input field
-		// considering we already have a dedicated class
-		const inputField: HTMLInputElement = this._containerEl.querySelector(
-			"input"
-		) as HTMLInputElement;
-		const value: string = inputField.value.toLowerCase();
-		const outlineItems: NodeListOf<HTMLLIElement> =
-			this._containerEl.querySelectorAll("li");
-
-		let filteredItems: HTMLLIElement[];
-		if (value === "") {
-			filteredItems = Array.from(outlineItems);
-		} else {
-			filteredItems = fuzzysort
-				.go(value, Array.from(outlineItems), {
-					key: "textContent",
-				})
-				.map((result) => result.obj);
-		}
-
-		outlineItems.forEach((item: HTMLLIElement) => {
-			item.classList.toggle(
-				"outline-item-hidden",
-				!filteredItems.includes(item)
-			);
-		});
-
-		// Set the current index to the first visible item
-		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
-		this.setHovered(itemList, 0);
-	}
-
 	private _handleMouseEnter(): void {
 		this._clearHideTimeout();
 
-		const itemList: Array<HTMLElement> = this.getVisibleLiItems();
+		const itemList: Array<HTMLElement> = this._getVisibleLiItems();
 		itemList.forEach((item) => {
 			item.classList.remove("hovered");
 		});
@@ -390,17 +382,6 @@ export default class OutlineWindow {
 			OutlineWindow.hideTimeout = setTimeout(() => {
 				this.hide();
 			}, 100);
-		}
-	}
-
-	getContainerElement(): HTMLDivElement {
-		return this._containerEl;
-	}
-
-	public _clearHideTimeout(): void {
-		if (OutlineWindow.hideTimeout) {
-			clearTimeout(OutlineWindow.hideTimeout);
-			OutlineWindow.hideTimeout = null;
 		}
 	}
 
@@ -424,6 +405,58 @@ export default class OutlineWindow {
 		mainElement.appendChild(contentElement);
 
 		return mainElement;
+	}
+
+	private _getVisibleLiItems(): Array<HTMLElement> {
+		return Array.from(
+			this._containerEl.querySelectorAll(
+				"li:not(.outline-item-hidden):not(.hidden-by-collapse)"
+			)
+		);
+	}
+
+	private _setHovered(itemList: Array<HTMLElement>, newIndex: number): void {
+		itemList.forEach((item, index) => {
+			item.classList.toggle("hovered", index === newIndex);
+		});
+	}
+
+	private _filterItems(): void {
+		const inputField: HTMLInputElement = this._containerEl.querySelector(
+			"input"
+		) as HTMLInputElement;
+		const value: string = inputField.value.toLowerCase();
+		const outlineItems: NodeListOf<HTMLLIElement> =
+			this._containerEl.querySelectorAll("li");
+
+		const isSearching = value !== "";
+		this._containerEl.classList.toggle("is-searching", isSearching);
+
+		let filteredItems: HTMLLIElement[];
+		if (!isSearching) {
+			filteredItems = Array.from(outlineItems);
+		} else {
+			filteredItems = fuzzysort
+				.go(value, Array.from(outlineItems), {
+					key: "textContent",
+				})
+				.map((result) => result.obj);
+		}
+
+		outlineItems.forEach((item: HTMLLIElement) => {
+			const shouldBeVisible = filteredItems.includes(item);
+			item.classList.toggle("outline-item-hidden", !shouldBeVisible);
+		});
+
+		const itemList: Array<HTMLElement> = this._getVisibleLiItems();
+		this._setHovered(itemList, 0);
+	}
+
+	public _clearHideTimeout(): void {
+		if (OutlineWindow.hideTimeout) {
+			clearTimeout(OutlineWindow.hideTimeout);
+			OutlineWindow.hideTimeout = null;
+		}
 	}
 
 	private _setVisibilityBasedOnEditingToolbar(): void {

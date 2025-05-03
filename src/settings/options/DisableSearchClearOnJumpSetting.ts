@@ -6,7 +6,7 @@ export default class DisableSearchClearOnJumpSetting extends DynamicOutlineSetti
 		new Setting(this.containerEl)
 			.setName("Disable search clear on jump")
 			.setDesc(
-				"Enable to prevent the search field from being cleared automatically after clicking a heading."
+				"Turn off the ability to keep the search field text after clicking a heading."
 			)
 			.addToggle((toggle) => {
 				toggle

@@ -7,6 +7,8 @@ export default class DynamicLiElement {
 	private _plugin: DynamicOutlinePlugin;
 	private _outline: Outline;
 
+	private readonly COLLAPSE_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="m6 9 6 6 6-6"/></svg>`;
+
 	constructor(plugin: DynamicOutlinePlugin, outline: Outline) {
 		this._plugin = plugin;
 		this._outline = outline;
@@ -14,14 +16,56 @@ export default class DynamicLiElement {
 
 	createLiElement(
 		heading: HeadingCache,
-		tabLevel: number = heading.level
+		tabLevel: number,
+		headings: HeadingCache[],
+		index: number,
+		isCollapsingPossibleGlobally: boolean,
+		hasMultipleTopLevelHeadings: boolean // New parameter
 	): HTMLLIElement {
+		const hasChildren: boolean =
+			index + 1 < headings.length &&
+			headings[index + 1].level > heading.level;
+		const canCollapse: boolean =
+			isCollapsingPossibleGlobally && hasChildren;
+		const isSingleTopLevel: boolean =
+			tabLevel === 1 && !hasMultipleTopLevelHeadings;
+
+		const liClasses = [
+			`tab-level-${tabLevel}`,
+			`li-heading-level-${heading.level}`,
+		];
+
+		if (canCollapse) {
+			liClasses.push("has-children");
+		}
+
+		if (isSingleTopLevel) {
+			liClasses.push("is-single-top-level");
+		}
+
 		const liElement: HTMLLIElement = createEl("li", {
-			cls: `tab-level-${tabLevel} li-heading-level-${heading.level}`,
+			cls: liClasses,
 			attr: {
 				"data-heading-line": heading.position.start.line,
+				"data-level": tabLevel,
 			},
 		});
+
+		if (isCollapsingPossibleGlobally && !isSingleTopLevel) {
+			const iconSpan = createEl("span", {
+				cls: "dynamic-outline-collapse-icon",
+			});
+			iconSpan.innerHTML = this.COLLAPSE_ICON_SVG;
+
+			if (canCollapse) {
+				iconSpan.addEventListener("click", (event) =>
+					this._handleCollapseToggle(event)
+				);
+			} else {
+				iconSpan.style.cursor = "default";
+			}
+			liElement.append(iconSpan);
+		}
 
 		const aElement = createEl("a", {
 			cls: `heading-level-${heading.level}`,
@@ -47,7 +91,17 @@ export default class DynamicLiElement {
 		liElement: HTMLLIElement,
 		heading: HeadingCache
 	) {
-		liElement.onclick = () => this._handleClick(heading);
+		liElement.onclick = (event) => {
+			// Don't navigate if the icon was clicked
+			if (
+				(event.target as HTMLElement).closest(
+					".dynamic-outline-collapse-icon"
+				)
+			) {
+				return;
+			}
+			this._handleClick(heading);
+		};
 
 		liElement.addEventListener("mouseenter", () => {
 			liElement.classList.add("hovered");
@@ -55,6 +109,57 @@ export default class DynamicLiElement {
 
 		liElement.addEventListener("mouseleave", () => {
 			liElement.classList.remove("hovered");
+		});
+	}
+
+	private _handleCollapseToggle(event: MouseEvent): void {
+		event.stopPropagation();
+
+		const iconElement = event.currentTarget as HTMLElement;
+		const liElement = iconElement.parentElement as HTMLLIElement;
+		if (!liElement) return;
+
+		const parentLevel: number = parseInt(liElement.dataset.level || "0");
+		const isCollapsing = !liElement.classList.contains("collapsed");
+
+		liElement.classList.toggle("collapsed");
+
+		const elementsToProcess: HTMLLIElement[] = [];
+		let currentElement: HTMLLIElement | null =
+			liElement.nextElementSibling as HTMLLIElement | null;
+		while (currentElement) {
+			const currentLevel: number = parseInt(
+				currentElement.dataset.level || "0"
+			);
+			if (currentLevel <= parentLevel) {
+				break;
+			}
+			elementsToProcess.push(currentElement);
+			currentElement =
+				currentElement.nextElementSibling as HTMLLIElement | null;
+		}
+
+		requestAnimationFrame(() => {
+			let visibilityDepthLimit = isCollapsing ? -1 : parentLevel + 1;
+
+			elementsToProcess.forEach((el) => {
+				const currentLevel = parseInt(el.dataset.level || "0");
+
+				if (isCollapsing) {
+					el.classList.add("hidden-by-collapse");
+				} else {
+					if (currentLevel <= visibilityDepthLimit) {
+						el.classList.remove("hidden-by-collapse");
+						visibilityDepthLimit = el.classList.contains(
+							"collapsed"
+						)
+							? currentLevel
+							: currentLevel + 1;
+					} else {
+						el.classList.add("hidden-by-collapse");
+					}
+				}
+			});
 		});
 	}
 

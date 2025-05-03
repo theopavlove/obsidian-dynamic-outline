@@ -95,13 +95,13 @@ settings:
                 label: 'Smallest'
                 value: var(--font-smallest)
     -
-        id: dynamic-outline-tab-size
+        id: dynamic-outline-li-padding-tab-size
         title: 'Tab size'
         description: 'Left padding multiplier size (in pixels). Will be applied on next outline refresh'
         type: variable-number-slider
-        default: 24
+        default: 16
         min: 0
-        max: 48
+        max: 32
         step: 1
         format: px
     -
@@ -620,7 +620,9 @@ settings:
 /* TODO: transfer variables to :root. */
 :root {
 	/* Applied to the li.style directly with dynamic tab levels. */
-	--dynamic-outline-tab-size: 24px;
+	--dynamic-outline-li-padding-tab-size: 16px;
+
+	--dynamic-outline-collapse-icon-width: 12px;
 }
 
 .theme-dark,
@@ -867,9 +869,47 @@ button.dynamic-outline-reload[disabled] {
 	padding: 7px 0;
 	margin: 1px 0;
 	transition: background 25ms linear;
-	cursor: pointer;
 
 	border-radius: 6px;
+}
+
+.dynamic-outline-collapse-icon {
+	/* background-color: var(--color-green); */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--dynamic-outline-collapse-icon-width);
+	height: var(--dynamic-outline-collapse-icon-width);
+	margin-left: 8px;
+	color: var(--text-muted);
+	transition: transform 0.1s ease-in-out, visibility 0s linear;
+	flex-shrink: 0;
+}
+
+.dynamic-outline-collapse-icon svg {
+	width: var(--dynamic-outline-collapse-icon-width);
+	height: var(--dynamic-outline-collapse-icon-width);
+	stroke-width: 3;
+}
+
+#dynamic-outline li:not(.has-children) .dynamic-outline-collapse-icon {
+	visibility: hidden !important;
+	cursor: default;
+}
+
+/* Hide collapse icon for single top-level items, even if they have children */
+#dynamic-outline li.is-single-top-level .dynamic-outline-collapse-icon {
+	visibility: hidden !important;
+	cursor: default;
+}
+
+#dynamic-outline li.collapsed > .dynamic-outline-collapse-icon {
+	color: var(--text-accent);
+	transform: rotate(-90deg);
+}
+
+.dynamic-outline-collapse-icon:hover {
+	color: var(--text-normal);
 }
 
 #dynamic-outline li:hover,
@@ -965,6 +1005,9 @@ button.dynamic-outline-reload[disabled] {
 	padding: 0px 8px;
 	color: var(--dynamic-outline-text-color);
 	text-decoration: none;
+	cursor: default;
+	flex-grow: 1; /* Allow text to take remaining space */
+	min-width: 0; /* Prevent overflow issues with flex */
 }
 
 .disable-heading-word-wrap #dynamic-outline li a {
@@ -974,24 +1017,46 @@ button.dynamic-outline-reload[disabled] {
 	white-space: nowrap;
 }
 
+/* Default padding */
 #dynamic-outline li.tab-level-2 {
-	padding-left: var(--dynamic-outline-tab-size);
+	padding-left: var(--dynamic-outline-li-padding-tab-size);
 }
 
 #dynamic-outline li.tab-level-3 {
-	padding-left: calc(var(--dynamic-outline-tab-size) * 2);
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 2);
 }
 
 #dynamic-outline li.tab-level-4 {
-	padding-left: calc(var(--dynamic-outline-tab-size) * 3);
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 3);
 }
 
 #dynamic-outline li.tab-level-5 {
-	padding-left: calc(var(--dynamic-outline-tab-size) * 4);
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 4);
 }
 
 #dynamic-outline li.tab-level-6 {
-	padding-left: calc(var(--dynamic-outline-tab-size) * 5);
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 5);
+}
+
+/* Override padding when there is only one top-level heading */
+#dynamic-outline.has-single-top-level li.tab-level-2 {
+	padding-left: 0;
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-3 {
+	padding-left: var(--dynamic-outline-li-padding-tab-size); /* Effectively level 2 */
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-4 {
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 2); /* Effectively level 3 */
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-5 {
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 3); /* Effectively level 4 */
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-6 {
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 4); /* Effectively level 5 */
 }
 
 #dynamic-outline li a.heading-level-1 {
@@ -1078,7 +1143,12 @@ button.dynamic-outline-reload[disabled] {
 	); /* Preserve the maximum font weight on highlight. */
 }
 
-#dynamic-outline .outline-item-hidden {
+#dynamic-outline .outline-item-hidden { /* Rule for items hidden by search */
+	display: none !important;
+}
+
+/* Hide by collapse ONLY when NOT searching */
+#dynamic-outline:not(.is-searching) li.hidden-by-collapse {
 	display: none !important;
 }
 
