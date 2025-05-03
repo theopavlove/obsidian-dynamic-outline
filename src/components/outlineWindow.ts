@@ -158,6 +158,12 @@ export default class OutlineWindow {
 			}
 		}
 
+		const minLevel: number = Math.min(...headings.map((h) => h.level));
+		const topLevelCount: number = headings.filter(
+			(h) => h.level === minLevel
+		).length;
+		const hasMultipleTopLevelHeadings: boolean = topLevelCount > 1;
+
 		const fragment: DocumentFragment = document.createDocumentFragment();
 		if (!this._plugin.settings.disableDynamicHeadingIndentation) {
 			let stack: Array<number> = [];
@@ -176,7 +182,8 @@ export default class OutlineWindow {
 						stack.length,
 						headings,
 						i,
-						isCollapsingPossibleGlobally
+						isCollapsingPossibleGlobally,
+						hasMultipleTopLevelHeadings
 					)
 				);
 			});
@@ -188,12 +195,15 @@ export default class OutlineWindow {
 						heading.level,
 						headings,
 						i,
-						isCollapsingPossibleGlobally
+						isCollapsingPossibleGlobally,
+						hasMultipleTopLevelHeadings
 					)
 				);
 			});
 		}
 		ulElement.appendChild(fragment);
+
+		this._containerEl.classList.toggle("has-single-top-level", !hasMultipleTopLevelHeadings);
 
 		const shouldHideSearchBar: boolean =
 			!this._plugin.settings.disableSearchBarAutoHide &&

@@ -897,6 +897,12 @@ button.dynamic-outline-reload[disabled] {
 	cursor: default;
 }
 
+/* Hide collapse icon for single top-level items, even if they have children */
+#dynamic-outline li.is-single-top-level .dynamic-outline-collapse-icon {
+	visibility: hidden !important;
+	cursor: default;
+}
+
 #dynamic-outline li.collapsed > .dynamic-outline-collapse-icon {
 	color: var(--text-accent);
 	transform: rotate(-90deg);
@@ -1011,6 +1017,7 @@ button.dynamic-outline-reload[disabled] {
 	white-space: nowrap;
 }
 
+/* Default padding */
 #dynamic-outline li.tab-level-2 {
 	padding-left: var(--dynamic-outline-li-padding-tab-size);
 }
@@ -1029,6 +1036,27 @@ button.dynamic-outline-reload[disabled] {
 
 #dynamic-outline li.tab-level-6 {
 	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 5);
+}
+
+/* Override padding when there is only one top-level heading */
+#dynamic-outline.has-single-top-level li.tab-level-2 {
+	padding-left: 0;
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-3 {
+	padding-left: var(--dynamic-outline-li-padding-tab-size); /* Effectively level 2 */
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-4 {
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 2); /* Effectively level 3 */
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-5 {
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 3); /* Effectively level 4 */
+}
+
+#dynamic-outline.has-single-top-level li.tab-level-6 {
+	padding-left: calc(var(--dynamic-outline-li-padding-tab-size) * 4); /* Effectively level 5 */
 }
 
 #dynamic-outline li a.heading-level-1 {

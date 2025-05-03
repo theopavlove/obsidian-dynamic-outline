@@ -19,12 +19,16 @@ export default class DynamicLiElement {
 		tabLevel: number,
 		headings: HeadingCache[],
 		index: number,
-		isCollapsingPossibleGlobally: boolean
+		isCollapsingPossibleGlobally: boolean,
+		hasMultipleTopLevelHeadings: boolean // New parameter
 	): HTMLLIElement {
-		const hasChildren =
+		const hasChildren: boolean =
 			index + 1 < headings.length &&
 			headings[index + 1].level > heading.level;
-		const canCollapse = isCollapsingPossibleGlobally && hasChildren;
+		const canCollapse: boolean =
+			isCollapsingPossibleGlobally && hasChildren;
+		const isSingleTopLevel: boolean =
+			tabLevel === 1 && !hasMultipleTopLevelHeadings;
 
 		const liClasses = [
 			`tab-level-${tabLevel}`,
@@ -35,6 +39,10 @@ export default class DynamicLiElement {
 			liClasses.push("has-children");
 		}
 
+		if (isSingleTopLevel) {
+			liClasses.push("is-single-top-level");
+		}
+
 		const liElement: HTMLLIElement = createEl("li", {
 			cls: liClasses,
 			attr: {
@@ -43,7 +51,7 @@ export default class DynamicLiElement {
 			},
 		});
 
-		if (isCollapsingPossibleGlobally) {
+		if (isCollapsingPossibleGlobally && !isSingleTopLevel) {
 			const iconSpan = createEl("span", {
 				cls: "dynamic-outline-collapse-icon",
 			});
@@ -53,6 +61,8 @@ export default class DynamicLiElement {
 				iconSpan.addEventListener("click", (event) =>
 					this._handleCollapseToggle(event)
 				);
+			} else {
+				iconSpan.style.cursor = "default";
 			}
 			liElement.append(iconSpan);
 		}
