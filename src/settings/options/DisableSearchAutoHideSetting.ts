@@ -6,7 +6,7 @@ export default class DisableSearchAutoHideSetting extends DynamicOutlineSetting 
 		new Setting(this.containerEl)
 			.setName("Disable search bar auto-hide")
 			.setDesc(
-				"Enable to automatically hide the search bar when the outline contains only a few headings."
+				"Turn off the automatic hiding of the search bar when the outline contains only a few headings."
 			)
 			.addToggle((toggle) => {
 				toggle

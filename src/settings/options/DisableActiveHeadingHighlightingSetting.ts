@@ -11,7 +11,7 @@ export default class DisableActiveHeadingHighlightingSetting extends DynamicOutl
 		new Setting(this.containerEl)
 			.setName("Disable active heading highlighting")
 			.setDesc(
-				"Enable to highlight the corresponding heading in the outline as you scroll through the note."
+				"Turn off the highlighting of the corresponding heading in the outline as you scroll."
 			)
 			.addButton((button) => {
 				restartButton = button;
