@@ -11,7 +11,7 @@ export default class DisableDynamicHeadingIndentationSetting extends DynamicOutl
 		new Setting(this.containerEl)
 			.setName("Disable dynamic heading indentation")
 			.setDesc(
-				"Enable to adjust heading indentation based on the previous heading's level for improved visual hierarchy."
+				"Turn off automatic heading indentation adjustments based on the previous heading's level."
 			)
 			.addButton((button) => {
 				restartButton = button;

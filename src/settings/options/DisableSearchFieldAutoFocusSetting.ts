@@ -6,7 +6,7 @@ export default class DisableSearchFieldAutofocusSetting extends DynamicOutlineSe
 		new Setting(this.containerEl)
 			.setName("Disable search field autofocus")
 			.setDesc(
-				"Enable to automatically focus the search field when the outline window opens. Allows immediate keyboard input."
+				"Turn off the automatic focusing of the search field when the outline window opens."
 			)
 			.addToggle((toggle) => {
 				toggle
