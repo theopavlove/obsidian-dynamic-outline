@@ -2,7 +2,7 @@
 
 This [Obsidian](https://obsidian.md/) plugin displays a floating table of contents for quicker navigation within your notes.
 
-![](./assets/dynamic-outline-cover-v3-dark.png)
+![](./assets/dynamic-outline-cover-light.png)
 
 ## Features
 
@@ -24,7 +24,7 @@ Enjoy a seamless experience from the start, or customize it precisely to your ne
 
 Click the icon in the top right of your current note to instantly open the Dynamic Outline and get a clear view of your note's structure. For an even faster workflow, you can bind the plugin command to a hotkey.
 
-![](./assets/demo-usage-dark.gif)
+![](./assets/demo-usage-light.gif)
 
 ## How to install
 
