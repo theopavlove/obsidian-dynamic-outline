@@ -840,7 +840,31 @@ button.dynamic-outline-reload[disabled] {
 	display: block;
 }
 
-/* 
+/*
+ * Dynamic Outline Toolbar
+ */
+
+.dynamic-outline-toolbar {
+	display: flex;
+	justify-content: center;
+	gap: 2px;
+	padding: 4px 15px 0;
+}
+
+.dynamic-outline-toolbar.hidden {
+	display: none;
+}
+
+#dynamic-outline.is-searching .dynamic-outline-toolbar {
+	display: none;
+}
+
+.dynamic-outline-toolbar .clickable-icon svg {
+	width: 16px;
+	height: 16px;
+}
+
+/*
  * Dynamic Outline Content Container
  */
 
