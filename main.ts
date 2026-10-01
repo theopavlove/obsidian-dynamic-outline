@@ -156,6 +156,10 @@ export default class DynamicOutlinePlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	refreshOutlines(): void {
+		this.stateManager.refreshOutlines();
+	}
+
 	async reloadPlugin() {
 		//@ts-ignore:2239
 		const plugins = this.app.plugins;

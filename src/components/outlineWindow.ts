@@ -4,6 +4,7 @@ import OutlineLiElement from "./outlineLiElement";
 import SearchContainer from "./searchContainer";
 import * as fuzzysort from "fuzzysort";
 import Outline from "src/components/Outline";
+import { OutlineHeading } from "./outlineHeadings";
 
 export default class OutlineWindow {
 	public static hideTimeout: NodeJS.Timeout | null = null;
@@ -131,7 +132,8 @@ export default class OutlineWindow {
 			this._outline
 		);
 
-		const headings: HeadingCache[] = this._outline.outlineHeadings.headings;
+		const headings: OutlineHeading[] =
+			this._outline.outlineHeadings.headings;
 
 		// Check if the headings are the same as before and, if so,
 		// update only the positions of the li elements.
@@ -245,16 +247,26 @@ export default class OutlineWindow {
 			this._outline.view.currentMode.getScroll();
 
 		// TODO: Should cache it and not call every time. (?)
-		const headings: HeadingCache[] = this._outline.outlineHeadings.headings;
+		const headings: OutlineHeading[] =
+			this._outline.outlineHeadings.headings;
 
 		if (headings.length == 0) {
 			return;
 		}
 
-		const closestIndex: number = binarySearchClosestHeading(
-			headings,
-			currentScrollPosition + 1
-		);
+		const currentFilePath = this._outline.view.file?.path;
+		const currentFileHeadings = headings
+			.map((heading, index) => ({ heading, index }))
+			.filter(({ heading }) => heading.file.path === currentFilePath);
+		const closestIndex =
+			currentFileHeadings.length > 0
+				? currentFileHeadings[
+						binarySearchClosestHeading(
+							currentFileHeadings.map(({ heading }) => heading),
+							currentScrollPosition + 1
+						)
+					].index
+				: -1;
 
 		// TODO: Should cache this thing and not call it every time. (?)
 		const allHeadingElements = this._containerEl.querySelectorAll("li");

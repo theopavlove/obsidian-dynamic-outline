@@ -14,6 +14,8 @@ Enjoy a seamless experience from the start, or customize it precisely to your ne
 
 -   **Collapsible headings:** Hide or show sections for better organization.
 
+-   **Embedded headings:** Optionally include headings from embedded notes with the *Include embedded headings* setting. Section embeds such as `![[Note#Heading]]` show the linked heading and its nested headings up to the next heading at the same or a higher level. Selecting one jumps to the embed in the current note.
+
 -   **Keyboard control:** Navigate the outline using the keyboard for an efficient workflow.
 
 -   **Adaptive behavior:** Reveal on file open, toggle on hover, auto-hide, and more.
