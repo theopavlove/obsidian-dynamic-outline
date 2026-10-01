@@ -2,6 +2,7 @@ import DynamicOutlinePlugin from "main";
 import { HeadingCache } from "obsidian";
 import SearchContainer from "./searchContainer";
 import Outline from "src/components/Outline";
+import { OutlineHeading } from "./outlineHeadings";
 
 export default class DynamicLiElement {
 	private _plugin: DynamicOutlinePlugin;
@@ -15,7 +16,7 @@ export default class DynamicLiElement {
 	}
 
 	createLiElement(
-		heading: HeadingCache,
+		heading: OutlineHeading,
 		tabLevel: number,
 		headings: HeadingCache[],
 		index: number,
@@ -47,6 +48,7 @@ export default class DynamicLiElement {
 			cls: liClasses,
 			attr: {
 				"data-heading-line": heading.position.start.line,
+				"data-heading-file": heading.file.path,
 				"data-level": tabLevel,
 			},
 		});
@@ -78,18 +80,22 @@ export default class DynamicLiElement {
 		return liElement;
 	}
 
-	updateLiElementLine(liElement: HTMLLIElement, heading: HeadingCache): void {
+	updateLiElementLine(
+		liElement: HTMLLIElement,
+		heading: OutlineHeading
+	): void {
 		liElement.setAttribute(
 			"data-heading-line",
 			heading.position.start.line.toString()
 		);
+		liElement.setAttribute("data-heading-file", heading.file.path);
 		this._setupEventListener(liElement, heading);
 	}
 
 	// TODO: the highlighted index should be on the top (scrollBlock="start")
 	private _setupEventListener(
 		liElement: HTMLLIElement,
-		heading: HeadingCache
+		heading: OutlineHeading
 	) {
 		liElement.onclick = (event) => {
 			// Don't navigate if the icon was clicked
@@ -163,7 +169,7 @@ export default class DynamicLiElement {
 		});
 	}
 
-	private _handleClick(heading: HeadingCache): void {
+	private _handleClick(heading: OutlineHeading): void {
 		if (!this._outline.view.file) return;
 
 		this._navigateToHeading(heading);
@@ -173,9 +179,8 @@ export default class DynamicLiElement {
 		this._plugin.runCommand("editor:focus");
 	}
 
-	private _navigateToHeading(heading: HeadingCache): void {
-		const file = this._outline.view.file;
-		if (!file) return;
+	private _navigateToHeading(heading: OutlineHeading): void {
+		const file = heading.file;
 
 		// Open the file at the heading's line
 		this._outline.view.leaf.openFile(file, {

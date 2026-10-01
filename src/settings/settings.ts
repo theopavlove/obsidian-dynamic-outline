@@ -12,6 +12,7 @@ import DisableSearchAutoHideSetting from "./options/DisableSearchAutoHideSetting
 import HideOutlineOnJumpSetting from "./options/HideOutlineOnJumpSetting";
 import AvoidContentOverlapSetting from "./options/AvoidContentOverlapSetting";
 import DisableHeadingCollapsingSetting from "./options/DisableHeadingCollapsingSetting";
+import IncludeEmbeddedHeadingsSetting from "./options/IncludeEmbeddedHeadingsSetting";
 
 export { DEFAULT_SETTINGS, DynamicOutlineSettingTab };
 export type { DynamicOutlinePluginSettings };
@@ -24,6 +25,7 @@ interface DynamicOutlinePluginSettings {
 	disableSearchClearOnJump: boolean;
 	disableSearchFieldAutofocus: boolean;
 	disableHeadingCollapsing: boolean;
+	includeEmbeddedHeadings: boolean;
 	hideOutlineOnJump: boolean;
 	minHeadingsToHideSearchBar: number;
 	minimumHeadingsToRevealAutomatically: number;
@@ -41,6 +43,7 @@ const DEFAULT_SETTINGS: DynamicOutlinePluginSettings = {
 	disableSearchClearOnJump: false,
 	disableSearchFieldAutofocus: false,
 	disableHeadingCollapsing: false,
+	includeEmbeddedHeadings: false,
 	hideOutlineOnJump: false,
 	minHeadingsToHideSearchBar: 5,
 	minimumHeadingsToRevealAutomatically: 2,
@@ -102,6 +105,7 @@ class DynamicOutlineSettingTab extends PluginSettingTab {
 				)
 			);
 		new DisableHeadingCollapsingSetting(this.plugin, containerEl).display();
+		new IncludeEmbeddedHeadingsSetting(this.plugin, containerEl).display();
 		new DisableActiveHeadingHighlightingSetting(
 			this.plugin,
 			containerEl

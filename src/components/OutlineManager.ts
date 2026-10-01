@@ -65,6 +65,12 @@ export default class OutlineManager {
 		this._updateOutlineVisibility(view, true);
 	}
 
+	refreshOutlines(): void {
+		this.getVisibleMDViews().forEach((view) => {
+			this._updateOutlineVisibility(view, true);
+		});
+	}
+
 	mobileOutsideClickHandler = (event: MouseEvent) => {
 		// @ts-ignore
 		if (!this._plugin.app.isMobile) return;
